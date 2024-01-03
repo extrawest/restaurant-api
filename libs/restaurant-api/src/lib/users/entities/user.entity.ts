@@ -2,7 +2,7 @@ import { Table, Column, Model } from 'sequelize-typescript';
 import * as bcrypt from "bcrypt";
 
 @Table
-export class User extends Model<User> {
+export class User extends Model {
   @Column
   name: string;
 

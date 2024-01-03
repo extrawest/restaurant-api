@@ -22,8 +22,12 @@ export class ProductService {
     return this.productsRepository.findOne<Product>({ where: { id }});
   }
 
-  async update(id: number, updateProductDto: UpdateProductDto): Promise<Product> {
-    return (await this.productsRepository.findOne<Product>({ where: { id }})).update(updateProductDto);
+  update(id: number, updateProductDto: UpdateProductDto): Promise<Product | Error> {
+    return this.productsRepository.findOne<Product>({ where: { id }}).then((item) => {
+      if (item)
+        item.update(updateProductDto)
+      return new Error("User not found")
+    })
   }
 
   remove(id: number) {

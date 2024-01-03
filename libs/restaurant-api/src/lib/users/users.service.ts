@@ -1,3 +1,4 @@
+import * as bcrypt from "bcrypt";
 import { Inject, Injectable } from '@nestjs/common';
 import { USERS_REPOSITORY } from './constants';
 import { User } from './entities/user.entity';
@@ -10,20 +11,34 @@ export class UsersService {
     @Inject(USERS_REPOSITORY)
     private usersRepository: typeof User
   ) {}
-  create(userData: CreateUserDto) {
-    return this.usersRepository.create<User>(userData);
+  async create(userData: CreateUserDto) {
+    const hashedPassword = await bcrypt.hash(userData.password, 10);
+    const createdUser = await this.usersRepository.create<User>({
+      ...userData,
+      password: hashedPassword
+    });
+    const { password, ...userWithoutPassword } = createdUser;
+    return userWithoutPassword;
   }
 
   findAll() {
     return this.usersRepository.findAll<User>();
   }
 
-  findOne(id: number) {
+  findOne(id: number): Promise<User | null> {
     return this.usersRepository.findOne<User>({ where: { id }});
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
-    return (await this.usersRepository.findOne<User>({ where: { id }})).update(updateUserDto);
+  findOneByUsername(username: string): Promise<User | null> {
+    return this.usersRepository.findOne<User>({ where: { username }});
+  }
+
+  update(id: number, updateUserDto: UpdateUserDto): Promise<User | Error> {
+    return this.usersRepository.findOne<User>({ where: { id }}).then((item) => {
+      if (item)
+        item?.update(updateUserDto)
+      return new Error("User not found")
+    })
   }
 
   remove(id: number) {
