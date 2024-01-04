@@ -8,7 +8,8 @@ export class User extends Model {
   name: string;
 
   @Column
-  username: string;
+  email: string;
+
 
   @Column
   password: string;
@@ -18,8 +19,4 @@ export class User extends Model {
     type: DataType.ENUM(...Object.values(Role)),
   })
   role: Role;
-
-  async validatePassword(password: string): Promise<boolean> {
-    return bcrypt.compare(password, this.password);
-  }
 }

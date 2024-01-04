@@ -1,6 +1,7 @@
 import { Sequelize } from 'sequelize-typescript';
 import { Category } from '../category/entities/category.entity';
 import { Product } from '../product/entities/product.entity';
+import { User } from '../user/entities/user.entity';
 
 export const databaseProviders = [
   {
@@ -14,7 +15,7 @@ export const databaseProviders = [
         password: process.env.DB_PASSWORD,
         database: 'restaurant',
       });
-      sequelize.addModels([Category, Product]);
+      sequelize.addModels([Category, Product, User]);
       await sequelize.sync();
       return sequelize;
     },

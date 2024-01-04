@@ -30,8 +30,8 @@ export class UsersService {
     return this.usersRepository.findOne<User>({ where: { id }});
   }
 
-  findOneByUsername(username: string): Promise<User | null> {
-    return this.usersRepository.findOne<User>({ where: { username }});
+  findOneByEmail(email: string): Promise<User | null> {
+    return this.usersRepository.findOne<User>({ where: { email }});
   }
 
   update(id: number, updateUserDto: UpdateUserDto): Promise<User | Error> {

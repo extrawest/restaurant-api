@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
-import { UsersService } from './users.service';
+import { UsersService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { RolesGuard } from '../auth/roles.guard';
@@ -8,18 +8,17 @@ import { Role } from '../enums/role.enum';
 import { AuthGuard } from '../auth/auth.guard';
 
 
-@Controller('product')
-export class ProductController {
+@Controller('users')
+export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
-  @UseGuards(AuthGuard)
+  @Post("create")
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
 
   @Roles(Role.Admin)
-  @UseGuards(RolesGuard)  
+  @UseGuards(AuthGuard, RolesGuard)  
   @Get()
   findAll() {
     return this.usersService.findAll();

@@ -5,8 +5,11 @@ export class CreateUserDto {
   name: string;
 
   @ApiProperty()
-  username: string;
+  email: string;
 
   @ApiProperty()
   password: string;
+
+  @ApiProperty()
+  role: string;
 }
