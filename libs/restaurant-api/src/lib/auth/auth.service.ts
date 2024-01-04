@@ -27,7 +27,6 @@ export class AuthService {
 
   // TODO: add Token model to the DB to store forgot pass tokens
   async forgotPassword(email: string) {
-    console.log(email)
     const user = await this.usersService.findOneByEmail(email);
     if (!user) throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     const forgotPasswordToken = this.jwtService.sign(
