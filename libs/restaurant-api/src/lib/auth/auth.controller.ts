@@ -11,15 +11,13 @@ export class AuthController {
     return this.authService.signIn(signInDto.email, signInDto.password);
   }
 
-  // @Post('forgot-password')
-  // forgotPassword(email: string) {
-  //   this.authService.forgotPassword(email);
-  // }
+  @Post('forgot-password')
+  forgotPassword(@Body() forgotPasswordDto: Record<string, any>) {
+    this.authService.forgotPassword(forgotPasswordDto.email);
+  }
 
-  // @Post('reset-password')
-  // resetPassword(password: string, confirmPassword: string, token: string) {
-  //   if(password === confirmPassword) {
-      
-  //   }
-  // }
+  @Post('reset-password')
+  resetPassword(@Body() resetPasswordDto: Record<string, any>, password: string, confirmPassword: string, token: string) {
+    this.authService.resetPassword(resetPasswordDto.password, resetPasswordDto.confirmPassword, resetPasswordDto.token);
+  }
 }

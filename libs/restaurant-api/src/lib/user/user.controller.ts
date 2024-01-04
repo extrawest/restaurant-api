@@ -31,8 +31,6 @@ export class UsersController {
     return this.usersService.findOne(+id);
   }
 
-  @UseGuards(AuthGuard)
-  @Roles(Role.Admin, Role.Buyer)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateProductDto: UpdateUserDto) {
     return this.usersService.update(+id, updateProductDto);
