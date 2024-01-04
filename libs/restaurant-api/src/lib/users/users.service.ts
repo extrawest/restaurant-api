@@ -15,7 +15,8 @@ export class UsersService {
     const hashedPassword = await bcrypt.hash(userData.password, 10);
     const createdUser = await this.usersRepository.create<User>({
       ...userData,
-      password: hashedPassword
+      password: hashedPassword,
+      role: "buyer"
     });
     const { password, ...userWithoutPassword } = createdUser;
     return userWithoutPassword;
