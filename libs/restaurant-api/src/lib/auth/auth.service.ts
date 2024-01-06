@@ -1,4 +1,4 @@
-import * as bcrypt from "bcrypt";
+import { compare, hash } from "bcrypt";
 import { JwtService } from '@nestjs/jwt';
 import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../user/user.service';
@@ -12,7 +12,7 @@ export class AuthService {
   ) {}
   async signIn(email: string, password: string) {
     const user = await this.usersService.findOneByEmail(email);
-    const isPasswordMatching = await bcrypt.compare(
+    const isPasswordMatching = await compare(
       password,
       user?.password || ""
     );
@@ -61,7 +61,7 @@ export class AuthService {
     try {
       const { _id } = this.jwtService.verify(token, { secret: process.env.FORGOT_PASS_SECRET })
       if (_id) {
-        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        const hashedPassword = await hash(newPassword, 10);
         this.usersService.update(_id, {
           password: hashedPassword
         })
