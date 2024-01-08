@@ -19,3 +19,17 @@ Run `npx nx connect-to-nx-cloud` to enable [remote caching](https://nx.app) and 
 ## Further help
 
 Visit the [Nx Documentation](https://nx.dev) to learn more.
+
+## Migrations
+
+Usage example:
+
+```bash
+node umzug.mjs --help
+
+node umzug.mjs up
+node umzug.mjs down
+
+node umzug.mjs create --name new-migration-1.cjs
+node umzug.mjs create --name new-migration-2.mjs
+```
