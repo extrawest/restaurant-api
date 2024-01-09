@@ -23,19 +23,19 @@ export class UsersService {
   }
 
   findAll() {
-    return this.usersRepository.findAll<User>();
+    return this.usersRepository.findAll<User>({ attributes: { exclude: ["password"] }});
   }
 
   findOne(id: number): Promise<User | null> {
-    return this.usersRepository.findOne<User>({ where: { id }});
+    return this.usersRepository.findOne<User>({ where: { id }, attributes: { exclude: ["password"] }});
   }
 
   findOneByEmail(email: string): Promise<User | null> {
-    return this.usersRepository.findOne<User>({ where: { email }});
+    return this.usersRepository.findOne<User>({ where: { email }, attributes: { exclude: ["password"] }});
   }
 
   update(id: number, updateUserDto: UpdateUserDto): Promise<User | Error> {
-    return this.usersRepository.findOne<User>({ where: { id }}).then((item) => {
+    return this.usersRepository.findOne<User>({ where: { id }, attributes: { exclude: ["password"] }}).then((item) => {
       if (item)
         item?.update(updateUserDto)
       return new Error("User not found")

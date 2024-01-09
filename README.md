@@ -20,6 +20,20 @@ Run `npx nx connect-to-nx-cloud` to enable [remote caching](https://nx.app) and 
 
 Visit the [Nx Documentation](https://nx.dev) to learn more.
 
+## Env variables
+
+```bash
+JWT_SECRET=<JWT_SECRET>
+FORGOT_PASS_SECRET=<FORGOT_PASS_SECRET>
+MAILTRAP_USER=<MAILTRAP_USER>
+MAILTRAP_PASSWORD=<MAILTRAP_PASSWORD>
+DB_HOST=<DB_HOST>
+DB_PORT=<DB_PORT>
+DB_USERNAME=<DB_USERNAME>
+DB_PASSWORD=<DB_PASSWORD>
+DB_NAME=<DB_NAME>
+```
+
 ## Migrations
 
 Usage example:

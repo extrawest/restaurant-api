@@ -1,4 +1,5 @@
-import { Table, Column, Model } from 'sequelize-typescript';
+import { Table, Column, Model, ForeignKey, BelongsTo } from 'sequelize-typescript';
+import { Category } from '../../category/entities/category.entity';
 
 @Table
 export class Product extends Model<Product> {
@@ -18,4 +19,11 @@ export class Product extends Model<Product> {
 
   @Column
   quantity: number;
+
+  @ForeignKey(() => Category)
+  @Column
+  caterogyId: number;
+
+  @BelongsTo(() => Category)
+  category: Category
 }
