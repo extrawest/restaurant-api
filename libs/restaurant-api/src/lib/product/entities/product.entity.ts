@@ -22,7 +22,7 @@ export class Product extends Model<Product> {
 
   @ForeignKey(() => Category)
   @Column
-  caterogyId!: number;
+  categoryId!: number;
 
   @BelongsTo(() => Category)
   category: Category
