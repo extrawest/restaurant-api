@@ -26,7 +26,7 @@ export class ProductService {
     return this.productsRepository.findOne<Product>({ where: { id }}).then((item) => {
       if (item)
         item.update(updateProductDto)
-      return new Error("User not found")
+      return new Error("Product not found")
     })
   }
 

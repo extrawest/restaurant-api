@@ -31,7 +31,7 @@ export class UsersService {
   }
 
   findOneByEmail(email: string): Promise<User | null> {
-    return this.usersRepository.findOne<User>({ where: { email }, attributes: { exclude: ["password"] }});
+    return this.usersRepository.findOne<User>({ where: { email }});
   }
 
   update(id: number, updateUserDto: UpdateUserDto): Promise<User | Error> {

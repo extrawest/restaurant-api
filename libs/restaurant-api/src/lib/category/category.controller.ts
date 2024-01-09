@@ -8,12 +8,11 @@ import { RolesGuard } from '../auth/roles.guard';
 import { AuthGuard } from '../auth/auth.guard';
 
 @Roles(Role.Admin)
-@UseGuards(RolesGuard)
+@UseGuards(AuthGuard, RolesGuard)
 @Controller('category')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
-  @UseGuards(AuthGuard)
   @Post()
   create(@Body() createCategoryDto: CreateCategoryDto) {
     return this.categoryService.create(createCategoryDto);

@@ -12,6 +12,8 @@ import { AuthGuard } from '../auth/auth.guard';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @Roles(Role.Admin)
+  @UseGuards(AuthGuard, RolesGuard)  
   @Post("create")
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
@@ -24,8 +26,6 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  @Roles(Role.Admin)
-  @UseGuards(RolesGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id);

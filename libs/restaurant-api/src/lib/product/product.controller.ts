@@ -7,37 +7,40 @@ import { Role } from '../enums/role.enum';
 import { RolesGuard } from '../auth/roles.guard';
 import { AuthGuard } from '../auth/auth.guard';
 
-@Roles(Role.Admin)
-@UseGuards(RolesGuard)
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
-  @UseGuards(AuthGuard)
+  @Roles(Role.Admin)
+  @UseGuards(AuthGuard, RolesGuard)
   @Post()
   create(@Body() createProductDto: CreateProductDto) {
     return this.productService.create(createProductDto);
   }
 
-  @Roles(Role.Buyer)
+  @Roles(Role.Buyer, Role.Admin)
+  @UseGuards(AuthGuard, RolesGuard)
   @Get()
   findAll() {
     return this.productService.findAll();
   }
 
-  @Roles(Role.Buyer)
+  @Roles(Role.Buyer, Role.Admin)
+  @UseGuards(AuthGuard, RolesGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.productService.findOne(+id);
   }
 
-  @UseGuards(AuthGuard)
+  @Roles(Role.Admin)
+  @UseGuards(AuthGuard, RolesGuard)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
     return this.productService.update(+id, updateProductDto);
   }
 
-  @UseGuards(AuthGuard)
+  @Roles(Role.Admin)
+  @UseGuards(AuthGuard, RolesGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.productService.remove(+id);
