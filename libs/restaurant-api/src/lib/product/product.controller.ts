@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -44,5 +44,16 @@ export class ProductController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.productService.remove(+id);
+  }
+
+  @Roles(Role.Admin, Role.Buyer)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Get("/category/:categoryId")
+  finProductByCategory(
+    @Param('categoryId') categoryId: string, 
+    @Query('page') page: number, 
+    @Query('pageSize') pageSize: number, 
+  ) {
+    return this.productService.findProductsByCategory(+categoryId, page, pageSize);
   }
 }

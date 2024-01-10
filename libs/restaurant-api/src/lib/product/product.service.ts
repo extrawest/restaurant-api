@@ -3,6 +3,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
 import { PRODUCTS_REPOSITORY } from './constants';
+import { Category } from '../category/entities/category.entity';
 
 @Injectable()
 export class ProductService {
@@ -32,5 +33,14 @@ export class ProductService {
 
   remove(id: number) {
     return this.productsRepository.destroy({ where: { id }});
+  }
+
+  findProductsByCategory(categoryId: number, page: number, pageSize: number) {
+    console.log("categoryId", categoryId)
+    console.log("page", page)
+    console.log("pageSize", pageSize)
+    const offset = page * pageSize;
+    const limit = pageSize;
+    return this.productsRepository.findAll<Product>({ where: { categoryId }, include: [Category], offset, limit })
   }
 }
