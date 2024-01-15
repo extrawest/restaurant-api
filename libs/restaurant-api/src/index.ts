@@ -4,3 +4,4 @@ export * from './lib/category/category.module';
 export * from './lib/database/database.module';
 export * from './lib/product/product.module';
 export * from './lib/user/user.module';
+export * from './lib/queues/queues.module'

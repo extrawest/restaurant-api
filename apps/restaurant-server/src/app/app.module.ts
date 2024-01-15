@@ -7,12 +7,14 @@ import {
   UsersModule,
   CategoryModule,
   ProductModule,
+  QueuesModule,
 } from 'libs/restaurant-api/src';
 import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
+      envFilePath: ['.env', 'rabbitmq.env'],
       isGlobal: true,
     }),
     DatabaseModule,
@@ -20,6 +22,7 @@ import { ConfigModule } from '@nestjs/config';
     UsersModule,
     CategoryModule,
     ProductModule,
+    QueuesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -36,9 +36,6 @@ export class ProductService {
   }
 
   findProductsByCategory(categoryId: number, page: number, pageSize: number) {
-    console.log("categoryId", categoryId)
-    console.log("page", page)
-    console.log("pageSize", pageSize)
     const offset = page * pageSize;
     const limit = pageSize;
     return this.productsRepository.findAll<Product>({ where: { categoryId }, include: [Category], offset, limit })
