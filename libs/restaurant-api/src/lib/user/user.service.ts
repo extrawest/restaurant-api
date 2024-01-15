@@ -4,6 +4,7 @@ import { USERS_REPOSITORY } from './constants';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Role } from "../enums/role.enum";
 
 @Injectable()
 export class UsersService {
@@ -16,7 +17,7 @@ export class UsersService {
     const createdUser = await this.usersRepository.create<User>({
       ...userData,
       password: hashedPassword,
-      role: "buyer"
+      role: Role.Buyer
     });
     const { password, ...userWithoutPassword } = createdUser;
     return userWithoutPassword;
