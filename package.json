@@ -5,7 +5,9 @@
   "scripts": {
     "start-server": "nx serve restaurant-server",
     "format": "prettier --write {apps,libs}/**/*.{ts,json} --config ./.prettierrc.json",
-    "lint:fix": "eslint --fix {apps,libs}/**/*.{ts,json}",
+    "lint": "nx workspace-lint && nx lint",
+    "lint:all": "nx run-many --target=lint --all --maxWarnings=-1 --skip-nx-cache",
+    "lint:all:fix": "nx run-many --target=lint --all --fix --maxWarnings=-1 --skip-nx-cache",
     "prepare": "husky install"
   },
   "private": true,
@@ -80,7 +82,7 @@
   "lint-staged": {
     "{apps,libs}/**/*.{ts,tsx}": [
       "yarn run format",
-      "yarn run lint:fix"
+      "yarn run lint:all"
     ],
     "*.json": [
       "prettier --write"

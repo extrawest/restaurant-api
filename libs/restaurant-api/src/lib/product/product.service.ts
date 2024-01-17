@@ -9,10 +9,10 @@ import { Category } from '../category/entities/category.entity';
 export class ProductService {
   constructor(
     @Inject(PRODUCTS_REPOSITORY)
-    private productsRepository: typeof Product
+    private productsRepository: typeof Product,
   ) {}
   create(product: CreateProductDto): Promise<Product> {
-    return this.productsRepository.create<Product>(product);
+    return this.productsRepository.create<Product>({ ...product });
   }
 
   findAll(): Promise<Product[]> {
@@ -20,24 +20,33 @@ export class ProductService {
   }
 
   findOne(id: number) {
-    return this.productsRepository.findOne<Product>({ where: { id }});
+    return this.productsRepository.findOne<Product>({ where: { id } });
   }
 
-  update(id: number, updateProductDto: UpdateProductDto): Promise<Product | Error> {
-    return this.productsRepository.findOne<Product>({ where: { id }}).then((item) => {
-      if (item)
-        item.update(updateProductDto)
-      return new Error("Product not found")
-    })
+  update(
+    id: number,
+    updateProductDto: UpdateProductDto,
+  ): Promise<Product | Error> {
+    return this.productsRepository
+      .findOne<Product>({ where: { id } })
+      .then((item) => {
+        if (item) item.update(updateProductDto);
+        return new Error('Product not found');
+      });
   }
 
   remove(id: number) {
-    return this.productsRepository.destroy({ where: { id }});
+    return this.productsRepository.destroy({ where: { id } });
   }
 
   findProductsByCategory(categoryId: number, page: number, pageSize: number) {
     const offset = page * pageSize;
     const limit = pageSize;
-    return this.productsRepository.findAll<Product>({ where: { categoryId }, include: [Category], offset, limit })
+    return this.productsRepository.findAll<Product>({
+      where: { categoryId },
+      include: [Category],
+      offset,
+      limit,
+    });
   }
 }
