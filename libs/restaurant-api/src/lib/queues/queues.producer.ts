@@ -1,7 +1,8 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import amqp, { ChannelWrapper } from 'amqp-connection-manager';
 import { Channel } from 'amqplib';
-import { ORDERS_QUEUE } from './constants';
+import { CREATE_ORDERS_QUEUE } from './constants';
+import { CreateOrderDto } from '../order/dto/create-order.dto';
 
 @Injectable()
 export class ProducerService {
@@ -13,16 +14,16 @@ export class ProducerService {
     const connection = amqp.connect([`amqp://${rabbitUser}:${rabbitPassword}@${rabbitHost}`])
     this.channelWrapper = connection.createChannel({
       setup: (channel: Channel) => {
-        return channel.assertQueue(ORDERS_QUEUE, { durable: true })
+        return channel.assertQueue(CREATE_ORDERS_QUEUE, { durable: true })
       }
     })
   }
 
-  // TODO: any
-  async addToOrdersQueue(order: any) {
+  // TODO: utilize addToOrdersQueue method to an appropriate place
+  async addToOrdersQueue(order: CreateOrderDto) {
     try {
       await this.channelWrapper.sendToQueue(
-        ORDERS_QUEUE,
+        CREATE_ORDERS_QUEUE,
         Buffer.from(JSON.stringify(order)),
         {
           persistent: true

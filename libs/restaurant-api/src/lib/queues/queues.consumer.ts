@@ -1,14 +1,14 @@
 import { Injectable, OnModuleInit, Logger } from '@nestjs/common';
 import amqp, { ChannelWrapper } from 'amqp-connection-manager';
 import { ConfirmChannel } from 'amqplib';
-import { ORDERS_QUEUE } from './constants';
-// TODO: import orders service
+import { CREATE_ORDERS_QUEUE } from './constants';
+import { OrderService } from '../order/order.service';
 
 @Injectable()
 export class ConsumerService implements OnModuleInit {
   private channelWrapper: ChannelWrapper;
   private readonly logger = new Logger(ConsumerService.name);
-  constructor(/*private ordersService: OrderService*/) {
+  constructor(private ordersService: OrderService) {
     const rabbitUser = process.env.RABBITMQ_DEFAULT_USER;
     const rabbitPassword = process.env.RABBITMQ_DEFAULT_PASS;
     const rabbitHost = process.env.RABBITMQ_HOST;
@@ -19,12 +19,12 @@ export class ConsumerService implements OnModuleInit {
   public async onModuleInit() {
     try {
       await this.channelWrapper.addSetup(async (channel: ConfirmChannel) => {
-        await channel.assertQueue(ORDERS_QUEUE, { durable: true })
-        await channel.consume(ORDERS_QUEUE, async (message) => {
+        await channel.assertQueue(CREATE_ORDERS_QUEUE, { durable: true })
+        await channel.consume(CREATE_ORDERS_QUEUE, async (message) => {
           if (message) {
             const content = JSON.parse(message.content.toString());
             this.logger.log('Received message:', content);
-            // await this.ordersService.sendOrder(content);
+            await this.ordersService.create(content);
             channel.ack(message);
           }
         });

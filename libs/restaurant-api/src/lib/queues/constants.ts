@@ -1,1 +1,1 @@
-export const ORDERS_QUEUE = 'ordersQueue'
+export const CREATE_ORDERS_QUEUE = 'ordersQueue'

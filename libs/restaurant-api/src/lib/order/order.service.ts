@@ -41,6 +41,9 @@ export class OrderService {
     }
   }
 
+  findAll(): Promise<Order[]> {
+    return this.ordersRepository.findAll();
+  }
   getOrdersByUserId(userId: number): Promise<Order[]> {
     return this.ordersRepository.findAll({
       where: { userId },
