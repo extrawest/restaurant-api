@@ -7,5 +7,6 @@
 	"bracketSpacing": true,
 	"jsxSingleQuote": false,
 	"singleAttributePerLine": true,
-	"bracketSameLine": false
+	"bracketSameLine": false,
+	"printWidth": 100
 }

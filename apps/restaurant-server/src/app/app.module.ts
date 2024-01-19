@@ -1,30 +1,30 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { Module } from "@nestjs/common";
+import { AppController } from "./app.controller";
+import { AppService } from "./app.service";
 import {
-  DatabaseModule,
-  AuthModule,
-  UsersModule,
-  CategoryModule,
-  ProductModule,
-  QueuesModule,
-} from 'libs/restaurant-api/src';
-import { ConfigModule } from '@nestjs/config';
+	DatabaseModule,
+	AuthModule,
+	UsersModule,
+	CategoryModule,
+	ProductModule,
+	QueuesModule
+} from "restaurant-api";
+import { ConfigModule } from "@nestjs/config";
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({
-      envFilePath: ['.env', 'rabbitmq.env'],
-      isGlobal: true,
-    }),
-    DatabaseModule,
-    AuthModule,
-    UsersModule,
-    CategoryModule,
-    ProductModule,
-    QueuesModule,
-  ],
-  controllers: [AppController],
-  providers: [AppService],
+	imports: [
+		ConfigModule.forRoot({
+			envFilePath: [".env", "rabbitmq.env"],
+			isGlobal: true
+		}),
+		DatabaseModule,
+		AuthModule,
+		UsersModule,
+		CategoryModule,
+		ProductModule,
+		QueuesModule
+	],
+	controllers: [AppController],
+	providers: [AppService]
 })
 export class AppModule {}

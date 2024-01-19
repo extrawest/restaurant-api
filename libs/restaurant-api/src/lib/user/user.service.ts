@@ -1,49 +1,56 @@
 import { hash } from "bcrypt";
-import { Inject, Injectable } from '@nestjs/common';
-import { USERS_REPOSITORY } from './constants';
-import { User } from './entities/user.entity';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { Inject, Injectable } from "@nestjs/common";
+import { USERS_REPOSITORY } from "./constants";
+import { User } from "./entities/user.entity";
+import { CreateUserDto } from "./dto/create-user.dto";
+import { UpdateUserDto } from "./dto/update-user.dto";
 import { Role } from "../enums/role.enum";
 
 @Injectable()
 export class UsersService {
-  constructor(
-    @Inject(USERS_REPOSITORY)
-    private usersRepository: typeof User
-  ) {}
-  async create(userData: CreateUserDto) {
-    const hashedPassword = await hash(userData.password, 10);
-    const createdUser = await this.usersRepository.create<User>({
-      ...userData,
-      password: hashedPassword,
-      role: Role.Buyer
-    });
-    const { password, ...userWithoutPassword } = createdUser;
-    return userWithoutPassword;
-  }
+	constructor(@Inject(USERS_REPOSITORY) private usersRepository: typeof User) {}
+	async create(userData: CreateUserDto) {
+		const hashedPassword = await hash(userData.password, 10);
+		const createdUser = await this.usersRepository.create<User>({
+			...userData,
+			password: hashedPassword,
+			role: Role.Buyer
+		});
+		/* eslint-disable @typescript-eslint/no-unused-vars */
+		const { password, ...userWithoutPassword } = createdUser;
+		return userWithoutPassword;
+	}
 
-  findAll() {
-    return this.usersRepository.findAll<User>({ attributes: { exclude: ["password"] }});
-  }
+	findAll() {
+		return this.usersRepository.findAll<User>({
+			attributes: { exclude: ["password"] }
+		});
+	}
 
-  findOne(id: number): Promise<User | null> {
-    return this.usersRepository.findOne<User>({ where: { id }, attributes: { exclude: ["password"] }});
-  }
+	findOne(id: number): Promise<User | null> {
+		return this.usersRepository.findOne<User>({
+			where: { id },
+			attributes: { exclude: ["password"] }
+		});
+	}
 
-  findOneByEmail(email: string): Promise<User | null> {
-    return this.usersRepository.findOne<User>({ where: { email }});
-  }
+	findOneByEmail(email: string): Promise<User | null> {
+		return this.usersRepository.findOne<User>({ where: { email } });
+	}
 
-  update(id: number, updateUserDto: UpdateUserDto): Promise<User | Error> {
-    return this.usersRepository.findOne<User>({ where: { id }, attributes: { exclude: ["password"] }}).then((item) => {
-      if (item)
-        item?.update(updateUserDto)
-      return new Error("User not found")
-    })
-  }
+	update(id: number, updateUserDto: UpdateUserDto): Promise<User | Error> {
+		return this.usersRepository
+			.findOne<User>({
+				where: { id },
+				attributes: { exclude: ["password"] }
+			})
+			.then((item) => {
+				if (item) item?.update(updateUserDto);
+				return new Error("User not found");
+			});
+	}
 
-  remove(id: number) {
-    return this.usersRepository.destroy({ where: { id }});
-  }
+	remove(id: number) {
+		return this.usersRepository.destroy({ where: { id } });
+	}
 }

@@ -1,156 +1,157 @@
 {
-  "root": true,
-  "ignorePatterns": ["**/*"],
-  "extends": ["eslint:recommended"],
-  "plugins": ["@nx"],
-  "overrides": [
-    {
-      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
-      "rules": {
-        "@nx/enforce-module-boundaries": [
-          "error",
-          {
-            "enforceBuildableLibDependency": true,
-            "allow": [],
-            "depConstraints": [
-              {
-                "sourceTag": "*",
-                "onlyDependOnLibsWithTags": ["*"]
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "files": ["*.ts", "*.tsx"],
-      "extends": ["plugin:@nx/typescript"],
-      "rules": {
-        "no-unused-vars": "off",
-        "import/prefer-default-export": "off",
-        "no-shadow": "off",
-        "@typescript-eslint/no-shadow": ["error"],
-        "no-explicit-any": "off",
-        "@typescript-eslint/no-unused-vars": ["warn"],
-        "semi": ["error", "always"],
-        "quotes": [
-          "error",
-          "double",
-          {
-            "avoidEscape": true,
-            "allowTemplateLiterals": true
-          }
-        ],
-        "@typescript-eslint/semi": ["warn"],
-        "no-mixed-spaces-and-tabs": [2, "smart-tabs"],
-        "function-paren-newline": [
-          "error",
-          {
-            "minItems": 2
-          }
-        ],
-        "no-unsafe-optional-chaining": "error",
-        "@typescript-eslint/indent": [
-          "error",
-          "tab",
-          {
-            "ignoredNodes": [
-              "TSTypeParameterInstantiation",
-              "FunctionExpression > .params[decorators.length > 0]",
-              "FunctionExpression > .params > :matches(Decorator, :not(:first-child))",
-              "ClassBody.body > PropertyDefinition[decorators.length > 0] > .key",
-              "PropertyDefinition",
-              "JSXElement *",
-              "JSXElement",
-              "JSXSpreadAttribute",
-              "JSXAttribute"
-            ],
-            "SwitchCase": 1,
-            "VariableDeclarator": {
-              "var": 2,
-              "let": 2,
-              "const": 3
-            },
-            "MemberExpression": 1,
-            "FunctionExpression": {
-              "parameters": "first"
-            },
-            "FunctionDeclaration": {
-              "body": 2,
-              "parameters": "first"
-            },
-            "ArrayExpression": 1,
-            "ObjectExpression": 1,
-            "ImportDeclaration": 1,
-            "ignoreComments": true
-          }
-        ],
-        "indent": ["off"],
-        "function-call-argument-newline": ["error", "always"],
-        "object-curly-newline": [
-          "error",
-          {
-            "ImportDeclaration": {
-              "multiline": true,
-              "minProperties": 3
-            },
-            "ExportDeclaration": "never"
-          }
-        ],
-        "sort-imports": [
-          "error",
-          {
-            "ignoreCase": false,
-            "ignoreDeclarationSort": true,
-            "ignoreMemberSort": true,
-            "memberSyntaxSortOrder": ["none", "all", "multiple", "single"],
-            "allowSeparatedGroups": false
-          }
-        ],
-        "no-use-before-define": "off",
-        "@typescript-eslint/no-use-before-define": "off",
-        "no-multiple-empty-lines": [
-          "error",
-          {
-            "max": 1,
-            "maxEOF": 0
-          }
-        ]
-      }
-    },
-    {
-      "files": ["*.tsx"],
-      "extends": ["plugin:@nx/typescript"],
-      "rules": {
-        "no-multiple-empty-lines": [
-          "error",
-          {
-            "max": 1,
-            "maxEOF": 0
-          }
-        ],
-        "quotes": [
-          "error",
-          "double",
-          {
-            "avoidEscape": true,
-            "allowTemplateLiterals": true
-          }
-        ],
-        "semi": ["error", "always"],
-        "@typescript-eslint/no-unused-vars": ["warn"],
-        "no-unused-vars": "off"
-      }
-    },
-    {
-      "files": ["*.js", "*.jsx"],
-      "extends": ["plugin:@nx/javascript"],
-      "rules": {}
-    },
-    {
-      "files": "*.json",
-      "parser": "jsonc-eslint-parser",
-      "rules": {}
-    }
-  ]
+	"root": true,
+	"ignorePatterns": ["**/*"],
+	"extends": ["eslint:recommended"],
+	"plugins": ["@nx"],
+	"overrides": [
+		{
+			"files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+			"rules": {
+				"@nx/enforce-module-boundaries": [
+					"error",
+					{
+						"enforceBuildableLibDependency": true,
+						"allow": [],
+						"depConstraints": [
+							{
+								"sourceTag": "*",
+								"onlyDependOnLibsWithTags": ["*"]
+							}
+						]
+					}
+				]
+			}
+		},
+		{
+			"files": ["*.ts", "*.tsx"],
+			"extends": ["plugin:@nx/typescript"],
+			"rules": {
+				"no-unused-vars": "off",
+				"import/prefer-default-export": "off",
+				"no-shadow": "off",
+				"@typescript-eslint/no-shadow": ["error"],
+				"no-explicit-any": "off",
+				"@typescript-eslint/no-unused-vars": ["warn"],
+				"semi": ["error", "always"],
+				"quotes": [
+					"error",
+					"double",
+					{
+						"avoidEscape": true,
+						"allowTemplateLiterals": true
+					}
+				],
+				"@typescript-eslint/semi": ["warn"],
+				"no-mixed-spaces-and-tabs": [2, "smart-tabs"],
+				"function-paren-newline": [
+					"warn",
+					{
+						"minItems": 3
+					}
+				],
+				"max-len": [1, { "code": 100 }],
+				"no-unsafe-optional-chaining": "error",
+				"@typescript-eslint/indent": [
+					"error",
+					"tab",
+					{
+						"ignoredNodes": [
+							"TSTypeParameterInstantiation",
+							"FunctionExpression > .params[decorators.length > 0]",
+							"FunctionExpression > .params > :matches(Decorator, :not(:first-child))",
+							"ClassBody.body > PropertyDefinition[decorators.length > 0] > .key",
+							"PropertyDefinition",
+							"JSXElement *",
+							"JSXElement",
+							"JSXSpreadAttribute",
+							"JSXAttribute"
+						],
+						"SwitchCase": 1,
+						"VariableDeclarator": {
+							"var": 2,
+							"let": 2,
+							"const": 3
+						},
+						"MemberExpression": 1,
+						"FunctionExpression": {
+							"parameters": "first"
+						},
+						"FunctionDeclaration": {
+							"body": 2,
+							"parameters": "first"
+						},
+						"ArrayExpression": 1,
+						"ObjectExpression": 1,
+						"ImportDeclaration": 1,
+						"ignoreComments": true
+					}
+				],
+				"indent": ["off"],
+				"function-call-argument-newline": [1, "consistent"],
+				"object-curly-newline": [
+					"error",
+					{
+						"ImportDeclaration": {
+							"multiline": true,
+							"minProperties": 3
+						},
+						"ExportDeclaration": "never"
+					}
+				],
+				"sort-imports": [
+					"error",
+					{
+						"ignoreCase": false,
+						"ignoreDeclarationSort": true,
+						"ignoreMemberSort": true,
+						"memberSyntaxSortOrder": ["none", "all", "multiple", "single"],
+						"allowSeparatedGroups": false
+					}
+				],
+				"no-use-before-define": "off",
+				"@typescript-eslint/no-use-before-define": "off",
+				"no-multiple-empty-lines": [
+					"error",
+					{
+						"max": 1,
+						"maxEOF": 0
+					}
+				]
+			}
+		},
+		{
+			"files": ["*.tsx"],
+			"extends": ["plugin:@nx/typescript"],
+			"rules": {
+				"no-multiple-empty-lines": [
+					"error",
+					{
+						"max": 1,
+						"maxEOF": 0
+					}
+				],
+				"quotes": [
+					"error",
+					"double",
+					{
+						"avoidEscape": true,
+						"allowTemplateLiterals": true
+					}
+				],
+				"semi": ["error", "always"],
+				"@typescript-eslint/no-unused-vars": ["warn"],
+				"no-unused-vars": "off"
+			}
+		},
+		{
+			"files": ["*.js", "*.jsx"],
+			"extends": ["plugin:@nx/javascript"],
+			"rules": {}
+		},
+		{
+			"files": "*.json",
+			"parser": "jsonc-eslint-parser",
+			"rules": {}
+		}
+	]
 }
