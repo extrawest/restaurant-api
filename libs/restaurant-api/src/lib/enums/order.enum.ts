@@ -5,3 +5,8 @@ export enum Status {
 	Delivering = "delivering",
 	Delivered = "delivered"
 }
+
+export enum StatisticsFields {
+	TOTAL_ORDERS = "TOTAL_ORDERS",
+	TOTAL_REVENUE = "TOTAL_REVENUE",
+}

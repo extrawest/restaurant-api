@@ -6,7 +6,11 @@ import { ItemDto } from "./dto/item.dto";
 @Injectable()
 export class CartService {
 	constructor(@Inject(CART_REPOSITORY) private cartRepository: typeof Cart) {}
-	createCart(userId: number, itemDto: ItemDto, totalPrice: number): Promise<Cart> {
+	createCart(
+		userId: number,
+		itemDto: ItemDto,
+		totalPrice: number
+	): Promise<Cart> {
 		return this.cartRepository.create<Cart>({
 			userId,
 			items: [{ ...itemDto }],
@@ -49,7 +53,11 @@ export class CartService {
 				return cart.save();
 			}
 		} else {
-			return this.createCart(userId, itemDto, price);
+			return this.createCart(
+				userId,
+				itemDto,
+				price
+			);
 		}
 	}
 

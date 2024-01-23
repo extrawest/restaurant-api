@@ -11,10 +11,7 @@ import { createTransport } from "nodemailer";
 
 @Injectable()
 export class AuthService {
-	constructor(
-		private usersService: UsersService,
-		private jwtService: JwtService
-	) {}
+	constructor(private usersService: UsersService, private jwtService: JwtService) {}
 	async signIn(email: string, password: string) {
 		const user = await this.usersService.findOneByEmail(email);
 		const isPasswordMatching = await compare(password, user?.password || "");
