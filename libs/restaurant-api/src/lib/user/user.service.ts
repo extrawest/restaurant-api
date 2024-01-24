@@ -5,6 +5,7 @@ import { User } from "./entities/user.entity";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { Role } from "../enums/role.enum";
+import { Maybe } from "utils";
 
 @Injectable()
 export class UsersService {
@@ -27,14 +28,14 @@ export class UsersService {
 		});
 	}
 
-	findOne(id: number): Promise<User | null> {
+	findOne(id: number): Promise<Maybe<User>> {
 		return this.usersRepository.findOne<User>({
 			where: { id },
 			attributes: { exclude: ["password"] }
 		});
 	}
 
-	findOneByEmail(email: string): Promise<User | null> {
+	findOneByEmail(email: string): Promise<Maybe<User>> {
 		return this.usersRepository.findOne<User>({ where: { email } });
 	}
 

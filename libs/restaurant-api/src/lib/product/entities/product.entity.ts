@@ -6,6 +6,7 @@ import {
 	BelongsTo
 } from "sequelize-typescript";
 import { Category } from "../../category/entities/category.entity";
+import { Order } from "../../order/entities/order.entity";
 
 @Table
 export class Product extends Model {
@@ -32,4 +33,7 @@ export class Product extends Model {
 
 	@BelongsTo(() => Category)
 	category: Category;
+
+	@ForeignKey(() => Order)
+  orderId!: number;
 }

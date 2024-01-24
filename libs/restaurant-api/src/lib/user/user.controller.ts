@@ -15,6 +15,8 @@ import { RolesGuard } from "../auth/roles.guard";
 import { Roles } from "../auth/roles.decorator";
 import { Role } from "../enums/role.enum";
 import { AuthGuard } from "../auth/auth.guard";
+import { UserDTO } from "./dto/user.dto";
+import { Maybe } from "utils";
 
 @Controller("users")
 export class UsersController {
@@ -23,24 +25,24 @@ export class UsersController {
 	@Roles(Role.Admin)
 	@UseGuards(AuthGuard, RolesGuard)
 	@Post("create")
-	create(@Body() createUserDto: CreateUserDto) {
+	create(@Body() createUserDto: CreateUserDto): Promise<UserDTO> {
 		return this.usersService.create(createUserDto);
 	}
 
 	@Roles(Role.Admin)
 	@UseGuards(AuthGuard, RolesGuard)
 	@Get()
-	findAll() {
+	findAll(): Promise<UserDTO[]> {
 		return this.usersService.findAll();
 	}
 
 	@Get(":id")
-	findOne(@Param("id") id: string) {
+	findOne(@Param("id") id: string): Promise<Maybe<UserDTO>> {
 		return this.usersService.findOne(+id);
 	}
 
 	@Patch(":id")
-	update(@Param("id") id: string, @Body() updateProductDto: UpdateUserDto) {
+	update(@Param("id") id: string, @Body() updateProductDto: UpdateUserDto): Promise<Maybe<UserDTO> | Error> {
 		return this.usersService.update(+id, updateProductDto);
 	}
 

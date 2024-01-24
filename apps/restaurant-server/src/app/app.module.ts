@@ -7,7 +7,8 @@ import {
 	UsersModule,
 	CategoryModule,
 	ProductModule,
-	QueuesModule
+	QueuesModule,
+	CartModule
 } from "restaurant-api";
 import { ConfigModule } from "@nestjs/config";
 
@@ -22,7 +23,8 @@ import { ConfigModule } from "@nestjs/config";
 		UsersModule,
 		CategoryModule,
 		ProductModule,
-		QueuesModule
+		QueuesModule,
+		CartModule
 	],
 	controllers: [AppController],
 	providers: [AppService]

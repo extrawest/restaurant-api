@@ -15,7 +15,8 @@
 		"skipDefaultLibCheck": true,
 		"baseUrl": "./",
 		"paths": {
-			"restaurant-api": ["libs/restaurant-api/src/index.ts"]
+			"restaurant-api": ["libs/restaurant-api/src/index.ts"],
+			"utils": ["libs/utils/src/index.ts"]
 		}
 	},
 	"exclude": ["node_modules", "tmp"]

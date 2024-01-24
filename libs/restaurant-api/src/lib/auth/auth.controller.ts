@@ -6,27 +6,26 @@ import {
 	HttpStatus
 } from "@nestjs/common";
 import { AuthService } from "./auth.service";
+import { SignInDto } from "./dto/sign-in.dto";
+import { ForgotPasswordDto } from "./dto/forgot-password.dto";
+import { ResetPasswordDto } from "./dto/reset-password.dto";
 
 @Controller("auth")
 export class AuthController {
 	constructor(private authService: AuthService) {}
-	// TODO: DTO for signInDto
 	@HttpCode(HttpStatus.OK)
 	@Post("login")
-	/* eslint-disable @typescript-eslint/no-explicit-any */
-	signIn(@Body() signInDto: Record<string, any>) {
+	signIn(@Body() signInDto: SignInDto) {
 		return this.authService.signIn(signInDto.email, signInDto.password);
 	}
 
 	@Post("forgot-password")
-	/* eslint-disable @typescript-eslint/no-explicit-any */
-	forgotPassword(@Body() forgotPasswordDto: Record<string, any>) {
+	forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
 		this.authService.forgotPassword(forgotPasswordDto.email);
 	}
 
 	@Post("reset-password")
-	/* eslint-disable @typescript-eslint/no-explicit-any */
-	resetPassword(@Body() resetPasswordDto: Record<string, any>) {
+	resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
 		this.authService.resetPassword(
 			resetPasswordDto.password,
 			resetPasswordDto.confirmPassword,

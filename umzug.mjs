@@ -12,7 +12,6 @@ const sequelize = new Sequelize({
   database: process.env.DB_NAME,
 });
 
-// TODO: rename create admin user migrations
 export const migrator = new Umzug({
 	migrations: {
 		glob: './migrations/*.mjs',
@@ -25,4 +24,3 @@ export const migrator = new Umzug({
 });
 
 migrator.runAsCLI();
-// export type Migration = typeof migrator._types.migration;

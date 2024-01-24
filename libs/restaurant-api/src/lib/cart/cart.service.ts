@@ -2,6 +2,7 @@ import { Inject, Injectable } from "@nestjs/common";
 import { CART_REPOSITORY } from "./constants";
 import { Cart } from "./entities/cart.entity";
 import { ItemDto } from "./dto/item.dto";
+import { CartItem } from "./entities/item.entity";
 
 @Injectable()
 export class CartService {
@@ -33,7 +34,7 @@ export class CartService {
 		});
 	}
 
-	async addItemToCart(userId: number, itemDto: ItemDto) {
+	async addItemToCart(userId: number, itemDto: CartItem) {
 		const { productId, quantity, price } = itemDto;
 		const cart = await this.getCart(userId);
 
@@ -48,7 +49,7 @@ export class CartService {
 				this.recalculateCart(cart);
 				return cart.save();
 			} else {
-				cart.items.push({ ...itemDto });
+				cart.items.push(itemDto);
 				this.recalculateCart(cart);
 				return cart.save();
 			}

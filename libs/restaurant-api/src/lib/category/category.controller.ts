@@ -15,6 +15,8 @@ import { Roles } from "../auth/roles.decorator";
 import { Role } from "../enums/role.enum";
 import { RolesGuard } from "../auth/roles.guard";
 import { AuthGuard } from "../auth/auth.guard";
+import { CategoryDTO } from "./dto/category.dto";
+import { Maybe } from "utils";
 
 @Roles(Role.Admin)
 @UseGuards(AuthGuard, RolesGuard)
@@ -23,23 +25,23 @@ export class CategoryController {
 	constructor(private readonly categoryService: CategoryService) {}
 
 	@Post()
-	create(@Body() createCategoryDto: CreateCategoryDto) {
+	create(@Body() createCategoryDto: CreateCategoryDto): Promise<CategoryDTO> {
 		return this.categoryService.create(createCategoryDto);
 	}
 
 	@Get()
-	findAll() {
+	findAll(): Promise<CategoryDTO[]> {
 		return this.categoryService.findAll();
 	}
 
 	@Get(":id")
-	findOne(@Param("id") id: string) {
+	findOne(@Param("id") id: string): Promise<Maybe<CategoryDTO>> {
 		return this.categoryService.findOne(+id);
 	}
 
 	@UseGuards(AuthGuard)
 	@Patch(":id")
-	update(@Param("id") id: string, @Body() updateCategoryDto: UpdateCategoryDto) {
+	update(@Param("id") id: string, @Body() updateCategoryDto: UpdateCategoryDto): Promise<CategoryDTO> {
 		return this.categoryService.update(+id, updateCategoryDto);
 	}
 

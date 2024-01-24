@@ -16,6 +16,8 @@ import { RolesGuard } from "../auth/roles.guard";
 import { CreateOrderDto } from "./dto/create-order.dto";
 import { UpdateOrderDto } from "./dto/update-order.dto";
 import { StatisticsFields } from "../enums/order.enum";
+import { OrderDTO } from "./dto/order.dto";
+import { Maybe } from "utils";
 
 @Controller("order")
 export class OrderController {
@@ -24,38 +26,39 @@ export class OrderController {
 	@Roles(Role.Admin, Role.Buyer)
 	@UseGuards(AuthGuard, RolesGuard)
 	@Post()
-	create(@Body() createOrderDto: CreateOrderDto) {
+	create(@Body() createOrderDto: CreateOrderDto): Promise<OrderDTO | Error> {
 		return this.orderService.create(createOrderDto);
 	}
 
 	@Roles(Role.Admin)
 	@UseGuards(AuthGuard, RolesGuard)
 	@Get()
-	findAll(@Query("fromDate") fromDate?: string, @Query("toDate") toDate?: string) {
+	findAll(@Query("fromDate") fromDate?: string, @Query("toDate") toDate?: string): Promise<OrderDTO[]>  {
 		return this.orderService.findAll(fromDate, toDate);
 	}
 
 	@Roles(Role.Admin, Role.Buyer)
 	@UseGuards(AuthGuard, RolesGuard)
 	@Get(":id")
-	getOrderById(orderId: number) {
+	getOrderById(orderId: number): Promise<Maybe<OrderDTO>> | Error  {
 		return this.orderService.getOrderById(orderId);
 	}
 
 	@Roles(Role.Admin, Role.Buyer)
 	@UseGuards(AuthGuard, RolesGuard)
 	@Get("user/:id")
-	getOrdersByUserId(userId: number) {
+	getOrdersByUserId(userId: number): Promise<OrderDTO[]> {
 		return this.orderService.getOrdersByUserId(userId);
 	}
 
 	@Roles(Role.Admin, Role.Buyer)
 	@UseGuards(AuthGuard, RolesGuard)
 	@Patch(":id")
-	update(@Param("id") id: string, @Body() updateOrderDto: UpdateOrderDto) {
+	update(@Param("id") id: string, @Body() updateOrderDto: UpdateOrderDto): Promise<OrderDTO | Error> {
 		return this.orderService.update(+id, updateOrderDto);
 	}
 
+	// TODO: create service for statistics to cover more cases, not only orders
 	@Roles(Role.Admin)
 	@UseGuards(AuthGuard, RolesGuard)
 	@Get("statistics")

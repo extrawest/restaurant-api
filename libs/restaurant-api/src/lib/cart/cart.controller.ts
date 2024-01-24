@@ -5,15 +5,17 @@ import {
 	NotFoundException,
 	Param,
 	Post,
-	Request,
 	UseGuards
 } from "@nestjs/common";
 import { CartService } from "./cart.service";
-import { ItemDto } from "./dto/item.dto";
 import { Roles } from "../auth/roles.decorator";
 import { Role } from "../enums/role.enum";
 import { AuthGuard } from "../auth/auth.guard";
 import { RolesGuard } from "../auth/roles.guard";
+import { User } from "../decorators/user.decorator";
+import { User as UserEntity } from "../user/entities/user.entity";
+import { CartDTO } from "./dto/cart.dto";
+import { CartItem } from "./entities/item.entity";
 
 @Controller("cart")
 export class CartController {
@@ -22,19 +24,16 @@ export class CartController {
 	@Roles(Role.Buyer)
 	@UseGuards(AuthGuard, RolesGuard)
 	@Post("add-item")
-	// TODO: request custom type
-	/* eslint-disable @typescript-eslint/no-explicit-any */
-	addItemToCart(@Request() req: any, @Body() itemDTO: ItemDto) {
-		const userId = req.user.sub;
+	addItemToCart(@User() user: UserEntity, @Body() itemDTO: CartItem): Promise<CartDTO> {
+		const userId = user.id;
 		return this.cartService.addItemToCart(userId, itemDTO);
 	}
 
 	@Roles(Role.Buyer)
 	@UseGuards(AuthGuard, RolesGuard)
 	@Delete("delete-item")
-	/* eslint-disable @typescript-eslint/no-explicit-any */
-	async removeItemFromCart(@Request() req: any, @Body() productId: number) {
-		const userId = req.user.sub;
+	async removeItemFromCart(@User() user: UserEntity, @Body() productId: number): Promise<CartDTO> {
+		const userId = user.id;
 		const cart = await this.cartService.removeItemFromCart(userId, productId);
 		if (!cart) throw new NotFoundException("Item does not exist");
 		return cart;
