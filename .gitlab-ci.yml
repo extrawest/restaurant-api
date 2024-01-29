@@ -1,0 +1,19 @@
+image: alpine:latest
+
+pages:
+  stage: deploy
+  before_script:
+    - 'command -v ssh-agent >/dev/null || ( apk add --update openssh )' 
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan $SERVER_IPADDRESS >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+  script:
+    - ssh $SSH_USER@$SERVER_IPADDRESS "hostname && echo 'Welcome!!!' > welcome.txt"
+  artifacts:
+    paths:
+      - public
+  # only:
+  #   - main
