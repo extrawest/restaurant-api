@@ -4,10 +4,8 @@ pages:
   stage: deploy
   before_script:
     - 'command -v ssh-agent >/dev/null || ( apk add --update openssh )' 
-    - echo "${SERVER_IPADDRESS}"
-    - echo "$SERVER_IPADDRESS"
     - eval $(ssh-agent -s)
-    - echo "${SSH_PRIVATE_KEY}" | tr -d '\r' | ssh-add -
+    - echo ${SSH_PRIVATE_KEY} | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
     - ssh-keyscan ${SERVER_IPADDRESS} >> ~/.ssh/known_hosts
