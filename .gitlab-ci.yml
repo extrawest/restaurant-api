@@ -32,7 +32,7 @@ deploy:
   script:
     - sshpass -V
     - export SSHPASS=$SSH_PASSWORD
-    - sshpass -e "ssh -o StrictHostKeyChecking=no" $SSH_USER@$SERVER_IPADDRESS:/home/vitalii.karietin/vitaliikarietin-restaurantapi "git pull && docker-compose up"
+    - sshpass -e ssh -o "StrictHostKeyChecking=no" $SSH_USER@$SERVER_IPADDRESS "cd /home/vitalii.karietin/vitaliikarietin-restaurantapi && git pull && docker-compose up"
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
