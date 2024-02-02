@@ -44,7 +44,7 @@ deploy:
     - export SSHPASS=$SSH_PASSWORD
     - sshpass -e rsync --progress --links --recursive --delete --checksum -e "ssh -o StrictHostKeyChecking=no" $CI_PROJECT_DIR/dist/apps/restaurant-server/ $SSH_USER@$SERVER_IPADDRESS:$PROJECT_PATH
     - sshpass -e rsync --progress --links --recursive --delete --checksum -e "ssh -o StrictHostKeyChecking=no" $CI_PROJECT_DIR/Dockerfile $CI_PROJECT_DIR/compose.yaml $SSH_USER@$SERVER_IPADDRESS:$PROJECT_PATH
-    - sshpass -e ssh -o StrictHostKeyChecking=no $SSH_USER@$SERVER_IPADDRESS:$PROJECT_PATH "docker compose up -d"
+    - sshpass -e ssh -o StrictHostKeyChecking=no $SSH_USER@$SERVER_IPADDRESS "cd $PROJECT_PATH && docker compose up -d"
   only:
     - main
     - feature/ci-cd-setup
