@@ -6,8 +6,9 @@ stages:
 
 build:
   stage: build
-  script:
+  before_script:
     - yarn install
+  script:
     - yarn lint:all
     - yarn build
   artifacts:
@@ -16,12 +17,22 @@ build:
       - dist
   only:
     - main
-    - ci-cd-setup
+    - feature/ci-cd-setup
 
 deploy:
   stage: deploy
   needs:
     - build
+  variables:
+    JWT_SECRET: $SSH_PASSWORD
+    FORGOT_PASS_SECRET: $FORGOT_PASS_SECRET
+    MAILTRAP_USER: $MAILTRAP_USER
+    MAILTRAP_PASSWORD: $MAILTRAP_PASSWORD
+    DB_HOST: $DB_HOST
+    DB_PORT: $DB_PORT
+    DB_USERNAME: $DB_USERNAME
+    DB_PASSWORD: $DB_PASSWORD
+    DB_NAME: $DB_NAME
   before_script:
     - apt-get update -qq && apt-get install -y -qq sshpass rsync
   script:
@@ -29,7 +40,7 @@ deploy:
     - export SSHPASS=$SSH_PASSWORD
     - sshpass -e rsync --progress --links --recursive --delete --checksum --exclude-from=./.sync-exclude -e "ssh -o StrictHostKeyChecking=no" $CI_PROJECT_DIR/dist/apps/restaurant-server/ $SSH_USER@$SERVER_IPADDRESS:$PROJECT_PATH
     - sshpass -e rsync --progress --links --recursive --delete --checksum --exclude-from=./.sync-exclude -e "ssh -o StrictHostKeyChecking=no" $CI_PROJECT_DIR/Dockerfile $CI_PROJECT_DIR/compose.yaml $SSH_USER@$SERVER_IPADDRESS:$PROJECT_PATH
-    - sshpass -e ssh -o StrictHostKeyChecking=no $SSH_USER@$SERVER_IPADDRESS:$PROJECT_PATH "mkdir -p $PROJECT_PATH && cd $PROJECT_PATH && docker-compose up -d"
+    - sshpass -e ssh -o StrictHostKeyChecking=no $SSH_USER@$SERVER_IPADDRESS:$PROJECT_PATH "docker-compose up -d"
   only:
     - main
-    - ci-cd-setup
+    - feature/ci-cd-setup
