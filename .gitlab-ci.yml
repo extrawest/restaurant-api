@@ -1,39 +1,35 @@
 image: node:18
 
 stages:
-  - install
-  # - build
+  - build
   - deploy
 
-install:
-  stage: install
+build:
+  stage: build
   script:
     - yarn install
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
-
-# build:
-#   stage: build
-#   script:
-#     - npx nx build restaurant-server
-#   artifacts:
-#     expire_in: 1 hour
-#     paths:
-#       - dist
-#   rules:
-#     - if: '$CI_COMMIT_BRANCH == "main"'
-#     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - yarn lint:all
+    - yarn build
+  artifacts:
+    expire_in: 1 hour
+    paths:
+      - dist
+  only:
+    - main
+    - ci-cd-setup
 
 deploy:
   stage: deploy
+  needs:
+    - build
   before_script:
     - apt-get update -qq && apt-get install -y -qq sshpass rsync
   script:
     - sshpass -V
     - export SSHPASS=$SSH_PASSWORD
-    - sshpass -e "ssh -o StrictHostKeyChecking=no -v" $SSH_USER@$SERVER_IPADDRESS "touch test.txt cd /home/vitalii.karietin/vitaliikarietin-restaurantapi && git pull"
-    - sshpass -e "ssh -o StrictHostKeyChecking=no -v" $SSH_USER@$SERVER_IPADDRESS "cd /home/vitalii.karietin/vitaliikarietin-restaurantapi && docker-compose up"
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - sshpass -e rsync --progress --links --recursive --delete --checksum --exclude-from=./.sync-exclude -e "ssh -o StrictHostKeyChecking=no" $CI_PROJECT_DIR/dist/apps/restaurant-server/ $SSH_USER@$SERVER_IPADDRESS:$PROJECT_PATH
+    - sshpass -e rsync --progress --links --recursive --delete --checksum --exclude-from=./.sync-exclude -e "ssh -o StrictHostKeyChecking=no" $CI_PROJECT_DIR/Dockerfile $CI_PROJECT_DIR/compose.yaml $SSH_USER@$SERVER_IPADDRESS:$PROJECT_PATH
+    - sshpass -e ssh -o StrictHostKeyChecking=no $SSH_USER@$SERVER_IPADDRESS:$PROJECT_PATH "mkdir -p $PROJECT_PATH && cd $PROJECT_PATH && docker-compose up -d"
+  only:
+    - main
+    - ci-cd-setup

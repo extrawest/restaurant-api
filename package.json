@@ -4,11 +4,13 @@
 	"license": "MIT",
 	"scripts": {
 		"start-server": "nx serve restaurant-server",
+		"start-prod": "node main",
 		"lint": "nx workspace-lint && nx lint",
 		"format": "nx format:write --uncommitted --parallel --maxParallel=5 --skip-nx-cache",
 		"lint:all": "nx run-many --target=lint --all --maxWarnings=-1 --skip-nx-cache",
 		"lint:all:fix": "nx run-many --target=lint --all --fix --maxWarnings=-1 --skip-nx-cache",
-		"prepare": "husky install"
+		"prepare": "husky install",
+		"build": "nx build restaurant-server"
 	},
 	"private": true,
 	"dependencies": {
