@@ -10,7 +10,7 @@
 		"lint:all": "nx run-many --target=lint --all --maxWarnings=-1 --skip-nx-cache",
 		"lint:all:fix": "nx run-many --target=lint --all --fix --maxWarnings=-1 --skip-nx-cache",
 		"prepare": "husky install",
-		"build": "nx build restaurant-server"
+		"build": "nx build restaurant-server --skip-nx-cache --prod"
 	},
 	"private": true,
 	"dependencies": {
