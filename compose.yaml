@@ -38,7 +38,7 @@ services:
       - POSTGRES_USER=${DB_USERNAME}
       - POSTGRES_DB=${DB_NAME}
     ports:
-      - "5432:5433"
+      - "5433:5433"
     healthcheck:
       test: [ "CMD", "pg_isready" ]
       interval: 10s
