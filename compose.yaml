@@ -17,7 +17,7 @@ services:
     environment:
       - DB_HOST=db
     ports:
-      - 3000:3000
+      - 3001:3001
     depends_on:
       db:
         condition: service_healthy
@@ -40,7 +40,7 @@ services:
       - POSTGRES_USER=${DB_USERNAME}
       - POSTGRES_DB=${DB_NAME}
     expose:
-      - 5432
+      - 5433
     healthcheck:
       test: [ "CMD", "pg_isready" ]
       interval: 10s
@@ -53,8 +53,8 @@ services:
     volumes:
       - /var/lib/rabbitmq
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - "5673:5673"
+      - "15673:15673"
     environment:
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}

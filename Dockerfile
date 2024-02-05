@@ -5,11 +5,11 @@ WORKDIR /restaurant-server
 # COPY ./package.json ./yarn.lock ./
 COPY . ./
 
-RUN yarn install --frozen-lockfile
+RUN yarn install --frozen-lockfile --prod
 
 ENV NODE_ENV=production
 
-EXPOSE 3000
+EXPOSE 3001
 
 # COPY ./dist/apps/restaurant-server ./
 
