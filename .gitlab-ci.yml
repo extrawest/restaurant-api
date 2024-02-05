@@ -39,7 +39,7 @@ deploy:
     RABBITMQ_QUEUE_NAME: $RABBITMQ_QUEUE_NAME
   before_script:
     - apt-get update -qq && apt-get install -y -qq sshpass rsync
-    - bash ./deployment/generate-env.sh
+    - bash ./generate-env.sh
   script:
     - sshpass -V
     - export SSHPASS=$SSH_PASSWORD
