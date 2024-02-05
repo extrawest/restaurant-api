@@ -1,6 +1,6 @@
 FROM node:18.16.0-alpine
 
-WORKDIR /restaurant-server
+WORKDIR /restaurant-training
 
 COPY main.js package.json yarn.lock ./
 COPY assets/ ./
