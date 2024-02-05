@@ -2,7 +2,7 @@
 
 # ENV=$1
 
-SAMPLE_FILE="../.env.example"
+SAMPLE_FILE=".env.example"
 FILE=".env"
 
 printf "\033[1;32m Generating environment file... \033[0m\n"
