@@ -33,8 +33,6 @@ services:
     image: postgres
     restart: always
     user: postgres
-    # secrets:
-    #   - db-password
     volumes:
       - db-data:/var/lib/postgresql/data
     environment:
@@ -57,11 +55,9 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
-    env_file:
-      - ./rabbitmq.env
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+      - RABBITMQ_HOST=${RABBITMQ_HOST}
 volumes:
   db-data:
-# secrets:
-#   db-password:
-#     file: db/password.txt
-

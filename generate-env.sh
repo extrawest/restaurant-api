@@ -13,7 +13,7 @@ printf "# (This file was generated automatically.) #\n" >> $FILE
 printf "############################################\n" >> $FILE
 
 n=0
-while read line; do
+while IFS= read -r line || [ -n "$line" ]; do
     [ -z "$line" ] || [[ "$line" =~ \#.* ]] && continue
     
     key="${line%%=*}"

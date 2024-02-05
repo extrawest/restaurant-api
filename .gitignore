@@ -36,4 +36,3 @@ lerna-debug.log*
 
 .nx/cache
 .env
-rabbitmq.env
