@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ENV=$1
+# ENV=$1
 
 SAMPLE_FILE="../.env.example"
 FILE=".env"
