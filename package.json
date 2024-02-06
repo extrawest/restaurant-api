@@ -65,6 +65,7 @@
 		"@types/jest": "^29.4.0",
 		"@types/node": "18.16.9",
 		"@types/nodemailer": "^6.4.14",
+		"@types/pg": "^8.11.0",
 		"@types/sequelize": "^4.28.19",
 		"@typescript-eslint/eslint-plugin": "6.19.0",
 		"@typescript-eslint/parser": "6.19.0",
