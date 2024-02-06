@@ -17,7 +17,7 @@ services:
     environment:
       - DB_HOST=db
     ports:
-      - 3001:3001
+      - 3001:3000
     depends_on:
       - db
 
