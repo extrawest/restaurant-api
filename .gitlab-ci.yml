@@ -17,7 +17,6 @@ build:
       - dist
   only:
     - main
-    - feature/ci-cd-setup
 
 deploy:
   stage: deploy
@@ -35,4 +34,3 @@ deploy:
     - sshpass -e ssh -o StrictHostKeyChecking=no $SSH_USER@$SERVER_IPADDRESS "cd $PROJECT_PATH && docker compose up -d"
   only:
     - main
-    - feature/ci-cd-setup
