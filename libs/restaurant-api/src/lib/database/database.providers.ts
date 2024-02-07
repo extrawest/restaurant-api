@@ -1,4 +1,5 @@
 import { Sequelize } from "sequelize-typescript";
+import * as pg from "pg";
 import { Category } from "../category/entities/category.entity";
 import { Product } from "../product/entities/product.entity";
 import { User } from "../user/entities/user.entity";
@@ -16,7 +17,8 @@ export const databaseProviders = [
 				port: Number(process.env.DB_PORT),
 				username: process.env.DB_USERNAME,
 				password: process.env.DB_PASSWORD,
-				database: process.env.DB_NAME
+				database: process.env.DB_NAME,
+				dialectModule: pg
 			});
 			sequelize.addModels([
 				Category,

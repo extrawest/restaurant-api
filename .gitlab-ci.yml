@@ -1,0 +1,36 @@
+image: node:18
+
+stages:
+  - build
+  - deploy
+
+build:
+  stage: build
+  before_script:
+    - yarn install
+  script:
+    - yarn lint:all
+    - yarn build
+  artifacts:
+    expire_in: 1 hour
+    paths:
+      - dist
+  only:
+    - main
+
+deploy:
+  stage: deploy
+  needs:
+    - build
+  before_script:
+    - apt-get update -qq && apt-get install -y -qq sshpass rsync
+    - bash ./generate-env.sh
+  script:
+    - sshpass -V
+    - export SSHPASS=$SSH_PASSWORD
+    - sshpass -e rsync --progress --links --recursive --delete --checksum -e "ssh -o StrictHostKeyChecking=no" $CI_PROJECT_DIR/dist/apps/restaurant-server/ $SSH_USER@$SERVER_IPADDRESS:$PROJECT_PATH
+    - sshpass -e rsync --progress --links --recursive --delete --checksum -e "ssh -o StrictHostKeyChecking=no" $CI_PROJECT_DIR/Dockerfile $CI_PROJECT_DIR/compose.yaml $SSH_USER@$SERVER_IPADDRESS:$PROJECT_PATH
+    - sshpass -e rsync --progress --links --recursive --delete --checksum -e "ssh -o StrictHostKeyChecking=no" $CI_PROJECT_DIR/.env $SSH_USER@$SERVER_IPADDRESS:$PROJECT_PATH
+    - sshpass -e ssh -o StrictHostKeyChecking=no $SSH_USER@$SERVER_IPADDRESS "cd $PROJECT_PATH && docker compose up -d"
+  only:
+    - main
