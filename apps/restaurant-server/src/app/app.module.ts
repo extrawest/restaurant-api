@@ -15,7 +15,7 @@ import { ConfigModule } from "@nestjs/config";
 @Module({
 	imports: [
 		ConfigModule.forRoot({
-			envFilePath: [".env", "rabbitmq.env"],
+			envFilePath: [".env"],
 			isGlobal: true
 		}),
 		DatabaseModule,

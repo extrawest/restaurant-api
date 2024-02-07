@@ -1,40 +1,13 @@
-# syntax=docker/dockerfile:1
+FROM node:18.16.0-alpine
 
-# Comments are provided throughout this file to help you get started.
-# If you need more help, visit the Dockerfile reference guide at
-# https://docs.docker.com/engine/reference/builder/
+WORKDIR /app
 
-ARG NODE_VERSION=18.16.0
+COPY ./ /app
 
-FROM node:${NODE_VERSION}-alpine
+RUN yarn install --frozen-lockfile --prod
 
-# Use production node environment by default.
-ENV NODE_ENV development
+ENV NODE_ENV=production
 
-WORKDIR /usr/src/app
+EXPOSE 3001
 
-# node-gyp requires python3 to be installed
-RUN apk add --update python3 make g++\
-   && rm -rf /var/cache/apk/*
-
-# Download dependencies as a separate step to take advantage of Docker's caching.
-# Leverage a cache mount to /root/.yarn to speed up subsequent builds.
-# Leverage a bind mounts to package.json and yarn.lock to avoid having to copy them into
-# into this layer.
-RUN --mount=type=bind,source=package.json,target=package.json \
-    --mount=type=bind,source=yarn.lock,target=yarn.lock \
-    --mount=type=cache,target=/root/.yarn \
-    yarn install --development --frozen-lockfile
-
-# Run the application as a non-root user.
-# USER node
-
-# Copy the rest of the source files into the image.
-COPY . .
-
-# Expose the port that the application listens on.
-EXPOSE 3000
-
-
-# Run the application.
-CMD [ "yarn", "run", "start-server" ]
+CMD ["node", "main"]
