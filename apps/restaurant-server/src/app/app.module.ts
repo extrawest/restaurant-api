@@ -8,7 +8,8 @@ import {
 	CategoryModule,
 	ProductModule,
 	QueuesModule,
-	CartModule
+	CartModule,
+	FirebaseModule
 } from "restaurant-api";
 import { ConfigModule } from "@nestjs/config";
 
@@ -24,7 +25,8 @@ import { ConfigModule } from "@nestjs/config";
 		CategoryModule,
 		ProductModule,
 		QueuesModule,
-		CartModule
+		CartModule,
+		FirebaseModule
 	],
 	controllers: [AppController],
 	providers: [AppService]
