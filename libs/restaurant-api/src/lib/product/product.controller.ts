@@ -7,11 +7,7 @@ import {
 	Param,
 	Delete,
 	UseGuards,
-	Query,
-	UseInterceptors,
-	UploadedFile,
-	ParseFilePipe,
-	FileTypeValidator
+	Query
 } from "@nestjs/common";
 import { ProductService } from "./product.service";
 import { CreateProductDto } from "./dto/create-product.dto";
@@ -22,7 +18,6 @@ import { RolesGuard } from "../auth/roles.guard";
 import { AuthGuard } from "../auth/auth.guard";
 import { ProductDTO } from "./dto/product.dto";
 import { Maybe } from "utils";
-import { FileInterceptor } from "@nestjs/platform-express";
 
 @Controller("product")
 export class ProductController {
@@ -31,17 +26,8 @@ export class ProductController {
 	@Roles(Role.Admin)
 	@UseGuards(AuthGuard, RolesGuard)
 	@Post()
-	@UseInterceptors(FileInterceptor("image"))
-	create(
-		@Body() createProductDto: CreateProductDto,
-		@UploadedFile(
-			new ParseFilePipe({
-				validators: [new FileTypeValidator({ fileType: ".(png|jpeg|jpg)" })]
-			})
-		)
-		image: Express.Multer.File
-	): Promise<ProductDTO> {
-		return this.productService.create(createProductDto, image);
+	create(@Body() createProductDto: CreateProductDto): Promise<ProductDTO> {
+		return this.productService.create(createProductDto);
 	}
 
 	@Roles(Role.Buyer, Role.Admin)
@@ -61,17 +47,9 @@ export class ProductController {
 	@Roles(Role.Admin)
 	@UseGuards(AuthGuard, RolesGuard)
 	@Patch(":id")
-	update(
-		@Param("id") id: string,
-		@Body() updateProductDto: UpdateProductDto,
-		@UploadedFile(
-			new ParseFilePipe({
-				validators: [new FileTypeValidator({ fileType: ".(png|jpeg|jpg)" })]
-			})
-		)
-		image?: Express.Multer.File
+	update(@Param("id") id: string, @Body() updateProductDto: UpdateProductDto
 	): Promise<Maybe<ProductDTO> | Error> {
-		return this.productService.update(+id, updateProductDto, image);
+		return this.productService.update(+id, updateProductDto);
 	}
 
 	@Roles(Role.Admin)

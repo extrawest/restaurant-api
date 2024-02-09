@@ -3,10 +3,9 @@ import { ProductService } from "./product.service";
 import { ProductController } from "./product.controller";
 import { productsProviders } from "./product.providers";
 import { AuthModule } from "../auth/auth.module";
-import { FirebaseModule } from "../firebase/firebase.module";
 
 @Module({
-	imports: [AuthModule, FirebaseModule],
+	imports: [AuthModule],
 	controllers: [ProductController],
 	providers: [ProductService, ...productsProviders]
 })

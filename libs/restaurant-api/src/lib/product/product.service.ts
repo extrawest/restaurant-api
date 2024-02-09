@@ -4,17 +4,14 @@ import { UpdateProductDto } from "./dto/update-product.dto";
 import { Product } from "./entities/product.entity";
 import { PRODUCTS_REPOSITORY } from "./constants";
 import { Category } from "../category/entities/category.entity";
-import { FirebaseService } from "../firebase/firebase.service";
 
 @Injectable()
 export class ProductService {
 	constructor(
 		@Inject(PRODUCTS_REPOSITORY) private productsRepository: typeof Product,
-		private firebaseService: FirebaseService
 	) {}
-	async create(product: CreateProductDto, image: Express.Multer.File): Promise<Product> {
-		const imageUrl = await this.firebaseService.uploadFile(image);
-		return this.productsRepository.create<Product>({ ...product, image: imageUrl });
+	async create(product: CreateProductDto): Promise<Product> {
+		return this.productsRepository.create<Product>({ ...product });
 	}
 
 	findAll(): Promise<Product[]> {
@@ -25,17 +22,9 @@ export class ProductService {
 		return this.productsRepository.findOne<Product>({ where: { id } });
 	}
 
-	async update(
-		id: number,
-		updateProductDto: UpdateProductDto,
-		image?: Express.Multer.File
-	): Promise<Product | Error> {
-		let imageUrl: string;
-		if (image) {
-			imageUrl = await this.firebaseService.uploadFile(image);
-		}
+	async update(id: number, updateProductDto: UpdateProductDto): Promise<Product | Error> {
 		return this.productsRepository.findOne<Product>({ where: { id } }).then((item) => {
-			if (item) item.update({ ...updateProductDto, ...(imageUrl && { image: imageUrl }) });
+			if (item) item.update({ ...updateProductDto });
 			return new Error("Product not found");
 		});
 	}
