@@ -4,10 +4,8 @@ export class CreateProductDto {
 	@ApiProperty()
 	name: string;
 
-	@ApiProperty({
-		type: "bytea"
-	})
-	image: Uint8Array;
+	@ApiProperty()
+	image: string;
 
 	@ApiProperty()
 	price: number;
