@@ -7,8 +7,10 @@ import { Category } from "../category/entities/category.entity";
 
 @Injectable()
 export class ProductService {
-	constructor(@Inject(PRODUCTS_REPOSITORY) private productsRepository: typeof Product) {}
-	create(product: CreateProductDto): Promise<Product> {
+	constructor(
+		@Inject(PRODUCTS_REPOSITORY) private productsRepository: typeof Product,
+	) {}
+	async create(product: CreateProductDto): Promise<Product> {
 		return this.productsRepository.create<Product>({ ...product });
 	}
 
@@ -20,9 +22,9 @@ export class ProductService {
 		return this.productsRepository.findOne<Product>({ where: { id } });
 	}
 
-	update(id: number, updateProductDto: UpdateProductDto): Promise<Product | Error> {
+	async update(id: number, updateProductDto: UpdateProductDto): Promise<Product | Error> {
 		return this.productsRepository.findOne<Product>({ where: { id } }).then((item) => {
-			if (item) item.update(updateProductDto);
+			if (item) item.update({ ...updateProductDto });
 			return new Error("Product not found");
 		});
 	}
@@ -31,11 +33,7 @@ export class ProductService {
 		return this.productsRepository.destroy({ where: { id } });
 	}
 
-	findProductsByCategory(
-		categoryId: number,
-		page: number,
-		pageSize: number
-	) {
+	findProductsByCategory(categoryId: number, page: number, pageSize: number) {
 		const offset = page * pageSize;
 		const limit = pageSize;
 		return this.productsRepository.findAll<Product>({

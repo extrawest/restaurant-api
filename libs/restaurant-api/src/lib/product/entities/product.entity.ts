@@ -13,10 +13,8 @@ export class Product extends Model {
 	@Column
 	name: string;
 
-	@Column({
-		type: "bytea"
-	})
-	image: Uint8Array;
+	@Column
+	image: string;
 
 	@Column
 	price: number;
@@ -35,5 +33,5 @@ export class Product extends Model {
 	category: Category;
 
 	@ForeignKey(() => Order)
-  orderId!: number;
+	orderId!: number;
 }
