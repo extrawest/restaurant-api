@@ -18,7 +18,7 @@
 			"restaurant-api": ["libs/restaurant-api/src/index.ts"],
 			"utils": ["libs/utils/src/index.ts"]
 		},
-		"types": ["Multer"]
+		"types": ["node", "express", "multer"]
 	},
 	"exclude": ["node_modules", "tmp"]
 }
