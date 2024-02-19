@@ -22,11 +22,12 @@ export class ProductService {
 		return this.productsRepository.findOne<Product>({ where: { id } });
 	}
 
-	async update(id: number, updateProductDto: UpdateProductDto): Promise<Product | Error> {
-		return this.productsRepository.findOne<Product>({ where: { id } }).then((item) => {
-			if (item) item.update({ ...updateProductDto });
-			return new Error("Product not found");
-		});
+	async update(id: number, updateProductDto: UpdateProductDto): Promise<Product> {
+		const productFound = await this.productsRepository.findOne<Product>({ where: { id } });
+		if (productFound) {
+			return productFound?.update(updateProductDto);
+		};
+		throw new Error("Product not found");
 	}
 
 	remove(id: number) {

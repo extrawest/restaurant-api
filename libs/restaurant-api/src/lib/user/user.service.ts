@@ -36,18 +36,23 @@ export class UsersService {
 	}
 
 	findOneByEmail(email: string): Promise<Maybe<User>> {
-		return this.usersRepository.findOne<User>({ where: { email } });
+		return this.usersRepository.findOne<User>({
+			where: { email },
+			attributes: { exclude: ["password"] }
+		});
 	}
 
-	update(id: number, updateUserDto: UpdateUserDto): Promise<User | Error> {
+	update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
 		return this.usersRepository
 			.findOne<User>({
 				where: { id },
 				attributes: { exclude: ["password"] }
 			})
 			.then((item) => {
-				if (item) item?.update(updateUserDto);
-				return new Error("User not found");
+				if (item) {
+					return item?.update(updateUserDto);
+				}
+				throw new Error("USER_NOT_FOUND");
 			});
 	}
 

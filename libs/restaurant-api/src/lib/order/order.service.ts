@@ -10,19 +10,19 @@ import { StatisticsFields } from "../enums/order.enum";
 
 @Injectable()
 export class OrderService {
-	constructor(@Inject(ORDERS_REPOSITORY) private ordersRepository: typeof Order, private cartService: CartService) {}
+	constructor(@Inject(ORDERS_REPOSITORY) private ordersRepository: typeof Order, private cartService: CartService) {};
 
-	async create(order: CreateOrderDto): Promise<Order | Error> {
+	async create(order: CreateOrderDto): Promise<Order> {
 		const { userId, products } = order;
 		const cart = await this.cartService.getCart(userId);
 		if (!cart) {
-			return new Error("Cart not found");
-		}
+			throw new Error("CART_NOT_FOUND");
+		};
 		if (!products.length) {
-			return new Error("Cart is empty");
-		}
+			throw new Error("CART_IS_EMPTY");
+		};
 		return this.ordersRepository.create<Order>({ ...order }, { include: [Product] });
-	}
+	};
 	// TODO: response type
 	getOrderById(orderId: number): Promise<Order | null> | Error {
 		const order = this.ordersRepository.findOne({
@@ -30,11 +30,11 @@ export class OrderService {
 			include: [Product]
 		});
 		if (!order) {
-			return new Error("Order not found");
+			return new Error("ORDER_NOT_FOUND");
 		} else {
 			return order;
 		}
-	}
+	};
 
 	findAll(fromDate?: string, toDate?: string): Promise<Order[]> {
 		return this.ordersRepository.findAll({
@@ -49,22 +49,26 @@ export class OrderService {
 				})
 			}
 		});
-	}
+	};
+
 	getOrdersByUserId(userId: number): Promise<Order[]> {
 		return this.ordersRepository.findAll({
 			where: { userId },
 			include: [Product]
 		});
-	}
+	};
 
-	update(orderId: number, updateOrderDto: UpdateOrderDto): Promise<Order | Error> {
+	update(orderId: number, updateOrderDto: UpdateOrderDto): Promise<Order> {
 		return this.ordersRepository
 			.findOne<Order>({ where: { id: orderId }, include: [Product] })
 			.then((item) => {
-				if (item) item.update(updateOrderDto);
-				return new Error("Order not found");
+				if (item) {
+					return item.update(updateOrderDto);
+				} else {
+					throw new Error("Order not found");
+				};
 			});
-	}
+	};
 
 	async getStatistics(
 		fields: StatisticsFields[],
@@ -82,7 +86,7 @@ export class OrderService {
 				totalOrdersCount: (orders || []).length
 			})
 		};
-	}
+	};
 
 	private calculateTotalRevenue(orders: Order[]) {
 		return orders.reduce((ordersRevenue, order: Order) => {
@@ -91,5 +95,5 @@ export class OrderService {
 			}, 0);
 			return orderRevenue + ordersRevenue;
 		}, 0);
-	}
-}
+	};
+};

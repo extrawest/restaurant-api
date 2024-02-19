@@ -14,6 +14,7 @@
 		"skipLibCheck": true,
 		"skipDefaultLibCheck": true,
 		"baseUrl": "./",
+		"strictPropertyInitialization": false,
 		"paths": {
 			"restaurant-api": ["libs/restaurant-api/src/index.ts"],
 			"utils": ["libs/utils/src/index.ts"]
