@@ -1,8 +1,16 @@
 image: node:18
 
 stages:
+  - test
   - build
   - deploy
+
+test:
+  stage: test
+  before_script:
+    - yarn install
+  script:
+    - yarn test:restaurant-api
 
 build:
   stage: build

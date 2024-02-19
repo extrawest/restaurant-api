@@ -11,7 +11,7 @@ import { createTransport } from "nodemailer";
 
 @Injectable()
 export class AuthService {
-	constructor(private usersService: UsersService, private jwtService: JwtService) {}
+	constructor(private usersService: UsersService, private jwtService: JwtService) {};
 	async signIn(email: string, password: string) {
 		const user = await this.usersService.findOneByEmail(email);
 		const isPasswordMatching = await compare(password, user?.password || "");
@@ -22,7 +22,7 @@ export class AuthService {
 		return {
 			access_token: await this.jwtService.signAsync(payload)
 		};
-	}
+	};
 
 	// TODO: add Token model to the DB to store forgot pass tokens
 	async forgotPassword(email: string) {
@@ -32,7 +32,7 @@ export class AuthService {
 		const forgotPasswordToken = this.jwtService.sign(
 			{ _id: user.id },
 			{
-				secret: process.env.FORGOT_PASS_SECRET,
+				secret: process.env["FORGOT_PASS_SECRET"],
 				expiresIn: "30m"
 			}
 		);
@@ -40,8 +40,8 @@ export class AuthService {
 			host: "sandbox.smtp.mailtrap.io",
 			port: 2525,
 			auth: {
-				user: process.env.MAILTRAP_USER,
-				pass: process.env.MAILTRAP_PASSWORD
+				user: process.env["MAILTRAP_USER"],
+				pass: process.env["MAILTRAP_PASSWORD"]
 			}
 		});
 		transport.sendMail({
@@ -53,7 +53,7 @@ export class AuthService {
         <p><b>${forgotPasswordToken}</b></p>
       `
 		});
-	}
+	};
 
 	async resetPassword(newPassword: string, confirmPassword: string, token: string) {
 		const passwordsMathching = newPassword === confirmPassword;
@@ -61,7 +61,7 @@ export class AuthService {
 			throw new HttpException("Passwords do NOT match!", HttpStatus.BAD_REQUEST);
 		try {
 			const { _id } = this.jwtService.verify(token, {
-				secret: process.env.FORGOT_PASS_SECRET
+				secret: process.env["FORGOT_PASS_SECRET"]
 			});
 			if (_id) {
 				const hashedPassword = await hash(newPassword, 10);
@@ -71,6 +71,6 @@ export class AuthService {
 			}
 		} catch {
 			throw new HttpException("Token is not valid or expired", HttpStatus.BAD_REQUEST);
-		}
-	}
-}
+		};
+	};
+};

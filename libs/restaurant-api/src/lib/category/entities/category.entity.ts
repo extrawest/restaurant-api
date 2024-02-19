@@ -2,15 +2,15 @@ import {
 	Table,
 	Column,
 	Model,
-	HasMany
+	// HasMany
 } from "sequelize-typescript";
-import { Product } from "../../product/entities/product.entity";
+// import { Product } from "../../product/entities/product.entity";
 
 @Table
-export class Category extends Model<Category> {
+export class Category extends Model {
 	@Column
 	name: string;
 
-	@HasMany(() => Product)
-	products: Product[];
+	// @HasMany(() => Product)
+	// products: Product[];
 }
