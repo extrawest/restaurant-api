@@ -1,4 +1,8 @@
-import { Inject, Injectable } from "@nestjs/common";
+import {
+	BadRequestException,
+	Inject,
+	Injectable
+} from "@nestjs/common";
 import { CreateCategoryDto } from "./dto/create-category.dto";
 import { UpdateCategoryDto } from "./dto/update-category.dto";
 import { CATEGORIES_REPOSITORY } from "./constants";
@@ -7,8 +11,24 @@ import { Category } from "./entities/category.entity";
 @Injectable()
 export class CategoryService {
 	constructor(@Inject(CATEGORIES_REPOSITORY) private categoriesRepository: typeof Category) {}
-	create(createCategoryDto: CreateCategoryDto) {
-		return this.categoriesRepository.create<Category>(createCategoryDto);
+	async create(createCategoryDto: CreateCategoryDto) {
+		const { name } = createCategoryDto;
+		if (!name?.length) {
+			throw new BadRequestException("EMPTY_CATEGORY_NAME");
+		};
+		return this.findOrCreate(name);
+	}
+
+	findOrCreate(name: string) {
+		return this.categoriesRepository.findOrCreate<Category>({ where: { name } })
+			.then((res) => {
+				const category = res[0];
+				const created = res[1];
+				if (created) {
+					return category;
+				};
+				throw new BadRequestException("CATEGORY_ALREADY_EXISTS");
+			});
 	}
 
 	findAll(): Promise<Category[]> {
@@ -19,11 +39,11 @@ export class CategoryService {
 		return this.categoriesRepository.findOne<Category>({ where: { id } });
 	}
 
-	update(id: number, updateCategoryDto: UpdateCategoryDto): Promise<Category | Error> {
-		return this.categoriesRepository.findOne<Category>({ where: { id } }).then((item) => {
-			if (item) item.update(updateCategoryDto);
-			return new Error("Category not found");
-		});
+	update(id: number, updateCategoryDto: UpdateCategoryDto): Promise<Category | undefined | Error> {
+		return this.categoriesRepository
+			.findOne<Category>({ where: { id } })
+			.then((item) => item?.update(updateCategoryDto))
+			.catch(() => new Error("Category not found"));
 	}
 
 	remove(id: number) {
