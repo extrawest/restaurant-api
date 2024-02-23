@@ -7,3 +7,4 @@ export * from "./lib/user/user.module";
 export * from "./lib/queues/queues.module";
 export * from "./lib/cart/cart.module";
 export * from "./lib/firebase/firebase.module";
+export * from "./lib/chat/chat.module";
