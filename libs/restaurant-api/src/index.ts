@@ -7,3 +7,6 @@ export * from "./lib/user/user.module";
 export * from "./lib/queues/queues.module";
 export * from "./lib/cart/cart.module";
 export * from "./lib/firebase/firebase.module";
+export * from "./lib/stripe/stripe.module";
+export * from "./lib/checkout/checkout.module";
+export * from "./lib/payment/payment.module";

@@ -6,14 +6,20 @@ import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { Role } from "../enums/role.enum";
 import { Maybe } from "utils";
+import { StripeService } from "../stripe/stripe.service";
 
 @Injectable()
 export class UsersService {
-	constructor(@Inject(USERS_REPOSITORY) private usersRepository: typeof User) {}
+	constructor(
+		@Inject(USERS_REPOSITORY) private usersRepository: typeof User,
+		private stripeService: StripeService
+	) {}
 	async create(userData: CreateUserDto) {
+		const stripeCustomer = await this.stripeService.createCustomer(userData.name, userData.email);
 		const hashedPassword = await hash(userData.password, 10);
 		const createdUser = await this.usersRepository.create<User>({
 			...userData,
+			stripeCustomerId: stripeCustomer.id,
 			password: hashedPassword,
 			role: Role.Buyer
 		});

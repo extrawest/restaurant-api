@@ -6,6 +6,8 @@ import { User } from "../user/entities/user.entity";
 import { Order } from "../order/entities/order.entity";
 import { Cart } from "../cart/entities/cart.entity";
 import { CartItem } from "../cart/entities/item.entity";
+import { Payment } from "../payment/entities/payment.entity";
+import { PaymentMethod } from "../payment/entities/payment-method.entity";
 
 export const databaseProviders = [
 	{
@@ -26,7 +28,9 @@ export const databaseProviders = [
 				User,
 				Cart,
 				Order,
-				CartItem
+				CartItem,
+				Payment,
+				PaymentMethod
 			]);
 			await sequelize.sync({ alter: true });
 			return sequelize;
