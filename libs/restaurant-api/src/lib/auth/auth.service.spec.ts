@@ -3,6 +3,8 @@ import { AuthService } from "./auth.service";
 import { UsersService } from "../user/user.service";
 import { JwtService } from "@nestjs/jwt";
 import { USERS_REPOSITORY } from "../user/constants";
+import { StripeService } from "../stripe/stripe.service";
+import { ConfigService } from "@nestjs/config";
 
 describe("AuthService", () => {
 	let service: AuthService;
@@ -13,6 +15,8 @@ describe("AuthService", () => {
 				AuthService,
 				UsersService,
 				JwtService,
+				StripeService,
+				ConfigService,
 				{
 					provide: USERS_REPOSITORY,
 					useValue: jest.fn()
