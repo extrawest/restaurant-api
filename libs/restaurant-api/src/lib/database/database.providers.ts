@@ -1,5 +1,5 @@
-import { Sequelize } from "sequelize-typescript";
 import * as pg from "pg";
+import { Sequelize } from "sequelize-typescript";
 import { Category } from "../category/entities/category.entity";
 import { Product } from "../product/entities/product.entity";
 import { User } from "../user/entities/user.entity";
