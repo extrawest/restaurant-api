@@ -84,8 +84,7 @@ describe("UsersService", () => {
 			expect(result).toBe(user);
 			expect(userRepositoryMock.findOne).toHaveBeenCalledTimes(1);
 			expect(userRepositoryMock.findOne).toHaveBeenCalledWith({
-				where: { email },
-				attributes: { exclude: ["password"] }
+				where: { email }
 			});
 		});
 	});

@@ -15,7 +15,7 @@ export class UsersService {
 		const createdUser = await this.usersRepository.create<User>({
 			...userData,
 			password: hashedPassword,
-			role: Role.Buyer
+			role: userData.role
 		});
 		/* eslint-disable @typescript-eslint/no-unused-vars */
 		const { password, ...userWithoutPassword } = createdUser;
@@ -37,8 +37,7 @@ export class UsersService {
 
 	findOneByEmail(email: string): Promise<Maybe<User>> {
 		return this.usersRepository.findOne<User>({
-			where: { email },
-			attributes: { exclude: ["password"] }
+			where: { email }
 		});
 	}
 

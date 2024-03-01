@@ -17,15 +17,22 @@ import { Role } from "../enums/role.enum";
 import { AuthGuard } from "../auth/auth.guard";
 import { UserDTO } from "./dto/user.dto";
 import { Maybe } from "utils";
+import { User } from "../decorators/user.decorator";
+import { User as UserEntity } from "./entities/user.entity";
 
 @Controller("users")
 export class UsersController {
 	constructor(private readonly usersService: UsersService) {}
 
-	@Roles(Role.Admin)
-	@UseGuards(AuthGuard, RolesGuard)
 	@Post("create")
 	create(@Body() createUserDto: CreateUserDto): Promise<UserDTO> {
+		return this.usersService.create(createUserDto);
+	}
+
+	@Roles(Role.Admin)
+	@UseGuards(AuthGuard, RolesGuard)
+	@Post("create-admin")
+	createAdmin(@Body() createUserDto: CreateUserDto): Promise<UserDTO> {
 		return this.usersService.create(createUserDto);
 	}
 
