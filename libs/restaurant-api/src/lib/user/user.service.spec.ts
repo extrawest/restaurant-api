@@ -2,6 +2,8 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { UsersService } from "./user.service";
 import { USERS_REPOSITORY } from "./constants";
 import { Role } from "../enums/role.enum";
+import { StripeService } from "../stripe/stripe.service";
+import { ConfigService } from "@nestjs/config";
 
 const userRepositoryMock = {
 	create: jest.fn(),
@@ -11,26 +13,29 @@ const userRepositoryMock = {
 
 const user = {
 	name: "name",
-	email: "email",
+	email: "email@domain.com",
 	password: "pass",
 	role: Role.Buyer,
 };
 
 describe("UsersService", () => {
 	let service: UsersService;
+	let stripeService: StripeService;
 
 	beforeEach(async () => {
 		jest.resetAllMocks();
 		const module: TestingModule = await Test.createTestingModule({
 			providers: [
 				UsersService,
+				StripeService,
+				ConfigService,
 				{
 					provide: USERS_REPOSITORY,
 					useValue: userRepositoryMock
 				}
 			]
 		}).compile();
-
+		stripeService = module.get<StripeService>(StripeService);
 		service = module.get<UsersService>(UsersService);
 	});
 
@@ -40,6 +45,7 @@ describe("UsersService", () => {
 		});
 
 		it("should create new user", async () => {
+			jest.spyOn(stripeService, "createCustomer").mockResolvedValueOnce({ id: "someId" } as any);
 			userRepositoryMock.create.mockResolvedValueOnce(user);
 			const result = await service.create(user);
 			/* eslint-disable @typescript-eslint/no-unused-vars */
