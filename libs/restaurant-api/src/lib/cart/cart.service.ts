@@ -1,4 +1,8 @@
-import { Inject, Injectable } from "@nestjs/common";
+import {
+	BadRequestException,
+	Inject,
+	Injectable
+} from "@nestjs/common";
 import { CART_REPOSITORY } from "./constants";
 import { Cart } from "./entities/cart.entity";
 import { ItemDto } from "./dto/item.dto";
@@ -20,7 +24,11 @@ export class CartService {
 	}
 
 	getCart(userId: number) {
-		return this.cartRepository.findOne({ where: { userId } });
+		const cart = this.cartRepository.findOne({ where: { userId } });
+		if (!cart) {
+			throw new BadRequestException("CART_NOT_FOUND");
+		};
+		return cart;
 	}
 
 	deleteCart(userId: number) {
@@ -34,7 +42,7 @@ export class CartService {
 		});
 	}
 
-	async addItemToCart(userId: number, itemDto: CartItem) {
+	async addItemToCart(userId: number, itemDto: ItemDto) {
 		const { productId, quantity, price } = itemDto;
 		const cart = await this.getCart(userId);
 
@@ -49,7 +57,7 @@ export class CartService {
 				this.recalculateCart(cart);
 				return cart.save();
 			} else {
-				cart.items.push(itemDto);
+				cart.items.push(itemDto as CartItem);
 				this.recalculateCart(cart);
 				return cart.save();
 			}

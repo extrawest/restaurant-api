@@ -7,7 +7,7 @@ import {
 import { Product } from "../../product/entities/product.entity";
 
 @Table
-export class CartItem extends Model<CartItem> {
+export class OrderItem extends Model {
 	@ForeignKey(() => Product)
 	@Column
 	productId: number;

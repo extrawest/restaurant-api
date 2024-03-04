@@ -20,6 +20,9 @@ export class Payment extends Model {
 	amount!: number;
 
 	@Column
+	status: string;
+
+	@Column
 	stripeCustomerId!: string;
 
 	@ForeignKey(() => PaymentMethod)

@@ -8,6 +8,7 @@ import { Cart } from "../cart/entities/cart.entity";
 import { CartItem } from "../cart/entities/item.entity";
 import { Op } from "sequelize";
 import { Status } from "../enums/order.enum";
+import { OrderItem } from "./entities/order-item.entity";
 
 const ordersRepositoryMock = {
 	create: jest.fn(),
@@ -23,21 +24,18 @@ const category = {
 	name: "Category",
 };
 
-const product = {
+const orderItem = {
 	id: 1,
 	name: "Product 1",
 	price: 1,
-	currency: "USD",
-	categoryId: 1,
-	orderId: 1,
+	productId: 1,
 	quantity: 1,
-	image: "image",
-	category,
 };
 
 const order = {
 	userId: 1,
-	products: [product as Product]
+	items: [orderItem as unknown as OrderItem],
+	paymentId: "dsad"
 };
 
 const cart = {
@@ -49,7 +47,7 @@ const cart = {
 		quantity: 10,
 		price: 2,
 		cartId: 1
-	}] as CartItem[]
+	}] as CartItem[],
 };
 
 describe("OrderService", () => {
@@ -103,7 +101,7 @@ describe("OrderService", () => {
 
 		it("shouldn't create order, should throw CART_IS_EMPTY", async () => {
 			const cartFindOneSpy = jest.spyOn(cartService, "getCart").mockResolvedValueOnce(cart as Cart);
-			const orderResult = orderService.create({ ...order, products: [] });
+			const orderResult = orderService.create({ ...order, items: [] });
 			expect(ordersRepositoryMock.create).toHaveBeenCalledTimes(0);
 			expect(cartFindOneSpy).toHaveBeenCalledTimes(1);
 			expect(cartFindOneSpy).toHaveBeenCalledWith(cart.userId);
@@ -113,15 +111,15 @@ describe("OrderService", () => {
 
 	describe("find method", () => {
 		it("should find all", async () => {
-			ordersRepositoryMock.findAll.mockResolvedValueOnce([product]);
+			ordersRepositoryMock.findAll.mockResolvedValueOnce([orderItem]);
 			const result = await orderService.findAll();
 			expect(ordersRepositoryMock.findAll).toHaveBeenCalledTimes(1);
-			expect(result).toEqual([product]);
+			expect(result).toEqual([orderItem]);
 			expect(result.length).toBe(1);
 		});
 
 		it("should find all with date range", async () => {
-			ordersRepositoryMock.findAll.mockResolvedValueOnce([product]);
+			ordersRepositoryMock.findAll.mockResolvedValueOnce([orderItem]);
 			const fromDate = new Date().toLocaleDateString();
 			const toDate = new Date(new Date().getTime() + 86400000).toLocaleDateString();
 			const result = await orderService.findAll(
@@ -141,7 +139,7 @@ describe("OrderService", () => {
 					})
 				}
 			});
-			expect(result).toEqual([product]);
+			expect(result).toEqual([orderItem]);
 			expect(result.length).toBe(1);
 		});
 

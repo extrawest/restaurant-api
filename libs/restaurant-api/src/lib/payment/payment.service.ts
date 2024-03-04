@@ -55,11 +55,14 @@ export class PaymentService {
 	// PAYMENTS
 	async charge(amount: number, paymentMethodId: string, customerId: string) {
 		const stripeCharge = await this.stripeService.charge(amount, paymentMethodId, customerId);
-		return this.paymentRepository.create({
-			amount: stripeCharge.amount,
-			paymentMethodId: stripeCharge.payment_method,
-			customerId: stripeCharge.customer
-		});
+		if (stripeCharge) {
+			return this.paymentRepository.create({
+				amount: stripeCharge.amount,
+				paymentMethodId: stripeCharge.payment_method,
+				customerId: stripeCharge.customer,
+				status: stripeCharge.status,
+			});
+		}
 	}
 
 	getCustomerPayments(stripeCustomerId: string) {

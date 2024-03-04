@@ -86,6 +86,8 @@ export class StripeService {
 			payment_method: paymentMethodId,
 			currency: "usd",
 			confirm: true
+		}).catch((err) => {
+			throw new Error(err);
 		});
 	}
 

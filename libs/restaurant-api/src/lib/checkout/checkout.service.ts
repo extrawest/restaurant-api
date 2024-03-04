@@ -1,26 +1,46 @@
-import { Injectable } from "@nestjs/common";
-import { CreateCheckoutDto } from "./dto/create-checkout.dto";
-import { UpdateCheckoutDto } from "./dto/update-checkout.dto";
+import {
+	BadRequestException,
+	HttpStatus,
+	Injectable
+} from "@nestjs/common";
+import { CartService } from "../cart/cart.service";
+import { ProducerService } from "../queues/queues.producer";
+import { PaymentService } from "../payment/payment.service";
 
 @Injectable()
 export class CheckoutService {
-	create(createCheckoutDto: CreateCheckoutDto) {
-		return "This action adds a new checkout";
-	}
-
-	findAll() {
-		return `This action returns all checkout`;
-	}
-
-	findOne(id: number) {
-		return `This action returns a #${id} checkout`;
-	}
-
-	update(id: number, updateCheckoutDto: UpdateCheckoutDto) {
-		return `This action updates a #${id} checkout`;
-	}
-
-	remove(id: number) {
-		return `This action removes a #${id} checkout`;
+	constructor(
+		private readonly cartService: CartService,
+		private readonly queueProducerService: ProducerService,
+		private readonly paymentService: PaymentService,
+	) {}
+	async checkout(paymentMethodId: string, userId: number, stripeCustomerId: string) {
+		const userCart = await this.cartService.getCart(userId);
+		if (userCart) {
+			const { items, totalPrice } = userCart;
+			if (items?.length && totalPrice) {
+				try {
+					const payment = await this.paymentService.charge(totalPrice, paymentMethodId, stripeCustomerId);
+					if (payment) {
+						await this.queueProducerService.addToOrdersQueue({
+							userId,
+							items: userCart.items,
+							paymentId: payment.id
+						});
+						await this.cartService.deleteCart(userId);
+					};
+				} catch {
+					throw new Error();
+				}
+				return {
+					status: HttpStatus.OK,
+					message: "PAYMENT_SUCCESSFULLY_CREATED"
+				};
+			} else {
+				throw new BadRequestException("CART_IS_EMPTY");
+			};
+		} else {
+			throw new BadRequestException("CART_NOT_FOUND");
+		};
 	}
 }

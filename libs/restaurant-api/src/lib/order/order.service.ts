@@ -7,27 +7,28 @@ import { Product } from "../product/entities/product.entity";
 import { UpdateOrderDto } from "./dto/update-order.dto";
 import { Op } from "sequelize";
 import { StatisticsFields } from "../enums/order.enum";
+import { OrderItem } from "./entities/order-item.entity";
 
 @Injectable()
 export class OrderService {
 	constructor(@Inject(ORDERS_REPOSITORY) private ordersRepository: typeof Order, private cartService: CartService) {};
 
 	async create(order: CreateOrderDto): Promise<Order> {
-		const { userId, products } = order;
+		const { userId, items } = order;
 		const cart = await this.cartService.getCart(userId);
 		if (!cart) {
 			throw new Error("CART_NOT_FOUND");
 		};
-		if (!products.length) {
+		if (!items.length) {
 			throw new Error("CART_IS_EMPTY");
 		};
-		return this.ordersRepository.create<Order>({ ...order }, { include: [Product] });
+		return this.ordersRepository.create<Order>({ ...order }, { include: [OrderItem] });
 	};
 	// TODO: response type
 	getOrderById(orderId: number): Promise<Order | null> | Error {
 		const order = this.ordersRepository.findOne({
 			where: { id: orderId },
-			include: [Product]
+			include: [OrderItem]
 		});
 		if (!order) {
 			return new Error("ORDER_NOT_FOUND");
@@ -54,13 +55,13 @@ export class OrderService {
 	getOrdersByUserId(userId: number): Promise<Order[]> {
 		return this.ordersRepository.findAll({
 			where: { userId },
-			include: [Product]
+			include: [OrderItem]
 		});
 	};
 
 	update(orderId: number, updateOrderDto: UpdateOrderDto): Promise<Order> {
 		return this.ordersRepository
-			.findOne<Order>({ where: { id: orderId }, include: [Product] })
+			.findOne<Order>({ where: { id: orderId }, include: [OrderItem] })
 			.then((item) => {
 				if (item) {
 					return item.update(updateOrderDto);
@@ -90,7 +91,7 @@ export class OrderService {
 
 	private calculateTotalRevenue(orders: Order[]) {
 		return orders.reduce((ordersRevenue, order: Order) => {
-			const orderRevenue = order.products.reduce((productsRevenue, product) => {
+			const orderRevenue = order.items.reduce((productsRevenue, product) => {
 				return product.price + productsRevenue;
 			}, 0);
 			return orderRevenue + ordersRevenue;
