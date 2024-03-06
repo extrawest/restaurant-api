@@ -46,7 +46,6 @@ const cart = {
 		name: "Name",
 		quantity: 10,
 		price: 2,
-		cartId: 1
 	}] as CartItem[],
 };
 

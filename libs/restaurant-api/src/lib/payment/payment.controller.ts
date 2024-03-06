@@ -20,7 +20,6 @@ import { User } from "../decorators/user.decorator";
 export class PaymentController {
 	constructor(private readonly paymentService: PaymentService) {}
 
-	// TODO: save payment methods in the DB
 	@UseGuards(AuthGuard)
 	@Roles(Role.Buyer)
 	@Post("payment-method/create-and-attach")
@@ -52,7 +51,6 @@ export class PaymentController {
 		return this.paymentService.getCustomerPaymentMethod(user.stripeCustomerId, paymentMethodId);
 	}
 
-	// TODO: save payment in the DB
 	@UseGuards(AuthGuard)
 	@Roles(Role.Buyer)
 	@Post("charge")
@@ -74,10 +72,10 @@ export class PaymentController {
 
 	@Get("payments")
 	getPayments(
-		@Query("query") query?: string,
-		@Query("limit") limit?: number,
-		@Query("page") page?: string,
+		@Query("limit") limit: number,
+		@Query("page") offset: number,
+		@Query("stripeCustomerId") stripeCustomerId?: string,
 	) {
-		return this.paymentService.getPayments(query, limit, page);
+		return this.paymentService.getPayments(limit, offset, stripeCustomerId);
 	}
 }

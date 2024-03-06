@@ -30,4 +30,7 @@ export class PaymentMethod extends Model {
 
 	@Column
 	stripePaymentMethodId: string;
+
+	@Column
+	stripeCustomerId: string;
 }

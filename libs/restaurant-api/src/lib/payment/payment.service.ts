@@ -18,34 +18,23 @@ export class PaymentService {
 		type: string,
 		additional_info: {[key: string]: any}
 	) {
-		try {
-			const stripePaymentMethod = await this.stripeService.createAndSaveCustomerPaymentMethod(
-				stripeCustomerId,
-				type,
-				additional_info
-			);
-			this.paymentMethodsRepository.create({
-				type: type,
-				additional_info,
-				stripePaymentMethodId: stripePaymentMethod.id
-			});
-		} catch(e) {
-			console.log(e);
-		}
+		const stripePaymentMethod = await this.stripeService.createAndSaveCustomerPaymentMethod(
+			stripeCustomerId,
+			type,
+			additional_info
+		);
+		return this.paymentMethodsRepository.create({
+			stripeCustomerId: stripeCustomerId,
+			type: stripePaymentMethod.type,
+			additional_info,
+			stripePaymentMethodId: stripePaymentMethod.id
+		});
 	}
 
-	getCustomerPaymentMethods(
-		customerId: string,
-		limit?: number,
-		starting_after?: string,
-		ending_before?: string
-	) {
-		return this.stripeService.getCustomerPaymentMethods(
-			customerId,
-			limit,
-			starting_after,
-			ending_before
-		);
+	getCustomerPaymentMethods(customerId: string) {
+		return this.paymentMethodsRepository.findAll({
+			where: { customerId }
+		});
 	}
 
 	getCustomerPaymentMethod(customerId: string, paymentMethodId: string) {
@@ -55,21 +44,25 @@ export class PaymentService {
 	// PAYMENTS
 	async charge(amount: number, paymentMethodId: string, customerId: string) {
 		const stripeCharge = await this.stripeService.charge(amount, paymentMethodId, customerId);
-		if (stripeCharge) {
-			return this.paymentRepository.create({
-				amount: stripeCharge.amount,
-				paymentMethodId: stripeCharge.payment_method,
-				customerId: stripeCharge.customer,
-				status: stripeCharge.status,
-			});
-		}
+		return this.paymentRepository.create({
+			amount: stripeCharge.amount,
+			paymentMethodId: stripeCharge.payment_method,
+			customerId: stripeCharge.customer,
+			status: stripeCharge.status,
+		});
 	}
 
 	getCustomerPayments(stripeCustomerId: string) {
 		return this.paymentRepository.findAll({ where: { customerId: stripeCustomerId }});
 	}
 
-	getPayments(query?: string, limit?: number, page?: string) {
-		return this.stripeService.paymentsSearch(query || "", limit, page);
+	getPayments(limit: number, offset: number, stripeCustomerId?: string) {
+		return this.paymentRepository.findAndCountAll({
+			offset,
+			limit,
+			...(stripeCustomerId && ({
+				where: { stripeCustomerId }
+			}))
+		});
 	}
 }

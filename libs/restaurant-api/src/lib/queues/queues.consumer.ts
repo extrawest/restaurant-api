@@ -13,9 +13,9 @@ export class ConsumerService implements OnModuleInit {
 	private channelWrapper: ChannelWrapper;
 	private readonly logger = new Logger(ConsumerService.name);
 	constructor(private ordersService: OrderService) {
-		const rabbitUser = process.env.RABBITMQ_DEFAULT_USER;
-		const rabbitPassword = process.env.RABBITMQ_DEFAULT_PASS;
-		const rabbitHost = process.env.RABBITMQ_HOST;
+		const rabbitUser = process.env["RABBITMQ_DEFAULT_USER"];
+		const rabbitPassword = process.env["RABBITMQ_DEFAULT_PASS"];
+		const rabbitHost = process.env["RABBITMQ_HOST"];
 		const connection = amqp.connect([`amqp://${rabbitUser}:${rabbitPassword}@${rabbitHost}`]);
 		this.channelWrapper = connection.createChannel();
 	}

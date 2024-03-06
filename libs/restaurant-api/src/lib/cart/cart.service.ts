@@ -67,19 +67,19 @@ export class CartService {
 				itemDto,
 				price
 			);
-		}
+		};
 	}
 
 	async removeItemFromCart(userId: number, productId: number): Promise<Cart> {
 		const cart = await this.getCart(userId);
 
 		if (!cart) {
-			throw new Error("Cart not found");
+			throw new Error("CART_NOT_FOUND");
 		}
 		const itemIndex = cart?.items.findIndex((item) => item.productId == productId);
 
 		if (!itemIndex || itemIndex < 0) {
-			throw new Error("Product in the cart not found");
+			throw new Error("CART_ITEM_NOT_FOUND");
 		}
 		cart?.items.splice(itemIndex, 1);
 		return cart?.save();

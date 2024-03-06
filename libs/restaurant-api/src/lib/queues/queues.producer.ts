@@ -12,9 +12,9 @@ import { CreateOrderDto } from "../order/dto/create-order.dto";
 export class ProducerService {
 	private channelWrapper: ChannelWrapper;
 	constructor() {
-		const rabbitUser = process.env.RABBITMQ_DEFAULT_USER;
-		const rabbitPassword = process.env.RABBITMQ_DEFAULT_PASS;
-		const rabbitHost = process.env.RABBITMQ_HOST;
+		const rabbitUser = process.env["RABBITMQ_DEFAULT_USER"];
+		const rabbitPassword = process.env["RABBITMQ_DEFAULT_PASS"];
+		const rabbitHost = process.env["RABBITMQ_HOST"];
 		const connection = amqp.connect([`amqp://${rabbitUser}:${rabbitPassword}@${rabbitHost}`]);
 		this.channelWrapper = connection.createChannel({
 			setup: (channel: Channel) => {
