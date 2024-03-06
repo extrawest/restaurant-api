@@ -83,7 +83,7 @@ describe("OrderService", () => {
 			expect(cartFindOneSpy).toHaveBeenCalledTimes(1);
 			expect(ordersRepositoryMock.create).toHaveBeenCalledWith(
 				order,
-				{ include: [Product] }
+				{ include: [OrderItem] }
 			);
 			expect(cartFindOneSpy).toHaveBeenCalledWith(cart.userId);
 			expect(orderResult).toBe(order);
@@ -151,7 +151,7 @@ describe("OrderService", () => {
 				where: {
 					id: orderId
 				},
-				include: [Product]
+				include: [OrderItem]
 			});
 			expect(result).toEqual(order);
 		});
@@ -165,7 +165,7 @@ describe("OrderService", () => {
 				where: {
 					userId
 				},
-				include: [Product]
+				include: [OrderItem]
 			});
 			expect(result).toEqual([order]);
 		});
@@ -190,7 +190,7 @@ describe("OrderService", () => {
 				expect(ordersRepositoryMock.findOne).toHaveBeenCalledTimes(1);
 				expect(ordersRepositoryMock.findOne).toHaveBeenCalledWith({
 					where: { id: orderId },
-					include: [Product]
+					include: [OrderItem]
 				});
 				expect(orderFindOneMock.update).toHaveBeenCalledTimes(1);
 				expect(orderFindOneMock.update).toHaveBeenCalledWith({
