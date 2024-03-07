@@ -6,7 +6,7 @@ import { Maybe } from "utils";
 
 @Injectable()
 export class RoomService {
-	constructor(@InjectModel(Room.name) private roomRepository: Model<Room>) {};
+	constructor(@InjectModel(Room.name, "restaurant-chat") private roomRepository: Model<Room>) {};
 
 	async createPrivateRoom(senderId: number, receiverId: number): Promise<Room> {
 		// create room name and make sure the name always the same for both members

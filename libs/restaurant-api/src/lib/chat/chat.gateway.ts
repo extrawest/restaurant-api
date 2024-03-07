@@ -6,32 +6,28 @@ import {
 	ConnectedSocket,
 } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
+import { UseGuards } from "@nestjs/common";
 import { ChatService } from "./chat.service";
-import { JwtService } from "@nestjs/jwt";
-import { ConfigService } from "@nestjs/config";
+import { WsJwtAuthGuard } from "./auth.guard";
+import { User } from "../decorators/user.decorator";
+import { User as UserEntity } from "../user/entities/user.entity";
 
 @WebSocketGateway()
 export class ChatGateway {
 	@WebSocketServer()
 	server: Server;
 
-	constructor(
-		private jwtService: JwtService,
-		private configService: ConfigService,
-		private readonly chatService: ChatService,
-	) {}
+	constructor(private readonly chatService: ChatService) {}
 
+	@UseGuards(WsJwtAuthGuard)
 	@SubscribeMessage("message")
 	async handleMessage(
 		@ConnectedSocket() socket: Socket,
 		@MessageBody() messagePayload: { data : { content: string, roomId: string }},
+		@User() user: UserEntity
 	) {
 		const { data } = messagePayload;
-		const token = socket.handshake.headers["access_token"] as string;
-		const payload = await this.jwtService.verifyAsync(token, {
-			secret: this.configService.get<string>("JWT_SECRET")
-		});
-		const userId = payload.id;
+		const userId = user.id;
 		const message = await this.chatService.saveMessage(data.content, userId, data.roomId);
 
 		socket.to(`room:${data.roomId}`).emit("message", {
@@ -40,6 +36,7 @@ export class ChatGateway {
 		});
 	};
 
+	@UseGuards(WsJwtAuthGuard)
 	@SubscribeMessage("join-room")
 	async joinRoom(
 		@ConnectedSocket() socket: Socket,

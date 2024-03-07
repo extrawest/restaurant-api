@@ -7,7 +7,7 @@ import { RoomService } from "./room.service";
 @Injectable()
 export class ChatService {
 	constructor(
-		@InjectModel(Message.name) private messagesRepository: Model<Message>,
+		@InjectModel(Message.name, "restaurant-chat") private messagesRepository: Model<Message>,
 		private readonly roomService: RoomService,
 	) {};
 
