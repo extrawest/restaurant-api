@@ -1,5 +1,9 @@
 import { hash } from "bcrypt";
-import { Inject, Injectable } from "@nestjs/common";
+import {
+	Inject,
+	Injectable,
+	UnauthorizedException
+} from "@nestjs/common";
 import { USERS_REPOSITORY } from "./constants";
 import { User } from "./entities/user.entity";
 import { CreateUserDto } from "./dto/create-user.dto";
@@ -10,12 +14,15 @@ import { Maybe } from "utils";
 @Injectable()
 export class UsersService {
 	constructor(@Inject(USERS_REPOSITORY) private usersRepository: typeof User) {}
-	async create(userData: CreateUserDto) {
+	async create(userData: CreateUserDto, user?: User) {
+		if (userData.role === Role.Admin && user?.role !== Role.Admin) {
+			throw new UnauthorizedException("CURRENT_USER_DOESN'T_HAVE_PERMISSIONS_TO_CREATE_ADMIN");
+		};
 		const hashedPassword = await hash(userData.password, 10);
 		const createdUser = await this.usersRepository.create<User>({
 			...userData,
 			password: hashedPassword,
-			role: userData.role
+			role: user?.role === Role.Admin ? userData.role : Role.Buyer
 		});
 		/* eslint-disable @typescript-eslint/no-unused-vars */
 		const { password, ...userWithoutPassword } = createdUser;
