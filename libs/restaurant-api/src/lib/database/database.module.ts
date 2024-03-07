@@ -8,6 +8,7 @@ import { databaseProviders } from "./database.providers";
 			`mongodb://${process.env.MONGO_HOST}:${process.env.MONGO_PORT}`,
 			{
 				dbName: "restaurant-chat",
+				connectionName: "restaurant-chat",
 				auth: {
 					username: process.env.MONGO_INITDB_ROOT_USERNAME,
 					password: process.env.MONGO_INITDB_ROOT_PASSWORD,
