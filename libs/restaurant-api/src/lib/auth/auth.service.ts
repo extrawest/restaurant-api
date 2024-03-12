@@ -8,6 +8,8 @@ import {
 } from "@nestjs/common";
 import { UsersService } from "../user/user.service";
 import { createTransport } from "nodemailer";
+import { Maybe } from "utils";
+import { User } from "../user/entities/user.entity";
 
 @Injectable()
 export class AuthService {
@@ -17,10 +19,14 @@ export class AuthService {
 		const isPasswordMatching = await compare(password, user?.password || "");
 		if (!isPasswordMatching) {
 			throw new UnauthorizedException();
-		}
-		const payload = { id: user?.id, email: user?.email, role: user?.role };
+		};
+		const access_token_cookie = await this.getCookieWithJwtAccessToken(user);
+		const refresh_token = await this.getCookieWithJwtRefreshToken(user);
+		const currentUser = this.usersService.setCurrentRefreshToken(refresh_token.token, user?.id);
 		return {
-			access_token: await this.jwtService.signAsync(payload)
+			access_token_cookie,
+			refresh_token,
+			user: currentUser,
 		};
 	};
 
@@ -49,9 +55,9 @@ export class AuthService {
 			to: email,
 			subject: `Password Reset`,
 			html: `
-        <h3>Token:</>
-        <p><b>${forgotPasswordToken}</b></p>
-      `
+				<h3>Token:</>
+				<p><b>${forgotPasswordToken}</b></p>
+			`
 		});
 	};
 
@@ -73,4 +79,45 @@ export class AuthService {
 			throw new HttpException("Token is not valid or expired", HttpStatus.BAD_REQUEST);
 		};
 	};
+
+	async refreshToken(refreshToken: string, userEmail: string) {
+		const user = await this.usersService.findOneByEmail(userEmail);
+		const isRefreshTokenMatching = await compare(
+			refreshToken,
+			user?.currentHashedRefreshToken as string,
+		);
+		if (!isRefreshTokenMatching) {
+			throw new UnauthorizedException();
+		};
+		const access_token_cookie = await this.getCookieWithJwtAccessToken(user);
+		const refresh_token = await this.getCookieWithJwtRefreshToken(user);
+		const currentUser = this.usersService.setCurrentRefreshToken(refresh_token.token, user?.id);
+		return {
+			access_token_cookie,
+			refresh_token,
+			user: currentUser
+		};
+	};
+
+	async getCookieWithJwtAccessToken(user: Maybe<User>) {
+		const payload = { id: user?.id, email: user?.email, role: user?.role };
+		const token = this.jwtService.sign(payload, {
+			secret: process.env["JWT_SECRET"],
+			expiresIn: "1d"
+		});
+		return `Authentication=${token}; HttpOnly; Path=/; Max-Age=1d`;
+	}
+ 
+	async getCookieWithJwtRefreshToken(user: Maybe<User>) {
+		const payload = { id: user?.id, email: user?.email, role: user?.role };
+		const token = this.jwtService.sign(payload, {
+			secret: process.env["JWT_SECRET"],
+			expiresIn: "7d"
+		});
+		const cookie = `Refresh=${token}; HttpOnly; Path=/; Max-Age=1d`;
+		return {
+			cookie,
+			token
+		};
+	}
 };

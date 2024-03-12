@@ -22,4 +22,7 @@ export class User extends Model {
 		type: DataType.ENUM(...Object.values(Role))
 	})
 	role: Role;
+
+	@Column
+	currentHashedRefreshToken?: string;
 }
