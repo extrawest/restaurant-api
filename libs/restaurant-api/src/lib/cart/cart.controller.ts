@@ -11,13 +11,17 @@ import {
 import { CartService } from "./cart.service";
 import { Roles } from "../auth/roles.decorator";
 import { Role } from "../enums/role.enum";
-import { AuthGuard } from "../auth/auth.guard";
+import { AuthGuard } from "../auth";
 import { RolesGuard } from "../auth/roles.guard";
 import { User } from "../decorators/user.decorator";
 import { User as UserEntity } from "../user/entities/user.entity";
 import { CartDTO } from "./dto/cart.dto";
 import { ItemDto } from "./dto/item.dto";
-import { CartItem } from "./entities/item.entity";
+import {
+	CART_DOESNT_EXIST,
+	CART_WAS_DELETED,
+	CART_WAS_NOT_DELETED
+} from "shared";
 
 @Controller("cart")
 export class CartController {
@@ -45,7 +49,7 @@ export class CartController {
 	async removeItemFromCart(@User() user: UserEntity, @Body() productId: number): Promise<CartDTO> {
 		const userId = user.id;
 		const cart = await this.cartService.removeItemFromCart(userId, productId);
-		if (!cart) throw new NotFoundException("CART_DOESNT_EXIST");
+		if (!cart) throw new NotFoundException(CART_DOESNT_EXIST);
 		return cart;
 	}
 
@@ -58,12 +62,12 @@ export class CartController {
 		if (cart) {
 			return {
 				status: HttpStatus.OK,
-				message: "CART_WAS_DELETED"
+				message: CART_WAS_DELETED
 			};
 		} else {
 			return {
 				status: HttpStatus.BAD_REQUEST,
-				message: "CART_WASN'T_DELETED"
+				message: CART_WAS_NOT_DELETED
 			};
 		};
 	}

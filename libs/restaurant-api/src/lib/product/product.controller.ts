@@ -15,7 +15,7 @@ import { UpdateProductDto } from "./dto/update-product.dto";
 import { Roles } from "../auth/roles.decorator";
 import { Role } from "../enums/role.enum";
 import { RolesGuard } from "../auth/roles.guard";
-import { AuthGuard } from "../auth/auth.guard";
+import { AuthGuard } from "../auth/guards/auth.guard";
 import { ProductDTO } from "./dto/product.dto";
 import { Maybe } from "utils";
 

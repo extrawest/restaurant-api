@@ -14,7 +14,7 @@ import { UpdateUserDto } from "./dto/update-user.dto";
 import { RolesGuard } from "../auth/roles.guard";
 import { Roles } from "../auth/roles.decorator";
 import { Role } from "../enums/role.enum";
-import { AuthGuard } from "../auth/auth.guard";
+import { AuthGuard } from "../auth/guards/auth.guard";
 import { UserDTO } from "./dto/user.dto";
 import { Maybe } from "utils";
 import { User } from "../decorators/user.decorator";

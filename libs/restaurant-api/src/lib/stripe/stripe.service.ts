@@ -5,6 +5,7 @@ import {
 	Injectable
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
+import { PAYMENT_METHOD_WAS_NOT_ATTACHED, PLEASE_PROVIDE_A_VALID_METHOD_TYPE } from "shared";
 
 @Injectable()
 export class StripeService {
@@ -40,7 +41,7 @@ export class StripeService {
 			} else {
 				throw new HttpException({
 					status: HttpStatus.INTERNAL_SERVER_ERROR,
-					error: "Please provide a valid method type"
+					error: PLEASE_PROVIDE_A_VALID_METHOD_TYPE
 				}, HttpStatus.INTERNAL_SERVER_ERROR);
 			};
 			if (paymentMethod) {
@@ -50,7 +51,7 @@ export class StripeService {
 			} else {
 				throw new HttpException({
 					status: HttpStatus.INTERNAL_SERVER_ERROR,
-					error: "Payment method wasn't attached"
+					error: PAYMENT_METHOD_WAS_NOT_ATTACHED
 				}, HttpStatus.INTERNAL_SERVER_ERROR);
 			};
 			return paymentMethod;

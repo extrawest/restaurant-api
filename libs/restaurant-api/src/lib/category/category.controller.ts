@@ -14,7 +14,7 @@ import { UpdateCategoryDto } from "./dto/update-category.dto";
 import { Roles } from "../auth/roles.decorator";
 import { Role } from "../enums/role.enum";
 import { RolesGuard } from "../auth/roles.guard";
-import { AuthGuard } from "../auth/auth.guard";
+import { AuthGuard } from "../auth";
 import { CategoryDTO } from "./dto/category.dto";
 import { Maybe } from "utils";
 

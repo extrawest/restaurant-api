@@ -8,6 +8,11 @@ import { UpdateCategoryDto } from "./dto/update-category.dto";
 import { CATEGORIES_REPOSITORY } from "./constants";
 import { Category } from "./entities/category.entity";
 import { Maybe } from "utils";
+import {
+	CATEGORY_ALREADY_EXISTS,
+	CATEGORY_NOT_FOUND,
+	EMPTY_CATEGORY_NAME
+} from "shared";
 
 @Injectable()
 export class CategoryService {
@@ -15,7 +20,7 @@ export class CategoryService {
 	async create(createCategoryDto: CreateCategoryDto) {
 		const { name } = createCategoryDto;
 		if (!name?.length) {
-			throw new BadRequestException("EMPTY_CATEGORY_NAME");
+			throw new BadRequestException(EMPTY_CATEGORY_NAME);
 		};
 		return this.findOrCreate(name);
 	}
@@ -28,7 +33,7 @@ export class CategoryService {
 				if (created) {
 					return category;
 				};
-				throw new BadRequestException("CATEGORY_ALREADY_EXISTS");
+				throw new BadRequestException(CATEGORY_ALREADY_EXISTS);
 			});
 	}
 
@@ -45,7 +50,7 @@ export class CategoryService {
 		if (category) {
 			return category?.update(updateCategoryDto);
 		};
-		throw new BadRequestException("Category not found");
+		throw new BadRequestException(CATEGORY_NOT_FOUND);
 	}
 
 	remove(id: number) {

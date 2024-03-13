@@ -2,6 +2,11 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { CategoryService } from "./category.service";
 import { CATEGORIES_REPOSITORY } from "./constants";
 import { BadRequestException } from "@nestjs/common";
+import {
+	CATEGORY_ALREADY_EXISTS,
+	CATEGORY_NOT_FOUND,
+	EMPTY_CATEGORY_NAME
+} from "shared";
 
 const categoryRepositoryMock = {
 	create: jest.fn(),
@@ -45,19 +50,19 @@ describe("CategoryService", () => {
 
 		it("shouldn't create duplicate", async () => {
 			categoryRepositoryMock.findOrCreate.mockRejectedValueOnce(
-				new BadRequestException("CATEGORY_ALREADY_EXISTS")
+				new BadRequestException(CATEGORY_ALREADY_EXISTS)
 			);
 			
 			expect(service.create({ name: "Fish" }))
 				.rejects
-				.toThrow(new BadRequestException("CATEGORY_ALREADY_EXISTS"));
+				.toThrow(new BadRequestException(CATEGORY_ALREADY_EXISTS));
 			expect(categoryRepositoryMock.findOrCreate).toHaveBeenCalledTimes(1);
 		});
 
 		it("should handle empty name", async () => {			
 			expect(service.create({ name: "" }))
 				.rejects
-				.toThrow(new BadRequestException("EMPTY_CATEGORY_NAME"));
+				.toThrow(new BadRequestException(EMPTY_CATEGORY_NAME));
 			expect(categoryRepositoryMock.findOrCreate).toHaveBeenCalledTimes(0);
 		});
 	});
@@ -119,7 +124,7 @@ describe("CategoryService", () => {
 			const newName = "New Name";
 			categoryRepositoryMock.findOne.mockRejectedValueOnce(new Error());
 			const result = await service.update(1, { name: newName });
-			expect(result).toEqual(new Error("Category not found"));
+			expect(result).toEqual(new Error(CATEGORY_NOT_FOUND));
 			expect(categoryRepositoryMock.findOne).toHaveBeenCalledTimes(1);
 		});
 	});
