@@ -17,6 +17,7 @@
 		"strictPropertyInitialization": false,
 		"paths": {
 			"restaurant-api": ["libs/restaurant-api/src/index.ts"],
+			"shared": ["libs/shared/src/index.ts"],
 			"utils": ["libs/utils/src/index.ts"]
 		},
 		"types": ["node", "express", "multer"]

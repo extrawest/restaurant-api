@@ -65,4 +65,9 @@ export class UsersService {
 	remove(id: number) {
 		return this.usersRepository.destroy({ where: { id } });
 	}
+
+	async setCurrentRefreshToken(refreshToken: string, userId: number) {
+		const currentHashedRefreshToken = await hash(refreshToken, 10);
+		this.update(userId, { currentHashedRefreshToken });
+	}
 }
