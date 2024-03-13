@@ -19,7 +19,7 @@ export class AuthService {
 			throw new UnauthorizedException();
 		}
 		const payload = {
-			sub: user?.id,
+			id: user?.id,
 			email: user?.email,
 			role: user?.role,
 			stripeCustomerId: user?.stripeCustomerId

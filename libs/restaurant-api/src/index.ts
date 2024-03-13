@@ -10,3 +10,4 @@ export * from "./lib/firebase/firebase.module";
 export * from "./lib/stripe/stripe.module";
 export * from "./lib/checkout/checkout.module";
 export * from "./lib/payment/payment.module";
+export * from "./lib/chat/chat.module";

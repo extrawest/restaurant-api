@@ -1,5 +1,9 @@
 import { hash } from "bcrypt";
-import { Inject, Injectable } from "@nestjs/common";
+import {
+	Inject,
+	Injectable,
+	UnauthorizedException
+} from "@nestjs/common";
 import { USERS_REPOSITORY } from "./constants";
 import { User } from "./entities/user.entity";
 import { CreateUserDto } from "./dto/create-user.dto";
@@ -14,14 +18,17 @@ export class UsersService {
 		@Inject(USERS_REPOSITORY) private usersRepository: typeof User,
 		private stripeService: StripeService
 	) {}
-	async create(userData: CreateUserDto) {
+	async create(userData: CreateUserDto, user?: User) {
 		const stripeCustomer = await this.stripeService.createCustomer(userData.name, userData.email);
+		if (userData.role === Role.Admin && user?.role !== Role.Admin) {
+			throw new UnauthorizedException("CURRENT_USER_DOESN'T_HAVE_PERMISSIONS_TO_CREATE_ADMIN");
+		};
 		const hashedPassword = await hash(userData.password, 10);
 		const createdUser = await this.usersRepository.create<User>({
 			...userData,
 			stripeCustomerId: stripeCustomer.id,
 			password: hashedPassword,
-			role: Role.Buyer
+			role: user?.role === Role.Admin ? userData.role : Role.Buyer
 		});
 		/* eslint-disable @typescript-eslint/no-unused-vars */
 		const { password, ...userWithoutPassword } = createdUser;
@@ -43,8 +50,7 @@ export class UsersService {
 
 	findOneByEmail(email: string): Promise<Maybe<User>> {
 		return this.usersRepository.findOne<User>({
-			where: { email },
-			attributes: { exclude: ["password"] }
+			where: { email }
 		});
 	}
 
