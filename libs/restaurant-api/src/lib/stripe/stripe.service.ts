@@ -114,4 +114,8 @@ export class StripeService {
 			page
 		});
 	}
+
+	cancelPayment(paymentId: string) {
+		this.stripe.paymentIntents.cancel(paymentId);
+	}
 }

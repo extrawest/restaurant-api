@@ -5,7 +5,8 @@ import {
 	Body,
 	Param,
 	Query,
-	UseGuards
+	UseGuards,
+	HttpCode,
 } from "@nestjs/common";
 import { PaymentService } from "./payment.service";
 import { CreatePaymentDto } from "./dto/create-payment.dto";
@@ -15,6 +16,7 @@ import { Roles } from "../auth/roles.decorator";
 import { Role } from "../enums/role.enum";
 import { User as UserEntity } from "../user/entities/user.entity";
 import { User } from "../decorators/user.decorator";
+import { CancelPaymentDTO } from "./dto/cancel-payment.dto";
 
 @Controller("payment")
 export class PaymentController {
@@ -65,11 +67,15 @@ export class PaymentController {
 		);
 	}
 
+	@UseGuards(AuthGuard)
+	@Roles(Role.Buyer, Role.Admin)
 	@Get("payments/customer-payments/:customerId")
 	getCustomerPayments(@Param("customerId") customerId: string) {
 		return this.paymentService.getCustomerPayments(customerId);
 	}
 
+	@UseGuards(AuthGuard)
+	@Roles(Role.Admin)
 	@Get("payments")
 	getPayments(
 		@Query("limit") limit: number,
@@ -77,5 +83,14 @@ export class PaymentController {
 		@Query("stripeCustomerId") stripeCustomerId?: string,
 	) {
 		return this.paymentService.getPayments(limit, offset, stripeCustomerId);
+	}
+
+	@UseGuards(AuthGuard)
+	@Roles(Role.Buyer)
+	@Post("cancel")
+	@HttpCode(204)
+	cancelPayment(@Body() cancelPaymentDTO: CancelPaymentDTO) {
+		const { paymentId } = cancelPaymentDTO;
+		this.paymentService.cancelPayment(paymentId);
 	}
 }

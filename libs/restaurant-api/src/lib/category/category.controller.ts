@@ -41,7 +41,7 @@ export class CategoryController {
 
 	@UseGuards(AuthGuard)
 	@Patch(":id")
-	update(@Param("id") id: string, @Body() updateCategoryDto: UpdateCategoryDto): Promise<CategoryDTO> {
+	update(@Param("id") id: string, @Body() updateCategoryDto: UpdateCategoryDto): Promise<Maybe<CategoryDTO>> {
 		return this.categoryService.update(+id, updateCategoryDto);
 	}
 

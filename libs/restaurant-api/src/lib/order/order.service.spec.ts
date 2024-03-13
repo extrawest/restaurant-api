@@ -20,10 +20,6 @@ const cartRepositoryMock = {
 	findOne: jest.fn(),
 };
 
-const category = {
-	name: "Category",
-};
-
 const orderItem = {
 	id: 1,
 	name: "Product 1",

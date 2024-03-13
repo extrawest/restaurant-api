@@ -7,6 +7,7 @@ import { CreateCategoryDto } from "./dto/create-category.dto";
 import { UpdateCategoryDto } from "./dto/update-category.dto";
 import { CATEGORIES_REPOSITORY } from "./constants";
 import { Category } from "./entities/category.entity";
+import { Maybe } from "utils";
 
 @Injectable()
 export class CategoryService {
@@ -39,11 +40,12 @@ export class CategoryService {
 		return this.categoriesRepository.findOne<Category>({ where: { id } });
 	}
 
-	update(id: number, updateCategoryDto: UpdateCategoryDto): Promise<Category | undefined | Error> {
-		return this.categoriesRepository
-			.findOne<Category>({ where: { id } })
-			.then((item) => item?.update(updateCategoryDto))
-			.catch(() => new Error("Category not found"));
+	async update(id: number, updateCategoryDto: UpdateCategoryDto): Promise<Maybe<Category>> {
+		const category = await this.categoriesRepository.findOne<Category>({ where: { id } });
+		if (category) {
+			return category?.update(updateCategoryDto);
+		};
+		throw new BadRequestException("Category not found");
 	}
 
 	remove(id: number) {

@@ -1,6 +1,7 @@
 import {
 	Body,
 	Controller,
+	HttpCode,
 	Post,
 	UseGuards
 } from "@nestjs/common";
@@ -18,6 +19,7 @@ export class CheckoutController {
 
 	@Roles(Role.Buyer)
 	@UseGuards(AuthGuard, RolesGuard)
+	@HttpCode(204)
 	@Post()
 	checkout(@Body() paymentMethidId: string ,@User() user: UserEntity) {
 		this.checkoutService.checkout(paymentMethidId, user.id, user.stripeCustomerId);

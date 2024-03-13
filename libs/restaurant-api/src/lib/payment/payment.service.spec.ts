@@ -1,8 +1,16 @@
+import { ConfigService } from "@nestjs/config";
 import { Test, TestingModule } from "@nestjs/testing";
 import { PaymentService } from "./payment.service";
 import { PAYMENTS_REPOSITORY, PAYMENT_METHODS_REPOSITORY } from "./constants";
 import { StripeService } from "../stripe/stripe.service";
-import { ConfigService } from "@nestjs/config";
+import { OrderService } from "../order/order.service";
+import { OrderItem } from "../order/entities/order-item.entity";
+import { Status } from "../enums/order.enum";
+import { Order } from "../order/entities/order.entity";
+import { ORDERS_REPOSITORY } from "../order/constants";
+import { CartService } from "../cart/cart.service";
+import { CART_REPOSITORY } from "../cart/constants";
+import { BadRequestException } from "@nestjs/common";
 
 const paymentsRepositoryMock = {
 	create: jest.fn(),
@@ -42,9 +50,24 @@ const findAndCountAllPayments = {
 	count: paymentsMock.length
 };
 
+const orderItem = {
+	id: 1,
+	name: "Product 1",
+	price: 1,
+	productId: 1,
+	quantity: 1,
+};
+
+const order = {
+	userId: 1,
+	items: [orderItem as unknown as OrderItem],
+	paymentId: "dsad",
+};
+
 describe("PaymentService", () => {
 	let paymentService: PaymentService;
 	let stripeService: StripeService;
+	let orderService: OrderService;
 
 	beforeEach(async () => {
 		jest.resetAllMocks();
@@ -52,6 +75,9 @@ describe("PaymentService", () => {
 			providers: [
 				PaymentService,
 				StripeService,
+				OrderService,
+				CartService,
+				CartService,
 				ConfigService,
 				{
 					provide: PAYMENTS_REPOSITORY,
@@ -60,10 +86,19 @@ describe("PaymentService", () => {
 				{
 					provide: PAYMENT_METHODS_REPOSITORY,
 					useValue: paymentMethodsRepositoryMock
+				},
+				{
+					provide: ORDERS_REPOSITORY,
+					useValue: jest.fn()
+				},
+				{
+					provide: CART_REPOSITORY,
+					useValue: jest.fn()
 				}
 			],
 		}).compile();
 
+		orderService = module.get<OrderService>(OrderService);
 		paymentService = module.get<PaymentService>(PaymentService);
 		stripeService = module.get<StripeService>(StripeService);
 	});
@@ -165,6 +200,26 @@ describe("PaymentService", () => {
 						customerId: findAllPaymentMethodMock.stripeCustomerId
 					}
 				});
+			});
+		});
+
+		describe("cancel method", () => {
+			it("should cancel payment", async () => {
+				jest.spyOn(orderService, "getOrderByPaymentId").mockResolvedValueOnce({
+					...order,
+					status: Status.Created,
+				} as unknown as Order);
+				jest.spyOn(stripeService, "cancelPayment").mockImplementationOnce(() => Promise.resolve());
+				expect(paymentService.cancelPayment("paymentId")).resolves.not.toThrow();
+			});
+
+			it("should throw an error", async () => {
+				jest.spyOn(orderService, "getOrderByPaymentId").mockResolvedValueOnce({
+					...order,
+					status: Status.Cooking,
+				} as unknown as Order);
+				jest.spyOn(stripeService, "cancelPayment").mockImplementationOnce(() => Promise.resolve());
+				expect(paymentService.cancelPayment("paymentId")).rejects.toThrow(new BadRequestException("ORDER_WITH_CURRENT_STATUS_CANNOT_BE_CANCELLED"));
 			});
 		});
 	});

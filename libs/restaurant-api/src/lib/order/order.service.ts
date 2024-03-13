@@ -8,6 +8,7 @@ import { UpdateOrderDto } from "./dto/update-order.dto";
 import { Op } from "sequelize";
 import { StatisticsFields } from "../enums/order.enum";
 import { OrderItem } from "./entities/order-item.entity";
+import { Maybe } from "utils";
 
 @Injectable()
 export class OrderService {
@@ -97,4 +98,10 @@ export class OrderService {
 			return orderRevenue + ordersRevenue;
 		}, 0);
 	};
+
+	getOrderByPaymentId(paymentId: string): Promise<Maybe<Order>> {
+		return this.ordersRepository.findOne({
+			where: { paymentId }
+		});
+	}
 };
