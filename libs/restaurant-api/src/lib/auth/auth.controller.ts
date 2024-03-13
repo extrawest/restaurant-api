@@ -7,6 +7,8 @@ import {
 	Req,
 	UseGuards,
 	Get,
+	Header,
+	Headers
 } from "@nestjs/common";
 import { Request } from "express";
 import { AuthService } from "./auth.service";
@@ -24,12 +26,13 @@ export class AuthController {
 	@Post("login")
 	async signIn(@Req() request: Request, @Body() signInDto: SignInDto) {
 		const {
-			access_token_cookie,
+			access_token,
 			refresh_token,
-			user
 		} = await this.authService.signIn(signInDto.email, signInDto.password);
-		request?.res?.setHeader("Set-Cookie", [access_token_cookie, refresh_token.cookie]);
-		return user;
+		return {
+			access_token,
+			refresh_token
+		};
 	}
 
 	@Post("forgot-password")
@@ -48,14 +51,15 @@ export class AuthController {
 
 	@UseGuards(JwtRefreshAuthGuard)
 	@Get("refresh")
-	async refresh(@Req() request: Request, @User() user: UserEntity) {
+	async refresh(@Headers("refresh_token") refresh_token: string, @User() user: UserEntity) {
 		const {
-			access_token_cookie,
-			refresh_token,
-			user: currentUser
-		} = await this.authService.refreshToken(request.cookies.Refresh, user.email);
+			access_token,
+			refresh_token: new_refresh_token,
+		} = await this.authService.refreshToken(refresh_token, user.email);
  
-		request.res?.setHeader("Set-Cookie", [access_token_cookie, refresh_token.cookie]);
-		return currentUser;
+		return {
+			access_token,
+			new_refresh_token
+		};
 	}
 }

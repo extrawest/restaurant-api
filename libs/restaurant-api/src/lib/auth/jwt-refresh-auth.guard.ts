@@ -20,8 +20,7 @@ export class JwtRefreshAuthGuard implements CanActivate {
 
 	async canActivate(context: ExecutionContext): Promise<boolean> {
 		const request = context.switchToHttp().getRequest();
-		const refresh_token = this.extractTokenFromCookies(request);
-
+		const refresh_token = this.extractRefreshTokenFromHeader(request);
 		if (!refresh_token) {
 			throw new UnauthorizedException();
 		}
@@ -34,19 +33,23 @@ export class JwtRefreshAuthGuard implements CanActivate {
 				refresh_token,
 				user?.currentHashedRefreshToken as string,
 			);
+
 			if (!isRefreshTokenMatching) {
 				throw new UnauthorizedException();
 			};
 			// 💡 We're assigning the payload to the request object here
 			// so that we can access it in our route handlers
 			request["user"] = payload;
+			request.headers["refresh_token"] = refresh_token;
 		} catch {
 			throw new UnauthorizedException();
 		}
+
 		return true;
 	}
 
-	private extractTokenFromCookies(request: Request): string | undefined {
-		return request?.cookies?.Refresh;
+	private extractRefreshTokenFromHeader(request: Request): string | undefined {
+		const [type, token] = request.headers.authorization?.split(" ") ?? [];
+		return type === "Bearer" ? token : undefined;
 	}
 }

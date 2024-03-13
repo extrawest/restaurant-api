@@ -20,13 +20,12 @@ export class AuthService {
 		if (!isPasswordMatching) {
 			throw new UnauthorizedException();
 		};
-		const access_token_cookie = await this.getCookieWithJwtAccessToken(user);
-		const refresh_token = await this.getCookieWithJwtRefreshToken(user);
-		const currentUser = this.usersService.setCurrentRefreshToken(refresh_token.token, user?.id);
+		const access_token = await this.getJwtAccessToken(user);
+		const refresh_token = await this.getJwtRefreshToken(user);
+		await this.usersService.setCurrentRefreshToken(refresh_token, user?.id);
 		return {
-			access_token_cookie,
+			access_token,
 			refresh_token,
-			user: currentUser,
 		};
 	};
 
@@ -89,35 +88,28 @@ export class AuthService {
 		if (!isRefreshTokenMatching) {
 			throw new UnauthorizedException();
 		};
-		const access_token_cookie = await this.getCookieWithJwtAccessToken(user);
-		const refresh_token = await this.getCookieWithJwtRefreshToken(user);
-		const currentUser = this.usersService.setCurrentRefreshToken(refresh_token.token, user?.id);
+		const access_token = await this.getJwtAccessToken(user);
+		const refresh_token = await this.getJwtRefreshToken(user);
+		await this.usersService.setCurrentRefreshToken(refresh_token, user?.id);
 		return {
-			access_token_cookie,
+			access_token,
 			refresh_token,
-			user: currentUser
 		};
 	};
 
-	async getCookieWithJwtAccessToken(user: Maybe<User>) {
+	async getJwtAccessToken(user: Maybe<User>) {
 		const payload = { id: user?.id, email: user?.email, role: user?.role };
-		const token = this.jwtService.sign(payload, {
+		return this.jwtService.sign(payload, {
 			secret: process.env["JWT_SECRET"],
 			expiresIn: "1d"
 		});
-		return `Authentication=${token}; HttpOnly; Path=/; Max-Age=1d`;
 	}
  
-	async getCookieWithJwtRefreshToken(user: Maybe<User>) {
+	async getJwtRefreshToken(user: Maybe<User>) {
 		const payload = { id: user?.id, email: user?.email, role: user?.role };
-		const token = this.jwtService.sign(payload, {
+		return this.jwtService.sign(payload, {
 			secret: process.env["JWT_SECRET"],
 			expiresIn: "7d"
 		});
-		const cookie = `Refresh=${token}; HttpOnly; Path=/; Max-Age=1d`;
-		return {
-			cookie,
-			token
-		};
 	}
 };
