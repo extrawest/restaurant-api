@@ -1,14 +1,18 @@
+import { Op } from "sequelize";
+import { Maybe } from "utils";
+import {
+	CART_IS_EMPTY,
+	CART_NOT_FOUND,
+	ORDER_NOT_FOUND
+} from "shared";
 import { Inject, Injectable } from "@nestjs/common";
 import { ORDERS_REPOSITORY } from "./constants";
 import { Order } from "./entities/order.entity";
 import { CartService } from "../cart/cart.service";
-import { CreateOrderDto } from "./dto/create-order.dto";
-import { Product } from "../product/entities/product.entity";
-import { UpdateOrderDto } from "./dto/update-order.dto";
-import { Op } from "sequelize";
 import { StatisticsFields } from "../enums/order.enum";
+import { CreateOrderDto } from "./dto/create-order.dto";
+import { UpdateOrderDto } from "./dto/update-order.dto";
 import { OrderItem } from "./entities/order-item.entity";
-import { Maybe } from "utils";
 
 @Injectable()
 export class OrderService {
@@ -18,10 +22,10 @@ export class OrderService {
 		const { userId, items } = order;
 		const cart = await this.cartService.getCart(userId);
 		if (!cart) {
-			throw new Error("CART_NOT_FOUND");
+			throw new Error(CART_NOT_FOUND);
 		};
 		if (!items.length) {
-			throw new Error("CART_IS_EMPTY");
+			throw new Error(CART_IS_EMPTY);
 		};
 		return this.ordersRepository.create<Order>({ ...order }, { include: [OrderItem] });
 	};
@@ -32,7 +36,7 @@ export class OrderService {
 			include: [OrderItem]
 		});
 		if (!order) {
-			return new Error("ORDER_NOT_FOUND");
+			return new Error(ORDER_NOT_FOUND);
 		} else {
 			return order;
 		}
@@ -67,7 +71,7 @@ export class OrderService {
 				if (item) {
 					return item.update(updateOrderDto);
 				} else {
-					throw new Error("Order not found");
+					throw new Error(ORDER_NOT_FOUND);
 				};
 			});
 	};

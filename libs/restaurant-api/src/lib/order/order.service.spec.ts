@@ -9,6 +9,8 @@ import { Cart } from "../cart/entities/cart.entity";
 import { CartItem } from "../cart/entities/item.entity";
 import { Status } from "../enums/order.enum";
 import { OrderItem } from "./entities/order-item.entity";
+import { CART_IS_EMPTY, CART_NOT_FOUND } from "shared";
+import { Address } from "./entities/order-address.entity";
 
 const ordersRepositoryMock = {
 	create: jest.fn(),
@@ -31,7 +33,15 @@ const orderItem = {
 const order = {
 	userId: 1,
 	items: [orderItem as unknown as OrderItem],
-	paymentId: faker.string.uuid()
+	paymentId: faker.string.uuid(),
+	address: {
+		name: faker.person.fullName(),
+		first_address: faker.location.streetAddress,
+		city: faker.location.city(),
+		state: faker.location.state(),
+		zip: faker.location.zipCode(),
+		country: faker.location.country(),
+	} as unknown as Address
 };
 
 const cart = {
@@ -91,7 +101,7 @@ describe("OrderService", () => {
 			expect(ordersRepositoryMock.create).toHaveBeenCalledTimes(0);
 			expect(cartFindOneSpy).toHaveBeenCalledTimes(1);
 			expect(cartFindOneSpy).toHaveBeenCalledWith(cart.userId);
-			expect(orderResult).rejects.toThrow(new Error("CART_NOT_FOUND"));
+			expect(orderResult).rejects.toThrow(new Error(CART_NOT_FOUND));
 		});
 
 		it("shouldn't create order, should throw CART_IS_EMPTY", async () => {
@@ -100,7 +110,7 @@ describe("OrderService", () => {
 			expect(ordersRepositoryMock.create).toHaveBeenCalledTimes(0);
 			expect(cartFindOneSpy).toHaveBeenCalledTimes(1);
 			expect(cartFindOneSpy).toHaveBeenCalledWith(cart.userId);
-			expect(orderResult).rejects.toThrow(new Error("CART_IS_EMPTY"));
+			expect(orderResult).rejects.toThrow(new Error(CART_IS_EMPTY));
 		});
 	});
 

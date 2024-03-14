@@ -12,6 +12,7 @@ import { Roles } from "../auth/roles.decorator";
 import { Role } from "../enums/role.enum";
 import { AuthGuard } from "../auth/guards/auth.guard";
 import { RolesGuard } from "../auth/roles.guard";
+import { CreateCheckoutDto } from "./dto/create-checkout.dto";
 
 @Controller("checkout")
 export class CheckoutController {
@@ -21,7 +22,8 @@ export class CheckoutController {
 	@UseGuards(AuthGuard, RolesGuard)
 	@HttpCode(204)
 	@Post()
-	checkout(@Body() paymentMethidId: string ,@User() user: UserEntity) {
-		this.checkoutService.checkout(paymentMethidId, user.id, user.stripeCustomerId);
+	checkout(@Body() createCheckoutDto: CreateCheckoutDto ,@User() user: UserEntity) {
+		const { paymentMethodId, address } = createCheckoutDto;
+		this.checkoutService.checkout(paymentMethodId, address, user.id, user.stripeCustomerId);
 	}
 }

@@ -14,6 +14,7 @@ import { StripeService } from "../stripe/stripe.service";
 import { CART_REPOSITORY } from "../cart/constants";
 import { ConfigService } from "@nestjs/config";
 import { PAYMENTS_REPOSITORY, PAYMENT_METHODS_REPOSITORY } from "../payment/constants";
+import { CART_IS_EMPTY, CART_NOT_FOUND } from "shared";
 
 const mockCartItem = {
 	productId: "",
@@ -107,14 +108,14 @@ describe("CheckoutService", () => {
 			jest.spyOn(cartService, "getCart").mockResolvedValueOnce(mockEmptyCart);
 			expect(checkoutService.checkout("paymentMethodId", 1, "stripeCustomerId"))
 				.rejects
-				.toThrow(new BadRequestException("CART_IS_EMPTY"));
+				.toThrow(new BadRequestException(CART_IS_EMPTY));
 		});
 
 		it("should throw an error on cart not found", () => {
 			jest.spyOn(cartService, "getCart").mockResolvedValueOnce(null);
 			expect(checkoutService.checkout("paymentMethodId", 1, "stripeCustomerId"))
 				.rejects
-				.toThrow(new BadRequestException("CART_NOT_FOUND"));
+				.toThrow(new BadRequestException(CART_NOT_FOUND));
 		});
 	});
 });

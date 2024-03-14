@@ -10,6 +10,7 @@ import {
 import { Status as OrderStatus } from "../../enums/order.enum";
 import { User } from "../../user/entities/user.entity";
 import { OrderItem } from "./order-item.entity";
+import { Address } from "./order-address.entity";
 
 @Table
 export class Order extends Model {
@@ -31,4 +32,7 @@ export class Order extends Model {
 
 	@Column
 	paymentId!: string;
+
+	@Column
+	address!: Address;
 }

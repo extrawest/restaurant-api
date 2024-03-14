@@ -6,6 +6,12 @@ import {
 import { CartService } from "../cart/cart.service";
 import { ProducerService } from "../queues/queues.producer";
 import { PaymentService } from "../payment/payment.service";
+import {
+	CART_IS_EMPTY,
+	CART_NOT_FOUND,
+	PAYMENT_SUCCESSFULLY_CREATED
+} from "shared";
+import { Address } from "../order/entities/order-address.entity";
 
 @Injectable()
 export class CheckoutService {
@@ -14,7 +20,7 @@ export class CheckoutService {
 		private readonly queueProducerService: ProducerService,
 		private readonly paymentService: PaymentService,
 	) {}
-	async checkout(paymentMethodId: string, userId: number, stripeCustomerId: string) {
+	async checkout(paymentMethodId: string, address: Address, userId: number, stripeCustomerId: string) {
 		const userCart = await this.cartService.getCart(userId);
 		if (userCart) {
 			const { items, totalPrice } = userCart;
@@ -25,7 +31,8 @@ export class CheckoutService {
 						await this.queueProducerService.addToOrdersQueue({
 							userId,
 							items: userCart.items,
-							paymentId: payment.id
+							paymentId: payment.id,
+							address
 						});
 						await this.cartService.deleteCart(userId);
 					};
@@ -34,13 +41,13 @@ export class CheckoutService {
 				}
 				return {
 					status: HttpStatus.OK,
-					message: "PAYMENT_SUCCESSFULLY_CREATED"
+					message: PAYMENT_SUCCESSFULLY_CREATED
 				};
 			} else {
-				throw new BadRequestException("CART_IS_EMPTY");
+				throw new BadRequestException(CART_IS_EMPTY);
 			};
 		} else {
-			throw new BadRequestException("CART_NOT_FOUND");
+			throw new BadRequestException(CART_NOT_FOUND);
 		};
 	}
 }

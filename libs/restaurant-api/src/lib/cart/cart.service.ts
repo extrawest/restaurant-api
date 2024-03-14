@@ -7,6 +7,7 @@ import { CART_REPOSITORY } from "./constants";
 import { Cart } from "./entities/cart.entity";
 import { ItemDto } from "./dto/item.dto";
 import { CartItem } from "./entities/item.entity";
+import { CART_NOT_FOUND } from "shared";
 
 @Injectable()
 export class CartService {
@@ -26,7 +27,7 @@ export class CartService {
 	getCart(userId: number) {
 		const cart = this.cartRepository.findOne({ where: { userId } });
 		if (!cart) {
-			throw new BadRequestException("CART_NOT_FOUND");
+			throw new BadRequestException(CART_NOT_FOUND);
 		};
 		return cart;
 	}
@@ -74,7 +75,7 @@ export class CartService {
 		const cart = await this.getCart(userId);
 
 		if (!cart) {
-			throw new Error("CART_NOT_FOUND");
+			throw new Error(CART_NOT_FOUND);
 		}
 		const itemIndex = cart?.items.findIndex((item) => item.productId == productId);
 

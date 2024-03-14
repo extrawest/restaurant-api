@@ -12,6 +12,7 @@ import { StripeService } from "../stripe/stripe.service";
 import { OrderItem } from "../order/entities/order-item.entity";
 import { PAYMENTS_REPOSITORY, PAYMENT_METHODS_REPOSITORY } from "./constants";
 import { faker } from "@faker-js/faker";
+import { ORDER_WITH_CURRENT_STATUS_CANNOT_BE_CANCELLED } from "shared";
 
 const paymentsRepositoryMock = {
 	create: jest.fn(),
@@ -214,7 +215,7 @@ describe("PaymentService", () => {
 					status: Status.Created,
 				} as unknown as Order);
 				jest.spyOn(stripeService, "cancelPayment").mockImplementationOnce(() => Promise.resolve());
-				expect(paymentService.cancelPayment("paymentId")).resolves.not.toThrow();
+				expect(paymentService.cancelPayment(paymentId)).resolves.not.toThrow();
 			});
 
 			it("should throw an error", async () => {
@@ -223,7 +224,7 @@ describe("PaymentService", () => {
 					status: Status.Cooking,
 				} as unknown as Order);
 				jest.spyOn(stripeService, "cancelPayment").mockImplementationOnce(() => Promise.resolve());
-				expect(paymentService.cancelPayment("paymentId")).rejects.toThrow(new BadRequestException("ORDER_WITH_CURRENT_STATUS_CANNOT_BE_CANCELLED"));
+				expect(paymentService.cancelPayment(paymentId)).rejects.toThrow(new BadRequestException(ORDER_WITH_CURRENT_STATUS_CANNOT_BE_CANCELLED));
 			});
 		});
 	});

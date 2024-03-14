@@ -9,6 +9,7 @@ import { Payment } from "./entities/payment.entity";
 import { PaymentMethod } from "./entities/payment-method.entity";
 import { OrderService } from "../order/order.service";
 import { Status as OrderStatus } from "../enums/order.enum";
+import { ORDER_NOT_FOUND, ORDER_WITH_CURRENT_STATUS_CANNOT_BE_CANCELLED } from "shared";
 
 @Injectable()
 export class PaymentService {
@@ -76,14 +77,14 @@ export class PaymentService {
 	async cancelPayment(paymentId: string) {
 		const order = await this.orderService.getOrderByPaymentId(paymentId);
 		if (!order) {
-			throw new BadRequestException("ORDER_NOT_FOUND");
+			throw new BadRequestException(ORDER_NOT_FOUND);
 		};
 		if (
 			order.status === OrderStatus.Cooking ||
 			order.status === OrderStatus.Delivering ||
 			order.status === OrderStatus.Delivered
 		) {
-			throw new BadRequestException("ORDER_WITH_CURRENT_STATUS_CANNOT_BE_CANCELLED");
+			throw new BadRequestException(ORDER_WITH_CURRENT_STATUS_CANNOT_BE_CANCELLED);
 		};
 		this.stripeService.cancelPayment(paymentId);
 	}
