@@ -1,24 +1,39 @@
+import { faker } from "@faker-js/faker";
+import { JwtService } from "@nestjs/jwt";
+import { ConfigService } from "@nestjs/config";
 import { Test, TestingModule } from "@nestjs/testing";
-import { CheckoutService } from "./checkout.service";
+import { CART_IS_EMPTY, CART_NOT_FOUND } from "shared";
+import { BadRequestException } from "@nestjs/common";
 import { AuthService } from "../auth/auth.service";
 import { CartService } from "../cart/cart.service";
+import { Cart } from "../cart/entities/cart.entity";
+import { UsersService } from "../user/user.service";
+import { CART_REPOSITORY } from "../cart/constants";
+import { CheckoutService } from "./checkout.service";
+import { USERS_REPOSITORY } from "../user/constants";
+import { StripeService } from "../stripe/stripe.service";
 import { PaymentService } from "../payment/payment.service";
 import { ProducerService } from "../queues/queues.producer";
-import { Cart } from "../cart/entities/cart.entity";
 import { Payment } from "../payment/entities/payment.entity";
-import { BadRequestException } from "@nestjs/common";
-import { JwtService } from "@nestjs/jwt";
-import { USERS_REPOSITORY } from "../user/constants";
-import { UsersService } from "../user/user.service";
-import { StripeService } from "../stripe/stripe.service";
-import { CART_REPOSITORY } from "../cart/constants";
-import { ConfigService } from "@nestjs/config";
+import { Address } from "../order/entities/order-address.entity";
 import { PAYMENTS_REPOSITORY, PAYMENT_METHODS_REPOSITORY } from "../payment/constants";
-import { CART_IS_EMPTY, CART_NOT_FOUND } from "shared";
+
+const paymentId = faker.string.uuid();
+const stripeCustomerId = faker.string.uuid();
+const paymentMethodId = faker.string.uuid();
+
+const address = {
+	name: faker.person.fullName(),
+	first_address: faker.location.streetAddress,
+	city: faker.location.city(),
+	state: faker.location.state(),
+	zip: faker.location.zipCode(),
+	country: faker.location.country(),
+} as unknown as Address;
 
 const mockCartItem = {
-	productId: "",
-	name: "",
+	productId: 1,
+	name: faker.person.fullName(),
 	quantity: 5,
 	price: 10
 };
@@ -36,11 +51,11 @@ const mockEmptyCart = {
 } as unknown as Cart;
 
 const mockPayment = {
-	id: "",
+	id: paymentId,
 	amount: 30,
 	status: "",
-	stripeCustomerId: "",
-	paymentMethodId: "",
+	stripeCustomerId: stripeCustomerId,
+	paymentMethodId: paymentMethodId,
 } as unknown as Payment;
 
 describe("CheckoutService", () => {
@@ -98,7 +113,7 @@ describe("CheckoutService", () => {
 			jest.spyOn(cartService, "deleteCart").mockResolvedValueOnce(1);
 			jest.spyOn(paymentService, "charge").mockResolvedValueOnce(mockPayment);
 			jest.spyOn(producerService, "addToOrdersQueue").mockResolvedValueOnce();
-			expect(checkoutService.checkout("paymentMethodId", 1, "stripeCustomerId"))
+			expect(checkoutService.checkout(paymentMethodId, address, 1, stripeCustomerId))
 				.resolves
 				.not
 				.toThrow();
@@ -106,14 +121,14 @@ describe("CheckoutService", () => {
 
 		it("should throw an error on empty cart", () => {
 			jest.spyOn(cartService, "getCart").mockResolvedValueOnce(mockEmptyCart);
-			expect(checkoutService.checkout("paymentMethodId", 1, "stripeCustomerId"))
+			expect(checkoutService.checkout(paymentMethodId, address, 1, stripeCustomerId))
 				.rejects
 				.toThrow(new BadRequestException(CART_IS_EMPTY));
 		});
 
 		it("should throw an error on cart not found", () => {
 			jest.spyOn(cartService, "getCart").mockResolvedValueOnce(null);
-			expect(checkoutService.checkout("paymentMethodId", 1, "stripeCustomerId"))
+			expect(checkoutService.checkout(paymentMethodId, address,  1, stripeCustomerId))
 				.rejects
 				.toThrow(new BadRequestException(CART_NOT_FOUND));
 		});

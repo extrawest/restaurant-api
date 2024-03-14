@@ -5,7 +5,8 @@ import {
 	DataType,
 	ForeignKey,
 	BelongsTo,
-	HasMany
+	HasMany,
+	HasOne
 } from "sequelize-typescript";
 import { Status as OrderStatus } from "../../enums/order.enum";
 import { User } from "../../user/entities/user.entity";
@@ -33,6 +34,6 @@ export class Order extends Model {
 	@Column
 	paymentId!: string;
 
-	@Column
+	@HasOne(() => Address)
 	address!: Address;
 }

@@ -22,6 +22,7 @@ import {
 	CART_WAS_DELETED,
 	CART_WAS_NOT_DELETED
 } from "shared";
+import { ItemToUpdateDTO } from "./dto/update-cart-item.dto";
 
 @Controller("cart")
 export class CartController {
@@ -41,6 +42,13 @@ export class CartController {
 	getCart(@User() user: UserEntity): Promise<CartDTO | null> {
 		const userId = user.id;
 		return this.cartService.getCart(userId);
+	}
+
+	@Roles(Role.Buyer)
+	@UseGuards(AuthGuard, RolesGuard)
+	@Post("update")
+	updateCart(@User() user: UserEntity, @Body() itemToUpdateDTO: ItemToUpdateDTO) {
+		return this.cartService.updateCart(user.id, itemToUpdateDTO);
 	}
 
 	@Roles(Role.Buyer)
