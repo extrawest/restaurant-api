@@ -11,6 +11,7 @@ import { UpdateUserDto } from "./dto/update-user.dto";
 import { Role } from "../enums/role.enum";
 import { Maybe } from "utils";
 import { StripeService } from "../stripe/stripe.service";
+import { USER_NOT_FOUND } from "shared";
 
 @Injectable()
 export class UsersService {
@@ -64,7 +65,7 @@ export class UsersService {
 				if (item) {
 					return item?.update(updateUserDto);
 				}
-				throw new Error("USER_NOT_FOUND");
+				throw new Error(USER_NOT_FOUND);
 			});
 	}
 

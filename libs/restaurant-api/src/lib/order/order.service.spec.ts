@@ -1,12 +1,12 @@
 import { Test, TestingModule } from "@nestjs/testing";
+import { Op } from "sequelize";
+import { faker } from "@faker-js/faker";
 import { OrderService } from "./order.service";
 import { ORDERS_REPOSITORY } from "./constants";
 import { CartService } from "../cart/cart.service";
 import { CART_REPOSITORY } from "../cart/constants";
-import { Product } from "../product/entities/product.entity";
 import { Cart } from "../cart/entities/cart.entity";
 import { CartItem } from "../cart/entities/item.entity";
-import { Op } from "sequelize";
 import { Status } from "../enums/order.enum";
 import { OrderItem } from "./entities/order-item.entity";
 
@@ -31,7 +31,7 @@ const orderItem = {
 const order = {
 	userId: 1,
 	items: [orderItem as unknown as OrderItem],
-	paymentId: "dsad"
+	paymentId: faker.string.uuid()
 };
 
 const cart = {
@@ -39,7 +39,7 @@ const cart = {
 	totalPrice: 10,
 	items: [{
 		productId: 1,
-		name: "Name",
+		name: "Product 1",
 		quantity: 10,
 		price: 2,
 	}] as CartItem[],

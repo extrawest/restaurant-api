@@ -11,6 +11,7 @@ import { ORDERS_REPOSITORY } from "../order/constants";
 import { StripeService } from "../stripe/stripe.service";
 import { OrderItem } from "../order/entities/order-item.entity";
 import { PAYMENTS_REPOSITORY, PAYMENT_METHODS_REPOSITORY } from "./constants";
+import { faker } from "@faker-js/faker";
 
 const paymentsRepositoryMock = {
 	create: jest.fn(),
@@ -22,8 +23,13 @@ const paymentMethodsRepositoryMock = {
 	findAll: jest.fn()
 };
 
+const paymentId = faker.string.uuid();
+const stripeCustomerId = faker.string.uuid();
+const paymentMethodId = faker.string.uuid();
+const stripePaymentMethodId = faker.string.uuid();
+
 const paymentMethodMock = {
-	customer: "stripeCustomerId",
+	customer: faker.string.uuid(),
 	type: "card",
 	card: {
 		exp_month: 2,
@@ -35,14 +41,14 @@ const paymentsMock = [{
 	id: "id",
 	amount: 200,
 	status: "status",
-	stripeCustomerId: "stripeCustomerId",
-	paymentMethodId: "paymentMethodId",
+	stripeCustomerId,
+	paymentMethodId,
 }, {
 	id: "id",
 	amount: 100,
 	status: "status",
-	stripeCustomerId: "stripeCustomerId",
-	paymentMethodId: "paymentMethodId",
+	stripeCustomerId,
+	paymentMethodId,
 }];
 
 const findAndCountAllPayments = {
@@ -61,7 +67,7 @@ const orderItem = {
 const order = {
 	userId: 1,
 	items: [orderItem as unknown as OrderItem],
-	paymentId: "dsad",
+	paymentId: paymentId,
 };
 
 describe("PaymentService", () => {
@@ -112,23 +118,23 @@ describe("PaymentService", () => {
 		it("should create payment", async () => {
 			const paymentMock = {
 				amount: 100,
-				paymentMethodId: "paymentMethodId",
-				customerId: "customerId",
+				paymentMethodId,
+				customerId: stripeCustomerId,
 			} as any;
 			jest.spyOn(stripeService, "charge").mockResolvedValueOnce({
 				...paymentMock,
-				payment_method: "paymentMethodId",
-				customer: "customerId",
+				payment_method: paymentMethodId,
+				customer: stripeCustomerId,
 				status: "status"
 			});
 			paymentsRepositoryMock.create.mockResolvedValueOnce(paymentMock);
-			expect(await paymentService.charge(100, "paymentMethodId", "customerId")).toEqual(paymentMock);
+			expect(await paymentService.charge(100, paymentMethodId, stripeCustomerId)).toEqual(paymentMock);
 			expect(jest.spyOn(stripeService, "charge")).toHaveBeenCalledTimes(1);
 			expect(paymentsRepositoryMock.create).toHaveBeenCalledTimes(1);
 			expect(paymentsRepositoryMock.create).toHaveBeenCalledWith({
 				amount: 100,
-				paymentMethodId: "paymentMethodId",
-				customerId: "customerId",
+				paymentMethodId,
+				customerId: stripeCustomerId,
 				status: "status",
 			});
 		});
@@ -136,7 +142,6 @@ describe("PaymentService", () => {
 
 	describe("find payments", () => {
 		it("should find all customer payments", async () => {
-			const stripeCustomerId = "customerId";
 			paymentsRepositoryMock.findAll.mockResolvedValueOnce(paymentsMock); 
 			expect(await paymentService.getCustomerPayments(stripeCustomerId)).toEqual(paymentsMock);
 			expect(paymentsRepositoryMock.findAll).toHaveBeenCalledTimes(1);
@@ -148,7 +153,6 @@ describe("PaymentService", () => {
 		});
 
 		it("should find all payments with pagination", async () => {
-			const stripeCustomerId = "customerId";
 			paymentsRepositoryMock.findAndCountAll.mockResolvedValueOnce(findAndCountAllPayments); 
 			expect(await paymentService.getPayments(5, 0, stripeCustomerId)).toEqual(findAndCountAllPayments);
 			expect(paymentsRepositoryMock.findAndCountAll).toHaveBeenCalledTimes(1);
@@ -186,11 +190,11 @@ describe("PaymentService", () => {
 			it("should find customer's payment methods", async () => {
 				const findAllPaymentMethodMock = {
 					type: "card",
-					stripeCustomerId: "stripeCustomerId",
+					stripeCustomerId,
 					additional_info: {
-						number: 123,
+						number: faker.number.int(),
 					},
-					stripePaymentMethodId: "stripePaymentMethodId"
+					stripePaymentMethodId,
 				};
 				paymentMethodsRepositoryMock.findAll.mockResolvedValueOnce([findAllPaymentMethodMock]); 
 				expect(await paymentService.getCustomerPaymentMethods(findAllPaymentMethodMock.stripeCustomerId)).toEqual([findAllPaymentMethodMock]);

@@ -1,6 +1,8 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { ProductService } from "./product.service";
 import { PRODUCTS_REPOSITORY } from "./constants";
+import { faker } from "@faker-js/faker";
+import { PRODUCT_NOT_FOUND } from "shared";
 
 const productRepositoryMock = {
 	create: jest.fn(),
@@ -14,11 +16,11 @@ const product = {
 	id: 1,
 	name: "Product 1",
 	price: 1,
-	currency: "USD",
+	currency: faker.finance.currency().code,
 	categoryId: 1,
 	orderId: 1,
 	quantity: 1,
-	image: "image"
+	image: faker.image.url()
 };
 
 describe("ProductService", () => {
@@ -108,7 +110,7 @@ describe("ProductService", () => {
 			const newName = "New Name";
 			productRepositoryMock.findOne.mockResolvedValueOnce(null);
 			const result = service.update(1, { name: newName });
-			expect(result).rejects.toThrow(new Error("Product not found"));
+			expect(result).rejects.toThrow(new Error(PRODUCT_NOT_FOUND));
 			expect(productRepositoryMock.findOne).toHaveBeenCalledTimes(1);
 		});
 	});

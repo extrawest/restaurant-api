@@ -1,9 +1,11 @@
+import { faker } from "@faker-js/faker";
+import { ConfigService } from "@nestjs/config";
 import { Test, TestingModule } from "@nestjs/testing";
+import { Role } from "../enums/role.enum";
 import { UsersService } from "./user.service";
 import { USERS_REPOSITORY } from "./constants";
-import { Role } from "../enums/role.enum";
 import { StripeService } from "../stripe/stripe.service";
-import { ConfigService } from "@nestjs/config";
+import { USER_NOT_FOUND } from "shared";
 
 const userRepositoryMock = {
 	create: jest.fn(),
@@ -11,10 +13,12 @@ const userRepositoryMock = {
 	findOne: jest.fn(),
 };
 
+const stripeCustomerId = faker.string.uuid();
+
 const user = {
-	name: "name",
-	email: "email@domain.com",
-	password: "pass",
+	name: faker.person.fullName(),
+	email: faker.internet.email(),
+	password: faker.internet.password(),
 	role: Role.Buyer,
 };
 
@@ -45,7 +49,7 @@ describe("UsersService", () => {
 		});
 
 		it("should create new user", async () => {
-			jest.spyOn(stripeService, "createCustomer").mockResolvedValueOnce({ id: "someId" } as any);
+			jest.spyOn(stripeService, "createCustomer").mockResolvedValueOnce({ id: stripeCustomerId } as any);
 			userRepositoryMock.create.mockResolvedValueOnce(user);
 			const result = await service.create(user);
 			/* eslint-disable @typescript-eslint/no-unused-vars */
@@ -84,13 +88,12 @@ describe("UsersService", () => {
 		});
 
 		it("should return one user by email", async () => {
-			const email = "email";
 			userRepositoryMock.findOne.mockResolvedValueOnce(user);
-			const result = await service.findOneByEmail(email);
+			const result = await service.findOneByEmail(user.email);
 			expect(result).toBe(user);
 			expect(userRepositoryMock.findOne).toHaveBeenCalledTimes(1);
 			expect(userRepositoryMock.findOne).toHaveBeenCalledWith({
-				where: { email }
+				where: { email: user.email }
 			});
 		});
 	});
@@ -99,7 +102,7 @@ describe("UsersService", () => {
 		it("should update product", async () => {
 			const userId = 1;
 			const objectToUpdate = {
-				name: "new name"
+				name: user.name
 			};
 			const userFindOneMock = {
 				update: jest.fn()
@@ -121,11 +124,11 @@ describe("UsersService", () => {
 
 		it("should throw an error on item not found", async () => {
 			const objectToUpdate = {
-				name: "new name"
+				name: user.name
 			};
 			userRepositoryMock.findOne.mockResolvedValueOnce(null);
 			const result = service.update(1, objectToUpdate);
-			expect(result).rejects.toThrow(new Error("USER_NOT_FOUND"));
+			expect(result).rejects.toThrow(new Error(USER_NOT_FOUND));
 			expect(userRepositoryMock.findOne).toHaveBeenCalledTimes(1);
 		});
 	});
