@@ -26,11 +26,7 @@ export class CartService {
 	}
 
 	getCart(userId: number) {
-		const cart = this.cartRepository.findOne({ where: { userId } });
-		if (!cart) {
-			throw new BadRequestException(CART_NOT_FOUND);
-		};
-		return cart;
+		return this.cartRepository.findOne({ where: { userId } });
 	}
 
 	deleteCart(userId: number) {
@@ -90,13 +86,12 @@ export class CartService {
 		const cart = await this.getCart(userId);
 
 		if (!cart) {
-			throw new Error(CART_NOT_FOUND);
-		}
+			throw new BadRequestException(CART_NOT_FOUND);
+		};
 		const itemIndex = cart?.items.findIndex((item) => item.productId == productId);
-
-		if (!itemIndex || itemIndex < 0) {
-			throw new Error(CART_ITEM_NOT_FOUND);
-		}
+		if (itemIndex < 0) {
+			throw new BadRequestException(CART_ITEM_NOT_FOUND);
+		};
 		cart?.items.splice(itemIndex, 1);
 		return cart?.save();
 	}
