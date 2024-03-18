@@ -32,7 +32,7 @@ export class ProductService {
 	}
 
 	remove(id: number) {
-		return this.productsRepository.destroy({ where: { id } });
+		this.productsRepository.destroy({ where: { id } });
 	}
 
 	findProductsByCategory(categoryId: number, page: number, pageSize: number) {

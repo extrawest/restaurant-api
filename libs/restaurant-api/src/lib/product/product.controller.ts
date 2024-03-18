@@ -7,7 +7,8 @@ import {
 	Param,
 	Delete,
 	UseGuards,
-	Query
+	Query,
+	HttpCode
 } from "@nestjs/common";
 import { ProductService } from "./product.service";
 import { CreateProductDto } from "./dto/create-product.dto";
@@ -54,9 +55,10 @@ export class ProductController {
 
 	@Roles(Role.Admin)
 	@UseGuards(AuthGuard, RolesGuard)
+	@HttpCode(204)
 	@Delete(":id")
 	remove(@Param("id") id: string) {
-		return this.productService.remove(+id);
+		this.productService.remove(+id);
 	}
 
 	@Roles(Role.Admin, Role.Buyer)
