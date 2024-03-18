@@ -20,7 +20,12 @@
 		"coverageReporters": [
 			"json",
 			"html"
-		]
+		],
+		"coverageThreshold": {
+      "global": {
+        "lines": 80
+      }
+    }
 	},
 	"private": true,
 	"dependencies": {

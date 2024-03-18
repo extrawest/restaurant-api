@@ -122,9 +122,9 @@ describe("CategoryService", () => {
 
 		it("should throw an error on item not found", async () => {
 			const newName = "New Name";
-			categoryRepositoryMock.findOne.mockRejectedValueOnce(new Error());
-			const result = await service.update(1, { name: newName });
-			expect(result).toEqual(new Error(CATEGORY_NOT_FOUND));
+			categoryRepositoryMock.findOne.mockResolvedValueOnce(null);
+			const result = service.update(1, { name: newName });
+			expect(result).rejects.toEqual(new BadRequestException(CATEGORY_NOT_FOUND));
 			expect(categoryRepositoryMock.findOne).toHaveBeenCalledTimes(1);
 		});
 	});

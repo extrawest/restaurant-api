@@ -17,6 +17,8 @@ import { ProducerService } from "../queues/queues.producer";
 import { Payment } from "../payment/entities/payment.entity";
 import { Address } from "../order/entities/order-address.entity";
 import { PAYMENTS_REPOSITORY, PAYMENT_METHODS_REPOSITORY } from "../payment/constants";
+import { OrderService } from "../order/order.service";
+import { ORDERS_REPOSITORY } from "../order/constants";
 
 const paymentId = faker.string.uuid();
 const stripeCustomerId = faker.string.uuid();
@@ -76,6 +78,7 @@ describe("CheckoutService", () => {
 				StripeService,
 				JwtService,
 				PaymentService,
+				OrderService,
 				ConfigService,
 				{
 					provide: CART_REPOSITORY,
@@ -93,6 +96,10 @@ describe("CheckoutService", () => {
 					provide: PAYMENT_METHODS_REPOSITORY,
 					useValue: jest.fn()
 				},
+				{
+					provide: ORDERS_REPOSITORY,
+					useValue: jest.fn(),
+				}
 			],
 		}).compile();
 
