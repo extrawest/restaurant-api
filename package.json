@@ -10,22 +10,11 @@
 		"lint:all": "nx run-many --target=lint --all --maxWarnings=-1 --skip-nx-cache",
 		"lint:all:fix": "nx run-many --target=lint --all --fix --maxWarnings=-1 --skip-nx-cache",
 		"test:restaurant-api": "nx test restaurant-api",
+		"test:coverage": "nx test restaurant-api --code-coverage",
 		"prepare": "husky install",
 		"build": "nx build restaurant-server --skip-nx-cache --prod",
 		"migration-up": "node umzug.mjs up",
 		"migration-down": "node umzug.mjs down"
-	},
-	"jest": {
-		"collectCoverage": true,
-		"coverageReporters": [
-			"json",
-			"html"
-		],
-		"coverageThreshold": {
-      "global": {
-        "lines": 80
-      }
-    }
 	},
 	"private": true,
 	"dependencies": {
