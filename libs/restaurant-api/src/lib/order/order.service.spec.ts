@@ -7,10 +7,11 @@ import { CartService } from "../cart/cart.service";
 import { CART_REPOSITORY } from "../cart/constants";
 import { Cart } from "../cart/entities/cart.entity";
 import { CartItem } from "../cart/entities/item.entity";
-import { Status } from "../enums/order.enum";
+import { StatisticsFields, Status } from "../enums/order.enum";
 import { OrderItem } from "./entities/order-item.entity";
 import { CART_IS_EMPTY, CART_NOT_FOUND } from "shared";
 import { Address } from "./entities/order-address.entity";
+import { BadRequestException, NotFoundException } from "@nestjs/common";
 
 const ordersRepositoryMock = {
 	create: jest.fn(),
@@ -101,7 +102,7 @@ describe("OrderService", () => {
 			expect(ordersRepositoryMock.create).toHaveBeenCalledTimes(0);
 			expect(cartFindOneSpy).toHaveBeenCalledTimes(1);
 			expect(cartFindOneSpy).toHaveBeenCalledWith(cart.userId);
-			expect(orderResult).rejects.toThrow(new Error(CART_NOT_FOUND));
+			expect(orderResult).rejects.toThrow(new NotFoundException(CART_NOT_FOUND));
 		});
 
 		it("shouldn't create order, should throw CART_IS_EMPTY", async () => {
@@ -110,7 +111,7 @@ describe("OrderService", () => {
 			expect(ordersRepositoryMock.create).toHaveBeenCalledTimes(0);
 			expect(cartFindOneSpy).toHaveBeenCalledTimes(1);
 			expect(cartFindOneSpy).toHaveBeenCalledWith(cart.userId);
-			expect(orderResult).rejects.toThrow(new Error(CART_IS_EMPTY));
+			expect(orderResult).rejects.toThrow(new BadRequestException(CART_IS_EMPTY));
 		});
 	});
 
@@ -175,6 +176,19 @@ describe("OrderService", () => {
 			});
 			expect(result).toEqual([order]);
 		});
+
+		it("should find by paymentId", async () => {
+			const paymentId = faker.string.uuid();
+			ordersRepositoryMock.findOne.mockResolvedValueOnce(order);
+			const result = await orderService.getOrderByPaymentId(paymentId);
+			expect(result).toEqual(order);
+			expect(ordersRepositoryMock.findOne).toHaveBeenCalledTimes(1);
+			expect(ordersRepositoryMock.findOne).toHaveBeenCalledWith({
+				where: {
+					paymentId
+				}
+			});
+		});
 	});
 
 	describe("update method", () => {
@@ -203,6 +217,43 @@ describe("OrderService", () => {
 					status: Status.Cooking
 				});
 			});
+		});
+	});
+
+	describe("statistics method", () => {
+		it("get statistics with date and specific field" , async () => {
+			const fromDate = faker.date.past().toLocaleDateString();
+			const toDate = faker.date.future().toLocaleDateString();
+			ordersRepositoryMock.findAll.mockResolvedValueOnce([
+				order
+			]);
+			const result = await orderService.getStatistics(
+				[StatisticsFields.TOTAL_ORDERS],
+				fromDate,
+				toDate
+			);
+			expect(result.totalOrdersCount).toBeDefined();
+			expect(ordersRepositoryMock.findAll).toHaveBeenCalledTimes(1);
+			expect(ordersRepositoryMock.findAll).toHaveBeenCalledWith({
+				where: {
+					createdAt: {
+						[Op.and]: {
+							[Op.gte]: new Date(fromDate),
+							[Op.lte]: new Date(toDate)
+						}
+					}
+				}
+			});
+		});
+
+		it("get statistics w/o date and specific field" , async () => {
+			const fromDate = faker.date.past().toLocaleDateString();
+			ordersRepositoryMock.findAll.mockResolvedValueOnce([
+				order
+			]);
+			const result = await orderService.getStatistics([StatisticsFields.TOTAL_ORDERS], fromDate);
+			expect(result.totalOrdersCount).toBeDefined();
+			expect(ordersRepositoryMock.findAll).toHaveBeenCalledTimes(1);
 		});
 	});
 });

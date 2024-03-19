@@ -5,7 +5,12 @@ import {
 	CART_NOT_FOUND,
 	ORDER_NOT_FOUND
 } from "shared";
-import { Inject, Injectable } from "@nestjs/common";
+import {
+	BadRequestException,
+	Inject,
+	Injectable,
+	NotFoundException
+} from "@nestjs/common";
 import { ORDERS_REPOSITORY } from "./constants";
 import { Order } from "./entities/order.entity";
 import { CartService } from "../cart/cart.service";
@@ -22,21 +27,21 @@ export class OrderService {
 		const { userId, items } = order;
 		const cart = await this.cartService.getCart(userId);
 		if (!cart) {
-			throw new Error(CART_NOT_FOUND);
+			throw new BadRequestException(CART_NOT_FOUND);
 		};
 		if (!items.length) {
-			throw new Error(CART_IS_EMPTY);
+			throw new BadRequestException(CART_IS_EMPTY);
 		};
 		return this.ordersRepository.create<Order>({ ...order }, { include: [OrderItem] });
 	};
 	// TODO: response type
-	getOrderById(orderId: number): Promise<Order | null> | Error {
+	getOrderById(orderId: number): Promise<Order | null> {
 		const order = this.ordersRepository.findOne({
 			where: { id: orderId },
 			include: [OrderItem]
 		});
 		if (!order) {
-			return new Error(ORDER_NOT_FOUND);
+			throw new NotFoundException(ORDER_NOT_FOUND);
 		} else {
 			return order;
 		}
@@ -71,7 +76,7 @@ export class OrderService {
 				if (item) {
 					return item.update(updateOrderDto);
 				} else {
-					throw new Error(ORDER_NOT_FOUND);
+					throw new NotFoundException(ORDER_NOT_FOUND);
 				};
 			});
 	};

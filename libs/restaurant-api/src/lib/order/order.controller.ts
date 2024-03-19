@@ -54,7 +54,7 @@ export class OrderController {
 	@Roles(Role.Admin, Role.Buyer)
 	@UseGuards(AuthGuard, RolesGuard)
 	@Patch(":id")
-	update(@Param("id") id: string, @Body() updateOrderDto: UpdateOrderDto): Promise<OrderDTO | Error> {
+	update(@Param("id") id: string, @Body() updateOrderDto: UpdateOrderDto): Promise<OrderDTO> {
 		return this.orderService.update(+id, updateOrderDto);
 	}
 
