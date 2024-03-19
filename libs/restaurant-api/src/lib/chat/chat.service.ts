@@ -1,8 +1,9 @@
 import { Model } from "mongoose";
-import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Message } from "./schemas/message.schema";
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { ROOM_NOT_FOUND } from "shared";
 import { RoomService } from "./room.service";
+import { Message } from "./schemas/message.schema";
 
 @Injectable()
 export class ChatService {
@@ -11,16 +12,16 @@ export class ChatService {
 		private readonly roomService: RoomService,
 	) {};
 
-	saveMessage(content: string, userId: number, roomId: string): Promise<Message> {
-		const room = this.roomService.getRoomById(roomId);
+	async saveMessage(content: string, userId: number, roomId: string): Promise<Message> {
+		const room = await this.roomService.getRoomById(roomId);
 		if (!room) {
-			throw new Error("ROOM_NOT_FOUND");
+			throw new NotFoundException(ROOM_NOT_FOUND);
 		};
-		return new this.messagesRepository({
+		return this.messagesRepository.create({
 			content,
 			userId,
 			roomId
-		}).save();
+		});
 	};
  
 	async getRoomMessages(roomId: string) {
