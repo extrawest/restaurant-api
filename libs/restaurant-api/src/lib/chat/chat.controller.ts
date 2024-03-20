@@ -10,7 +10,7 @@ import { ChatService } from "./chat.service";
 import { RoomService } from "./room.service";
 import { User } from "../decorators/user.decorator";
 import { User as UserEntity } from "../user/entities/user.entity";
-import { AuthGuard } from "../auth/auth.guard";
+import { AuthGuard } from "../auth";
 import { RolesGuard } from "../auth/roles.guard";
 import { Role } from "../enums/role.enum";
 import { Roles } from "../auth/roles.decorator";

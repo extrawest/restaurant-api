@@ -2,14 +2,14 @@ import { compare, hash } from "bcrypt";
 import { JwtService } from "@nestjs/jwt";
 import { createTransport } from "nodemailer";
 import {
-	HttpException,
-	HttpStatus,
+	BadRequestException,
 	Injectable,
+	NotFoundException,
 	UnauthorizedException
 } from "@nestjs/common";
 import { Maybe } from "utils";
 import {
-	PASSWORDS_DONT_MATCH,
+	PASSWORDS_DO_NOT_MATCH,
 	TOKEN_IS_NOT_VALID_OR_EXPIRED,
 	USER_NOT_FOUND
 } from "shared";
@@ -37,7 +37,7 @@ export class AuthService {
 	// TODO: add Token model to the DB to store forgot pass tokens
 	async forgotPassword(email: string) {
 		const user = await this.usersService.findOneByEmail(email);
-		if (!user) throw new HttpException(USER_NOT_FOUND, HttpStatus.NOT_FOUND);
+		if (!user) throw new NotFoundException(USER_NOT_FOUND);
 		/* eslint-disable function-paren-newline */
 		const forgotPasswordToken = this.jwtService.sign(
 			{ _id: user.id },
@@ -68,19 +68,19 @@ export class AuthService {
 	async resetPassword(newPassword: string, confirmPassword: string, token: string) {
 		const passwordsMathching = newPassword === confirmPassword;
 		if (!passwordsMathching)
-			throw new HttpException(PASSWORDS_DONT_MATCH, HttpStatus.BAD_REQUEST);
+			throw new BadRequestException(PASSWORDS_DO_NOT_MATCH);
 		try {
 			const { _id } = this.jwtService.verify(token, {
 				secret: process.env["FORGOT_PASS_SECRET"]
 			});
 			if (_id) {
 				const hashedPassword = await hash(newPassword, 10);
-				this.usersService.update(_id, {
+				await this.usersService.update(_id, {
 					password: hashedPassword
 				});
 			}
 		} catch {
-			throw new HttpException(TOKEN_IS_NOT_VALID_OR_EXPIRED, HttpStatus.BAD_REQUEST);
+			throw new BadRequestException(TOKEN_IS_NOT_VALID_OR_EXPIRED);
 		};
 	};
 

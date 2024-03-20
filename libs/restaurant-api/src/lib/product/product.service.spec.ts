@@ -1,6 +1,9 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { ProductService } from "./product.service";
+import { faker } from "@faker-js/faker";
+import { PRODUCT_NOT_FOUND } from "shared";
 import { PRODUCTS_REPOSITORY } from "./constants";
+import { ProductService } from "./product.service";
+import { Category } from "../category/entities/category.entity";
 
 const productRepositoryMock = {
 	create: jest.fn(),
@@ -8,17 +11,18 @@ const productRepositoryMock = {
 	findOrCreate: jest.fn(),
 	findOne: jest.fn(),
 	update: jest.fn(),
+	destroy: jest.fn(),
 };
 
 const product = {
 	id: 1,
 	name: "Product 1",
 	price: 1,
-	currency: "USD",
+	currency: faker.finance.currency().code,
 	categoryId: 1,
 	orderId: 1,
 	quantity: 1,
-	image: "image"
+	image: faker.image.url()
 };
 
 describe("ProductService", () => {
@@ -76,6 +80,19 @@ describe("ProductService", () => {
 				where: { id: product.id }
 			});
 		});
+
+		it("should return products by category", async () => {
+			productRepositoryMock.findAll.mockResolvedValueOnce([product]);
+			const result = await service.findProductsByCategory(1, 0, 10);
+			expect(result).toEqual([product]);
+			expect(productRepositoryMock.findAll).toHaveBeenCalledTimes(1);
+			expect(productRepositoryMock.findAll).toHaveBeenCalledWith({
+				where: { categoryId: 1 },
+				include: [Category],
+				offset: 0,
+				limit: 10
+			});
+		});
 	});
 
 	describe("update method", () => {
@@ -108,8 +125,20 @@ describe("ProductService", () => {
 			const newName = "New Name";
 			productRepositoryMock.findOne.mockResolvedValueOnce(null);
 			const result = service.update(1, { name: newName });
-			expect(result).rejects.toThrow(new Error("Product not found"));
+			expect(result).rejects.toThrow(new Error(PRODUCT_NOT_FOUND));
 			expect(productRepositoryMock.findOne).toHaveBeenCalledTimes(1);
+		});
+	});
+
+	describe("remove method", () => {
+		it("should remove", async () => {
+			productRepositoryMock.destroy.mockResolvedValueOnce(1);
+			const id = faker.number.int(10);
+			await service.remove(id);
+			expect(productRepositoryMock.destroy).toHaveBeenCalledTimes(1);
+			expect(productRepositoryMock.destroy).toHaveBeenCalledWith({
+				where: { id }
+			});
 		});
 	});
 });

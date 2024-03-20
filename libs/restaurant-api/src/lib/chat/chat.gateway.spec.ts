@@ -1,11 +1,12 @@
-import { Test, TestingModule } from "@nestjs/testing";
-import { io, Socket } from "socket.io-client";
-import { ChatGateway } from "./chat.gateway";
-import { ChatService } from "./chat.service";
-import { INestApplication } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
+import { io, Socket } from "socket.io-client";
 import { ConfigService } from "@nestjs/config";
 import { getModelToken } from "@nestjs/mongoose";
+import { Test, TestingModule } from "@nestjs/testing";
+import { CanActivate, INestApplication } from "@nestjs/common";
+import { WsJwtAuthGuard } from "../auth";
+import { ChatGateway } from "./chat.gateway";
+import { ChatService } from "./chat.service";
 import DoneCallback = jest.DoneCallback;
 
 const chatServiceMock = {
@@ -19,6 +20,8 @@ describe("ChatGateway", () => {
 	let ioClient: Socket;
 
 	beforeEach(async () => {
+		jest.resetAllMocks();
+		const mockGuard: CanActivate = { canActivate: jest.fn(() => true) };
 		const module: TestingModule = await Test.createTestingModule({
 			providers: [
 				ConfigService,
@@ -30,7 +33,10 @@ describe("ChatGateway", () => {
 				},
 				{ provide: ChatService, useValue: chatServiceMock },
 			],
-		}).compile();
+		})
+			.overrideGuard(WsJwtAuthGuard)
+			.useValue(mockGuard)
+			.compile();
 		app = module.createNestApplication();
 		gateway = app.get<ChatGateway>(ChatGateway);
 		await app.listen(3000);

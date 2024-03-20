@@ -24,5 +24,8 @@ export class User extends Model {
 	role: Role;
 
 	@Column
+	stripeCustomerId: string;
+
+	@Column
 	currentHashedRefreshToken?: string;
 }

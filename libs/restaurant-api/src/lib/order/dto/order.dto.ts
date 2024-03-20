@@ -1,10 +1,10 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Product } from "../../product/entities/product.entity";
+import { OrderItem } from "../entities/order-item.entity";
 
 export class OrderDTO {
 	@ApiProperty()
 	userId: number;
 
 	@ApiProperty()
-	products: Product[];
+	items: OrderItem[];
 }
