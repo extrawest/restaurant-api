@@ -24,6 +24,7 @@ const cartItem = {
 	name: faker.commerce.productName(),
 	quantity: 2,
 	price: 20,
+	discountedPrice: 0,
 };
 
 const cart = {
