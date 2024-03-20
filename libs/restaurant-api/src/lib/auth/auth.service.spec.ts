@@ -16,6 +16,10 @@ import { PASSWORDS_DO_NOT_MATCH, TOKEN_IS_NOT_VALID_OR_EXPIRED } from "shared";
 const fakeEmail = faker.internet.email();
 const fakePassword = faker.internet.password();
 
+const usersRepositoryMock = {
+	findOne: jest.fn(),
+};
+
 const fakeUser = {
 	name: faker.person.fullName(),
 	email: fakeEmail,
@@ -40,7 +44,7 @@ describe("AuthService", () => {
 				ConfigService,
 				{
 					provide: USERS_REPOSITORY,
-					useValue: jest.fn()
+					useValue: usersRepositoryMock
 				}
 			]
 		}).compile();
@@ -61,6 +65,9 @@ describe("AuthService", () => {
 				...fakeUser,
 				password: hashedPassword
 			} as User);
+			usersRepositoryMock.findOne.mockResolvedValueOnce({
+				update: jest.fn(),
+			});
 			jest.spyOn(jwtService, "signAsync").mockResolvedValueOnce("");
 			expect((await service.signIn(fakeEmail, fakePassword)).access_token).toBeDefined();
 			expect(jest.spyOn(usersService, "findOneByEmail")).toHaveBeenCalledTimes(1);
