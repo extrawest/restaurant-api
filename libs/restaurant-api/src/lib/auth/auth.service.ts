@@ -7,12 +7,14 @@ import {
 	NotFoundException,
 	UnauthorizedException
 } from "@nestjs/common";
+import { Maybe } from "utils";
 import {
 	PASSWORDS_DO_NOT_MATCH,
 	TOKEN_IS_NOT_VALID_OR_EXPIRED,
 	USER_NOT_FOUND
 } from "shared";
 import { UsersService } from "../user/user.service";
+import { User } from "../user/entities/user.entity";
 
 @Injectable()
 export class AuthService {
@@ -22,15 +24,13 @@ export class AuthService {
 		const isPasswordMatching = await compare(password, user?.password || "");
 		if (!isPasswordMatching) {
 			throw new UnauthorizedException();
-		}
-		const payload = {
-			id: user?.id,
-			email: user?.email,
-			role: user?.role,
-			stripeCustomerId: user?.stripeCustomerId
 		};
+		const access_token = await this.getJwtAccessToken(user);
+		const refresh_token = await this.getJwtRefreshToken(user);
+		await this.usersService.setCurrentRefreshToken(refresh_token, user?.id);
 		return {
-			access_token: await this.jwtService.signAsync(payload)
+			access_token,
+			refresh_token,
 		};
 	};
 
@@ -59,9 +59,9 @@ export class AuthService {
 			to: email,
 			subject: `Password Reset`,
 			html: `
-        <h3>Token:</>
-        <p><b>${forgotPasswordToken}</b></p>
-      `
+				<h3>Token:</>
+				<p><b>${forgotPasswordToken}</b></p>
+			`
 		});
 	};
 
@@ -83,4 +83,38 @@ export class AuthService {
 			throw new BadRequestException(TOKEN_IS_NOT_VALID_OR_EXPIRED);
 		};
 	};
+
+	async refreshToken(refreshToken: string, userEmail: string) {
+		const user = await this.usersService.findOneByEmail(userEmail);
+		const isRefreshTokenMatching = await compare(
+			refreshToken,
+			user?.currentHashedRefreshToken as string,
+		);
+		if (!isRefreshTokenMatching) {
+			throw new UnauthorizedException();
+		};
+		const access_token = await this.getJwtAccessToken(user);
+		const refresh_token = await this.getJwtRefreshToken(user);
+		await this.usersService.setCurrentRefreshToken(refresh_token, user?.id);
+		return {
+			access_token,
+			refresh_token,
+		};
+	};
+
+	async getJwtAccessToken(user: Maybe<User>) {
+		const payload = { id: user?.id, email: user?.email, role: user?.role };
+		return this.jwtService.sign(payload, {
+			secret: process.env["JWT_SECRET"],
+			expiresIn: "1d"
+		});
+	}
+ 
+	async getJwtRefreshToken(user: Maybe<User>) {
+		const payload = { id: user?.id, email: user?.email, role: user?.role };
+		return this.jwtService.sign(payload, {
+			secret: process.env["JWT_SECRET"],
+			expiresIn: "7d"
+		});
+	}
 };
