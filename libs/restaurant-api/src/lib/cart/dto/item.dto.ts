@@ -12,4 +12,7 @@ export class ItemDto {
   
   @ApiProperty()
   price: number;
+
+  @ApiProperty()
+  discountedPrice: number;
 }

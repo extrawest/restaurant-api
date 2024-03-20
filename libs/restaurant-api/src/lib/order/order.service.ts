@@ -93,8 +93,7 @@ export class OrderService {
 				totalRevenue: this.calculateTotalRevenue(orders)
 			}),
 			...(fields.includes(StatisticsFields.TOTAL_ORDERS) && {
-				// TODO: make clear the response to avoid || []
-				totalOrdersCount: (orders || []).length
+				totalOrdersCount: orders.length
 			})
 		};
 	};
@@ -102,7 +101,8 @@ export class OrderService {
 	private calculateTotalRevenue(orders: Order[]) {
 		return orders.reduce((ordersRevenue, order: Order) => {
 			const orderRevenue = order.items.reduce((productsRevenue, product) => {
-				return product.price + productsRevenue;
+				const relevantPrice = product.discountedPrice || product.price;
+				return relevantPrice + productsRevenue;
 			}, 0);
 			return orderRevenue + ordersRevenue;
 		}, 0);

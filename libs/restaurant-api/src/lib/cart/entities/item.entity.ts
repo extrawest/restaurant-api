@@ -20,4 +20,7 @@ export class CartItem extends Model<CartItem> {
 
 	@Column
 	price: number;
+
+	@Column
+	discountedPrice: number;
 }

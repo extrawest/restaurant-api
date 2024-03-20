@@ -20,6 +20,9 @@ export class Product extends Model {
 	price: number;
 
 	@Column
+	discountedPrice: number;
+
+	@Column
 	currency: string;
 
 	@Column

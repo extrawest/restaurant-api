@@ -36,12 +36,18 @@ export class CartService {
 	private recalculateCart(cart: Cart) {
 		cart.totalPrice = 0;
 		cart.items.forEach((item) => {
-			cart.totalPrice += item.quantity * item.price;
+			const relevantItemPrice = item.discountedPrice || item.price;
+			cart.totalPrice += item.quantity * relevantItemPrice;
 		});
 	}
 
 	async addItemToCart(userId: number, itemDto: ItemDto) {
-		const { productId, quantity, price } = itemDto;
+		const {
+			productId,
+			quantity,
+			price,
+			discountedPrice
+		} = itemDto;
 		const cart = await this.getCart(userId);
 
 		if (cart) {
@@ -63,7 +69,7 @@ export class CartService {
 			return this.createCart(
 				userId,
 				itemDto,
-				price
+				discountedPrice || price
 			);
 		};
 	}
@@ -79,6 +85,7 @@ export class CartService {
 			throw new BadRequestException(CART_ITEM_NOT_FOUND);
 		};
 		cart.items[itemIndex].quantity = newQuantity;
+		this.recalculateCart(cart);
 		return cart.save();
 	}
 
@@ -93,6 +100,7 @@ export class CartService {
 			throw new BadRequestException(CART_ITEM_NOT_FOUND);
 		};
 		cart?.items.splice(itemIndex, 1);
+		this.recalculateCart(cart);
 		return cart?.save();
 	}
 }

@@ -20,4 +20,7 @@ export class OrderItem extends Model {
 
 	@Column
 	price: number;
+
+	@Column
+	discountedPrice: number;
 }
