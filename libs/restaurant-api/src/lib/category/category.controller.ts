@@ -14,7 +14,7 @@ import { UpdateCategoryDto } from "./dto/update-category.dto";
 import { Roles } from "../auth/roles.decorator";
 import { Role } from "../enums/role.enum";
 import { RolesGuard } from "../auth/roles.guard";
-import { AuthGuard } from "../auth/auth.guard";
+import { AuthGuard } from "../auth";
 import { CategoryDTO } from "./dto/category.dto";
 import { Maybe } from "utils";
 
@@ -41,7 +41,7 @@ export class CategoryController {
 
 	@UseGuards(AuthGuard)
 	@Patch(":id")
-	update(@Param("id") id: string, @Body() updateCategoryDto: UpdateCategoryDto): Promise<CategoryDTO> {
+	update(@Param("id") id: string, @Body() updateCategoryDto: UpdateCategoryDto): Promise<Maybe<CategoryDTO>> {
 		return this.categoryService.update(+id, updateCategoryDto);
 	}
 

@@ -10,17 +10,24 @@ import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { Role } from "../enums/role.enum";
 import { Maybe } from "utils";
+import { StripeService } from "../stripe/stripe.service";
+import { USER_NOT_FOUND } from "shared";
 
 @Injectable()
 export class UsersService {
-	constructor(@Inject(USERS_REPOSITORY) private usersRepository: typeof User) {}
+	constructor(
+		@Inject(USERS_REPOSITORY) private usersRepository: typeof User,
+		private stripeService: StripeService
+	) {}
 	async create(userData: CreateUserDto, user?: User) {
+		const stripeCustomer = await this.stripeService.createCustomer(userData.name, userData.email);
 		if (userData.role === Role.Admin && user?.role !== Role.Admin) {
 			throw new UnauthorizedException("CURRENT_USER_DOESN'T_HAVE_PERMISSIONS_TO_CREATE_ADMIN");
 		};
 		const hashedPassword = await hash(userData.password, 10);
 		const createdUser = await this.usersRepository.create<User>({
 			...userData,
+			stripeCustomerId: stripeCustomer.id,
 			password: hashedPassword,
 			role: user?.role === Role.Admin ? userData.role : Role.Buyer
 		});
@@ -58,7 +65,7 @@ export class UsersService {
 				if (item) {
 					return item?.update(updateUserDto);
 				}
-				throw new Error("USER_NOT_FOUND");
+				throw new Error(USER_NOT_FOUND);
 			});
 	}
 

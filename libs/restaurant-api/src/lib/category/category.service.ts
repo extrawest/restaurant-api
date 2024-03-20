@@ -7,6 +7,12 @@ import { CreateCategoryDto } from "./dto/create-category.dto";
 import { UpdateCategoryDto } from "./dto/update-category.dto";
 import { CATEGORIES_REPOSITORY } from "./constants";
 import { Category } from "./entities/category.entity";
+import { Maybe } from "utils";
+import {
+	CATEGORY_ALREADY_EXISTS,
+	CATEGORY_NOT_FOUND,
+	EMPTY_CATEGORY_NAME
+} from "shared";
 
 @Injectable()
 export class CategoryService {
@@ -14,7 +20,7 @@ export class CategoryService {
 	async create(createCategoryDto: CreateCategoryDto) {
 		const { name } = createCategoryDto;
 		if (!name?.length) {
-			throw new BadRequestException("EMPTY_CATEGORY_NAME");
+			throw new BadRequestException(EMPTY_CATEGORY_NAME);
 		};
 		return this.findOrCreate(name);
 	}
@@ -27,7 +33,7 @@ export class CategoryService {
 				if (created) {
 					return category;
 				};
-				throw new BadRequestException("CATEGORY_ALREADY_EXISTS");
+				throw new BadRequestException(CATEGORY_ALREADY_EXISTS);
 			});
 	}
 
@@ -39,11 +45,12 @@ export class CategoryService {
 		return this.categoriesRepository.findOne<Category>({ where: { id } });
 	}
 
-	update(id: number, updateCategoryDto: UpdateCategoryDto): Promise<Category | undefined | Error> {
-		return this.categoriesRepository
-			.findOne<Category>({ where: { id } })
-			.then((item) => item?.update(updateCategoryDto))
-			.catch(() => new Error("Category not found"));
+	async update(id: number, updateCategoryDto: UpdateCategoryDto): Promise<Maybe<Category>> {
+		const category = await this.categoriesRepository.findOne<Category>({ where: { id } });
+		if (category) {
+			return category?.update(updateCategoryDto);
+		};
+		throw new BadRequestException(CATEGORY_NOT_FOUND);
 	}
 
 	remove(id: number) {

@@ -1,4 +1,5 @@
 import { Inject, Injectable } from "@nestjs/common";
+import { PRODUCT_NOT_FOUND } from "shared";
 import { CreateProductDto } from "./dto/create-product.dto";
 import { UpdateProductDto } from "./dto/update-product.dto";
 import { Product } from "./entities/product.entity";
@@ -27,11 +28,11 @@ export class ProductService {
 		if (productFound) {
 			return productFound?.update(updateProductDto);
 		};
-		throw new Error("Product not found");
+		throw new Error(PRODUCT_NOT_FOUND);
 	}
 
 	remove(id: number) {
-		return this.productsRepository.destroy({ where: { id } });
+		this.productsRepository.destroy({ where: { id } });
 	}
 
 	findProductsByCategory(categoryId: number, page: number, pageSize: number) {

@@ -5,11 +5,13 @@ import {
 	DataType,
 	ForeignKey,
 	BelongsTo,
-	HasMany
+	HasMany,
+	HasOne
 } from "sequelize-typescript";
 import { Status as OrderStatus } from "../../enums/order.enum";
 import { User } from "../../user/entities/user.entity";
-import { Product } from "../../product/entities/product.entity";
+import { OrderItem } from "./order-item.entity";
+import { Address } from "./order-address.entity";
 
 @Table
 export class Order extends Model {
@@ -26,6 +28,12 @@ export class Order extends Model {
 	@BelongsTo(() => User)
 	user: User;
 
-	@HasMany(() => Product)
-	products: Product[];
+	@HasMany(() => OrderItem)
+	items: OrderItem[];
+
+	@Column
+	paymentId!: string;
+
+	@HasOne(() => Address)
+	address!: Address;
 }

@@ -10,6 +10,9 @@ import {
 	QueuesModule,
 	CartModule,
 	FirebaseModule,
+	StripeModule,
+	CheckoutModule,
+	PaymentModule,
 	ChatModule,
 } from "restaurant-api";
 import { ConfigModule } from "@nestjs/config";
@@ -28,6 +31,9 @@ import { ConfigModule } from "@nestjs/config";
 		QueuesModule,
 		CartModule,
 		FirebaseModule,
+		StripeModule,
+		CheckoutModule,
+		PaymentModule,
 		ChatModule
 	],
 	controllers: [AppController],

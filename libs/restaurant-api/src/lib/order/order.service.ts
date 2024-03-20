@@ -1,36 +1,47 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Op } from "sequelize";
+import { Maybe } from "utils";
+import {
+	CART_IS_EMPTY,
+	CART_NOT_FOUND,
+	ORDER_NOT_FOUND
+} from "shared";
+import {
+	BadRequestException,
+	Inject,
+	Injectable,
+	NotFoundException
+} from "@nestjs/common";
 import { ORDERS_REPOSITORY } from "./constants";
 import { Order } from "./entities/order.entity";
 import { CartService } from "../cart/cart.service";
-import { CreateOrderDto } from "./dto/create-order.dto";
-import { Product } from "../product/entities/product.entity";
-import { UpdateOrderDto } from "./dto/update-order.dto";
-import { Op } from "sequelize";
 import { StatisticsFields } from "../enums/order.enum";
+import { CreateOrderDto } from "./dto/create-order.dto";
+import { UpdateOrderDto } from "./dto/update-order.dto";
+import { OrderItem } from "./entities/order-item.entity";
 
 @Injectable()
 export class OrderService {
 	constructor(@Inject(ORDERS_REPOSITORY) private ordersRepository: typeof Order, private cartService: CartService) {};
 
 	async create(order: CreateOrderDto): Promise<Order> {
-		const { userId, products } = order;
+		const { userId, items } = order;
 		const cart = await this.cartService.getCart(userId);
 		if (!cart) {
-			throw new Error("CART_NOT_FOUND");
+			throw new BadRequestException(CART_NOT_FOUND);
 		};
-		if (!products.length) {
-			throw new Error("CART_IS_EMPTY");
+		if (!items.length) {
+			throw new BadRequestException(CART_IS_EMPTY);
 		};
-		return this.ordersRepository.create<Order>({ ...order }, { include: [Product] });
+		return this.ordersRepository.create<Order>({ ...order }, { include: [OrderItem] });
 	};
 	// TODO: response type
-	getOrderById(orderId: number): Promise<Order | null> | Error {
+	getOrderById(orderId: number): Promise<Order | null> {
 		const order = this.ordersRepository.findOne({
 			where: { id: orderId },
-			include: [Product]
+			include: [OrderItem]
 		});
 		if (!order) {
-			return new Error("ORDER_NOT_FOUND");
+			throw new NotFoundException(ORDER_NOT_FOUND);
 		} else {
 			return order;
 		}
@@ -54,18 +65,18 @@ export class OrderService {
 	getOrdersByUserId(userId: number): Promise<Order[]> {
 		return this.ordersRepository.findAll({
 			where: { userId },
-			include: [Product]
+			include: [OrderItem]
 		});
 	};
 
 	update(orderId: number, updateOrderDto: UpdateOrderDto): Promise<Order> {
 		return this.ordersRepository
-			.findOne<Order>({ where: { id: orderId }, include: [Product] })
+			.findOne<Order>({ where: { id: orderId }, include: [OrderItem] })
 			.then((item) => {
 				if (item) {
 					return item.update(updateOrderDto);
 				} else {
-					throw new Error("Order not found");
+					throw new NotFoundException(ORDER_NOT_FOUND);
 				};
 			});
 	};
@@ -90,10 +101,16 @@ export class OrderService {
 
 	private calculateTotalRevenue(orders: Order[]) {
 		return orders.reduce((ordersRevenue, order: Order) => {
-			const orderRevenue = order.products.reduce((productsRevenue, product) => {
+			const orderRevenue = order.items.reduce((productsRevenue, product) => {
 				return product.price + productsRevenue;
 			}, 0);
 			return orderRevenue + ordersRevenue;
 		}, 0);
 	};
+
+	getOrderByPaymentId(paymentId: string): Promise<Maybe<Order>> {
+		return this.ordersRepository.findOne({
+			where: { paymentId }
+		});
+	}
 };

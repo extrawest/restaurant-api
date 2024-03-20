@@ -1,8 +1,14 @@
-import { Inject, Injectable } from "@nestjs/common";
+import {
+	BadRequestException,
+	Inject,
+	Injectable
+} from "@nestjs/common";
 import { CART_REPOSITORY } from "./constants";
 import { Cart } from "./entities/cart.entity";
 import { ItemDto } from "./dto/item.dto";
 import { CartItem } from "./entities/item.entity";
+import { CART_ITEM_NOT_FOUND, CART_NOT_FOUND } from "shared";
+import { ItemToUpdateDTO } from "./dto/update-cart-item.dto";
 
 @Injectable()
 export class CartService {
@@ -34,7 +40,7 @@ export class CartService {
 		});
 	}
 
-	async addItemToCart(userId: number, itemDto: CartItem) {
+	async addItemToCart(userId: number, itemDto: ItemDto) {
 		const { productId, quantity, price } = itemDto;
 		const cart = await this.getCart(userId);
 
@@ -49,7 +55,7 @@ export class CartService {
 				this.recalculateCart(cart);
 				return cart.save();
 			} else {
-				cart.items.push(itemDto);
+				cart.items.push(itemDto as CartItem);
 				this.recalculateCart(cart);
 				return cart.save();
 			}
@@ -59,20 +65,33 @@ export class CartService {
 				itemDto,
 				price
 			);
-		}
+		};
+	}
+
+	async updateCart(userId: number, itemToUpdate: ItemToUpdateDTO) {
+		const cart = await this.getCart(userId);
+		if (!cart) {
+			throw new BadRequestException(CART_NOT_FOUND);
+		};
+		const { quantity: newQuantity, productId } = itemToUpdate;
+		const itemIndex = cart?.items.findIndex((item) => item.productId == productId);
+		if (itemIndex === -1) {
+			throw new BadRequestException(CART_ITEM_NOT_FOUND);
+		};
+		cart.items[itemIndex].quantity = newQuantity;
+		return cart.save();
 	}
 
 	async removeItemFromCart(userId: number, productId: number): Promise<Cart> {
 		const cart = await this.getCart(userId);
 
 		if (!cart) {
-			throw new Error("Cart not found");
-		}
+			throw new BadRequestException(CART_NOT_FOUND);
+		};
 		const itemIndex = cart?.items.findIndex((item) => item.productId == productId);
-
-		if (!itemIndex || itemIndex < 0) {
-			throw new Error("Product in the cart not found");
-		}
+		if (itemIndex < 0) {
+			throw new BadRequestException(CART_ITEM_NOT_FOUND);
+		};
 		cart?.items.splice(itemIndex, 1);
 		return cart?.save();
 	}

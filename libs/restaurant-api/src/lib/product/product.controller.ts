@@ -7,7 +7,8 @@ import {
 	Param,
 	Delete,
 	UseGuards,
-	Query
+	Query,
+	HttpCode
 } from "@nestjs/common";
 import { ProductService } from "./product.service";
 import { CreateProductDto } from "./dto/create-product.dto";
@@ -15,7 +16,7 @@ import { UpdateProductDto } from "./dto/update-product.dto";
 import { Roles } from "../auth/roles.decorator";
 import { Role } from "../enums/role.enum";
 import { RolesGuard } from "../auth/roles.guard";
-import { AuthGuard } from "../auth/auth.guard";
+import { AuthGuard } from "../auth/guards/auth.guard";
 import { ProductDTO } from "./dto/product.dto";
 import { Maybe } from "utils";
 
@@ -54,9 +55,10 @@ export class ProductController {
 
 	@Roles(Role.Admin)
 	@UseGuards(AuthGuard, RolesGuard)
+	@HttpCode(204)
 	@Delete(":id")
 	remove(@Param("id") id: string) {
-		return this.productService.remove(+id);
+		this.productService.remove(+id);
 	}
 
 	@Roles(Role.Admin, Role.Buyer)

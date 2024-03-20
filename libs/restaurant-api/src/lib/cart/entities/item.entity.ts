@@ -5,10 +5,9 @@ import {
 	Table
 } from "sequelize-typescript";
 import { Product } from "../../product/entities/product.entity";
-import { Cart } from "./cart.entity";
 
 @Table
-export class CartItem extends Model {
+export class CartItem extends Model<CartItem> {
 	@ForeignKey(() => Product)
 	@Column
 	productId: number;
@@ -21,8 +20,4 @@ export class CartItem extends Model {
 
 	@Column
 	price: number;
-
-	@ForeignKey(() => Cart)
-	@Column
-	cartId!: number;
 }

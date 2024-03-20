@@ -11,7 +11,7 @@ import {
 import { OrderService } from "./order.service";
 import { Roles } from "../auth/roles.decorator";
 import { Role } from "../enums/role.enum";
-import { AuthGuard } from "../auth/auth.guard";
+import { AuthGuard } from "../auth/guards/auth.guard";
 import { RolesGuard } from "../auth/roles.guard";
 import { CreateOrderDto } from "./dto/create-order.dto";
 import { UpdateOrderDto } from "./dto/update-order.dto";
@@ -54,7 +54,7 @@ export class OrderController {
 	@Roles(Role.Admin, Role.Buyer)
 	@UseGuards(AuthGuard, RolesGuard)
 	@Patch(":id")
-	update(@Param("id") id: string, @Body() updateOrderDto: UpdateOrderDto): Promise<OrderDTO | Error> {
+	update(@Param("id") id: string, @Body() updateOrderDto: UpdateOrderDto): Promise<OrderDTO> {
 		return this.orderService.update(+id, updateOrderDto);
 	}
 
