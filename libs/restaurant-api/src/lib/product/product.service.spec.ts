@@ -53,7 +53,10 @@ describe("ProductService", () => {
 			const result = await service.create(product);
 			expect(result).toEqual(product);
 			expect(productRepositoryMock.create).toHaveBeenCalledTimes(1);
-			expect(productRepositoryMock.create).toHaveBeenCalledWith(product);
+			expect(productRepositoryMock.create).toHaveBeenCalledWith({
+				...product,
+				discountedPrice: 0,	
+			});
 		});
 	});
 
