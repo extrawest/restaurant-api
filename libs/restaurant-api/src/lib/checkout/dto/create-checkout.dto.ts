@@ -7,4 +7,7 @@ export class CreateCheckoutDto {
 
 	@ApiProperty()
 	address: Address;
+
+	@ApiProperty()
+	saveAddress: boolean;
 }

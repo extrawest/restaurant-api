@@ -5,6 +5,7 @@ import { faker } from "@faker-js/faker";
 import { Cart } from "./entities/cart.entity";
 import { BadRequestException } from "@nestjs/common";
 import { CART_ITEM_NOT_FOUND, CART_NOT_FOUND } from "shared";
+import { Product } from "../product/entities/product.entity";
 
 const cartRepositoryMock = {
 	create: jest.fn(),
@@ -25,7 +26,7 @@ const cartItem = {
 	quantity: 2,
 	price: 20,
 	discountedPrice: 0,
-};
+} as unknown as Product;
 
 const cart = {
 	userId,

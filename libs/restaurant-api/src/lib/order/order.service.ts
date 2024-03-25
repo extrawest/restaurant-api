@@ -17,7 +17,7 @@ import { CartService } from "../cart/cart.service";
 import { StatisticsFields } from "../enums/order.enum";
 import { CreateOrderDto } from "./dto/create-order.dto";
 import { UpdateOrderDto } from "./dto/update-order.dto";
-import { OrderItem } from "./entities/order-item.entity";
+import { Product } from "../product/entities/product.entity";
 
 @Injectable()
 export class OrderService {
@@ -32,13 +32,13 @@ export class OrderService {
 		if (!items.length) {
 			throw new BadRequestException(CART_IS_EMPTY);
 		};
-		return this.ordersRepository.create<Order>({ ...order }, { include: [OrderItem] });
+		return this.ordersRepository.create<Order>({ ...order }, { include: [Product] });
 	};
 	// TODO: response type
 	getOrderById(orderId: number): Promise<Order | null> {
 		const order = this.ordersRepository.findOne({
 			where: { id: orderId },
-			include: [OrderItem]
+			include: [Product]
 		});
 		if (!order) {
 			throw new NotFoundException(ORDER_NOT_FOUND);
@@ -65,13 +65,13 @@ export class OrderService {
 	getOrdersByUserId(userId: number): Promise<Order[]> {
 		return this.ordersRepository.findAll({
 			where: { userId },
-			include: [OrderItem]
+			include: [Product]
 		});
 	};
 
 	update(orderId: number, updateOrderDto: UpdateOrderDto): Promise<Order> {
 		return this.ordersRepository
-			.findOne<Order>({ where: { id: orderId }, include: [OrderItem] })
+			.findOne<Order>({ where: { id: orderId }, include: [Product] })
 			.then((item) => {
 				if (item) {
 					return item.update(updateOrderDto);
@@ -112,5 +112,10 @@ export class OrderService {
 		return this.ordersRepository.findOne({
 			where: { paymentId }
 		});
+	}
+
+	calculateShippingCost() {
+		// here should be Distance Matrix API, but we are too poor to pay for it
+		return 10;
 	}
 };

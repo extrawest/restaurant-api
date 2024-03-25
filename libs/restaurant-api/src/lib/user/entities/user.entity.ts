@@ -2,9 +2,11 @@ import {
 	Table,
 	Column,
 	Model,
-	DataType 
+	DataType,
+	HasOne
 } from "sequelize-typescript";
 import { Role } from "../../enums/role.enum";
+import { UserAdditionalInfo } from "./additionalInfo.entity";
 
 @Table
 export class User extends Model {
@@ -28,4 +30,7 @@ export class User extends Model {
 
 	@Column
 	currentHashedRefreshToken?: string;
+
+	@HasOne(() => UserAdditionalInfo, "id")
+	additional_info: UserAdditionalInfo;
 }

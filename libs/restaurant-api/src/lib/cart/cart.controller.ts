@@ -16,13 +16,13 @@ import { RolesGuard } from "../auth/roles.guard";
 import { User } from "../decorators/user.decorator";
 import { User as UserEntity } from "../user/entities/user.entity";
 import { CartDTO } from "./dto/cart.dto";
-import { ItemDto } from "./dto/item.dto";
 import {
 	CART_DOESNT_EXIST,
 	CART_WAS_DELETED,
 	CART_WAS_NOT_DELETED
 } from "shared";
 import { ItemToUpdateDTO } from "./dto/update-cart-item.dto";
+import { Product } from "../product/entities/product.entity";
 
 @Controller("cart")
 export class CartController {
@@ -31,7 +31,7 @@ export class CartController {
 	@Roles(Role.Buyer)
 	@UseGuards(AuthGuard, RolesGuard)
 	@Post("add-item")
-	addItemToCart(@User() user: UserEntity, @Body() itemDTO: ItemDto): Promise<CartDTO> {
+	addItemToCart(@User() user: UserEntity, @Body() itemDTO: Product): Promise<CartDTO> {
 		const userId = user.id;
 		return this.cartService.addItemToCart(userId, itemDTO);
 	}

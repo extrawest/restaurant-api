@@ -6,7 +6,7 @@ import {
 	Table
 } from "sequelize-typescript";
 import { User } from "../../user/entities/user.entity";
-import { CartItem } from "./item.entity";
+import { Product } from "../../product/entities/product.entity";
 
 @Table
 export class Cart extends Model {
@@ -14,8 +14,8 @@ export class Cart extends Model {
 	@Column
 	userId: number;
 
-	@HasMany(() => CartItem)
-	items: CartItem[];
+	@HasMany(() => Product)
+	items: Product[];
 
 	@Column
 	totalPrice: number;

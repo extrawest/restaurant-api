@@ -5,17 +5,16 @@ import {
 } from "@nestjs/common";
 import { CART_REPOSITORY } from "./constants";
 import { Cart } from "./entities/cart.entity";
-import { ItemDto } from "./dto/item.dto";
-import { CartItem } from "./entities/item.entity";
 import { CART_ITEM_NOT_FOUND, CART_NOT_FOUND } from "shared";
 import { ItemToUpdateDTO } from "./dto/update-cart-item.dto";
+import { Product } from "../product/entities/product.entity";
 
 @Injectable()
 export class CartService {
 	constructor(@Inject(CART_REPOSITORY) private cartRepository: typeof Cart) {}
 	createCart(
 		userId: number,
-		itemDto: ItemDto,
+		itemDto: Product,
 		totalPrice: number
 	): Promise<Cart> {
 		return this.cartRepository.create<Cart>({
@@ -41,9 +40,9 @@ export class CartService {
 		});
 	}
 
-	async addItemToCart(userId: number, itemDto: ItemDto) {
+	async addItemToCart(userId: number, itemDto: Product) {
 		const {
-			productId,
+			id,
 			quantity,
 			price,
 			discountedPrice
@@ -51,7 +50,7 @@ export class CartService {
 		const cart = await this.getCart(userId);
 
 		if (cart) {
-			const itemIndex = cart?.items.findIndex((item) => item.productId == productId);
+			const itemIndex = cart?.items.findIndex((item) => item.id == id);
 
 			if (itemIndex > -1) {
 				const item = cart.items[itemIndex];
@@ -61,7 +60,7 @@ export class CartService {
 				this.recalculateCart(cart);
 				return cart.save();
 			} else {
-				cart.items.push(itemDto as CartItem);
+				cart.items.push(itemDto);
 				this.recalculateCart(cart);
 				return cart.save();
 			}
@@ -80,7 +79,7 @@ export class CartService {
 			throw new BadRequestException(CART_NOT_FOUND);
 		};
 		const { quantity: newQuantity, productId } = itemToUpdate;
-		const itemIndex = cart?.items.findIndex((item) => item.productId == productId);
+		const itemIndex = cart?.items.findIndex((item) => item.id == productId);
 		if (itemIndex === -1) {
 			throw new BadRequestException(CART_ITEM_NOT_FOUND);
 		};
@@ -95,7 +94,7 @@ export class CartService {
 		if (!cart) {
 			throw new BadRequestException(CART_NOT_FOUND);
 		};
-		const itemIndex = cart?.items.findIndex((item) => item.productId == productId);
+		const itemIndex = cart?.items.findIndex((item) => item.id == productId);
 		if (itemIndex < 0) {
 			throw new BadRequestException(CART_ITEM_NOT_FOUND);
 		};

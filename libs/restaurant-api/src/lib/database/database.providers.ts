@@ -5,9 +5,10 @@ import { Product } from "../product/entities/product.entity";
 import { User } from "../user/entities/user.entity";
 import { Order } from "../order/entities/order.entity";
 import { Cart } from "../cart/entities/cart.entity";
-import { CartItem } from "../cart/entities/item.entity";
 import { Payment } from "../payment/entities/payment.entity";
 import { PaymentMethod } from "../payment/entities/payment-method.entity";
+import { Address } from "../order/entities/order-address.entity";
+import { UserAdditionalInfo } from "../user/entities/additionalInfo.entity";
 
 export const databaseProviders = [
 	{
@@ -23,14 +24,15 @@ export const databaseProviders = [
 				dialectModule: pg
 			});
 			sequelize.addModels([
+				Address,
 				Category,
 				Product,
 				User,
 				Cart,
 				Order,
-				CartItem,
 				Payment,
-				PaymentMethod
+				PaymentMethod,
+				UserAdditionalInfo
 			]);
 			await sequelize.sync({ alter: true });
 			return sequelize;

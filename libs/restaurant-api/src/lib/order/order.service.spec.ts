@@ -6,12 +6,11 @@ import { ORDERS_REPOSITORY } from "./constants";
 import { CartService } from "../cart/cart.service";
 import { CART_REPOSITORY } from "../cart/constants";
 import { Cart } from "../cart/entities/cart.entity";
-import { CartItem } from "../cart/entities/item.entity";
 import { StatisticsFields, Status } from "../enums/order.enum";
-import { OrderItem } from "./entities/order-item.entity";
 import { CART_IS_EMPTY, CART_NOT_FOUND } from "shared";
 import { Address } from "./entities/order-address.entity";
 import { BadRequestException, NotFoundException } from "@nestjs/common";
+import { Product } from "../product/entities/product.entity";
 
 const ordersRepositoryMock = {
 	create: jest.fn(),
@@ -33,7 +32,7 @@ const orderItem = {
 
 const order = {
 	userId: 1,
-	items: [orderItem as unknown as OrderItem],
+	items: [orderItem as unknown as Product],
 	paymentId: faker.string.uuid(),
 	address: {
 		name: faker.person.fullName(),
@@ -49,11 +48,11 @@ const cart = {
 	userId: 1,
 	totalPrice: 10,
 	items: [{
-		productId: 1,
+		id: 1,
 		name: "Product 1",
 		quantity: 10,
 		price: 2,
-	}] as CartItem[],
+	}] as Product[],
 };
 
 describe("OrderService", () => {
@@ -90,7 +89,7 @@ describe("OrderService", () => {
 			expect(cartFindOneSpy).toHaveBeenCalledTimes(1);
 			expect(ordersRepositoryMock.create).toHaveBeenCalledWith(
 				order,
-				{ include: [OrderItem] }
+				{ include: [Product] }
 			);
 			expect(cartFindOneSpy).toHaveBeenCalledWith(cart.userId);
 			expect(orderResult).toBe(order);
@@ -158,7 +157,7 @@ describe("OrderService", () => {
 				where: {
 					id: orderId
 				},
-				include: [OrderItem]
+				include: [Product]
 			});
 			expect(result).toEqual(order);
 		});
@@ -172,7 +171,7 @@ describe("OrderService", () => {
 				where: {
 					userId
 				},
-				include: [OrderItem]
+				include: [Product]
 			});
 			expect(result).toEqual([order]);
 		});
@@ -210,7 +209,7 @@ describe("OrderService", () => {
 				expect(ordersRepositoryMock.findOne).toHaveBeenCalledTimes(1);
 				expect(ordersRepositoryMock.findOne).toHaveBeenCalledWith({
 					where: { id: orderId },
-					include: [OrderItem]
+					include: [Product]
 				});
 				expect(orderFindOneMock.update).toHaveBeenCalledTimes(1);
 				expect(orderFindOneMock.update).toHaveBeenCalledWith({
