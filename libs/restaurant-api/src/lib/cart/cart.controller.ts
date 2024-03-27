@@ -8,21 +8,21 @@ import {
 	Post,
 	UseGuards
 } from "@nestjs/common";
-import { CartService } from "./cart.service";
-import { Roles } from "../auth/roles.decorator";
-import { Role } from "../enums/role.enum";
-import { AuthGuard } from "../auth";
-import { RolesGuard } from "../auth/roles.guard";
-import { User } from "../decorators/user.decorator";
-import { User as UserEntity } from "../user/entities/user.entity";
-import { CartDTO } from "./dto/cart.dto";
 import {
 	CART_DOESNT_EXIST,
 	CART_WAS_DELETED,
 	CART_WAS_NOT_DELETED
 } from "shared";
+import { AuthGuard } from "../auth";
+import { CartDTO } from "./dto/cart.dto";
+import { Role } from "../enums/role.enum";
+import { CartService } from "./cart.service";
+import { Product } from "../product/entities";
+import { Roles } from "../auth/roles.decorator";
+import { RolesGuard } from "../auth/roles.guard";
+import { User } from "../decorators/user.decorator";
+import { User as UserEntity } from "../user/entities";
 import { ItemToUpdateDTO } from "./dto/update-cart-item.dto";
-import { Product } from "../product/entities/product.entity";
 
 @Controller("cart")
 export class CartController {

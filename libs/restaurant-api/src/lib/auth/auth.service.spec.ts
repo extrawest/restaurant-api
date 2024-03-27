@@ -7,7 +7,7 @@ import { USERS_REPOSITORY } from "../user/constants";
 import { StripeService } from "../stripe/stripe.service";
 import { ConfigService } from "@nestjs/config";
 import { faker } from "@faker-js/faker";
-import { User } from "../user/entities/user.entity";
+import { User } from "../user/entities";
 import { Role } from "../enums/role.enum";
 import { hash } from "bcrypt";
 import { BadRequestException, UnauthorizedException } from "@nestjs/common";

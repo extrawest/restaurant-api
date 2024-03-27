@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Address } from "../../order/entities/order-address.entity";
+import { Address } from "../../order/entities";
 
 export class CreateCheckoutDto {
 	@ApiProperty()

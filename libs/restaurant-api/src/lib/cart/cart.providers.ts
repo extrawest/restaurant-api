@@ -1,5 +1,5 @@
+import { Cart } from "./entities";
 import { CART_REPOSITORY } from "./constants";
-import { Cart } from "./entities/cart.entity";
 
 export const cartProviders = [
 	{

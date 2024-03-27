@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Product } from "../../product/entities/product.entity";
+import { Product } from "../../product/entities";
 
 export class CartDTO {
   @ApiProperty()

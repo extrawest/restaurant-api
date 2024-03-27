@@ -12,7 +12,7 @@ import { User } from "../decorators/user.decorator";
 import { CheckoutService } from "./checkout.service";
 import { AuthGuard } from "../auth/guards/auth.guard";
 import { CreateCheckoutDto } from "./dto/create-checkout.dto";
-import { User as UserEntity } from "../user/entities/user.entity";
+import { User as UserEntity } from "../user/entities";
 
 @Controller("checkout")
 export class CheckoutController {

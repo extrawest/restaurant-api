@@ -3,16 +3,16 @@ import {
 	Inject,
 	Injectable
 } from "@nestjs/common";
-import { CreateCategoryDto } from "./dto/create-category.dto";
-import { UpdateCategoryDto } from "./dto/update-category.dto";
-import { CATEGORIES_REPOSITORY } from "./constants";
-import { Category } from "./entities/category.entity";
-import { Maybe } from "utils";
 import {
 	CATEGORY_ALREADY_EXISTS,
 	CATEGORY_NOT_FOUND,
 	EMPTY_CATEGORY_NAME
 } from "shared";
+import { Maybe } from "utils";
+import { Category } from "./entities";
+import { CATEGORIES_REPOSITORY } from "./constants";
+import { CreateCategoryDto } from "./dto/create-category.dto";
+import { UpdateCategoryDto } from "./dto/update-category.dto";
 
 @Injectable()
 export class CategoryService {

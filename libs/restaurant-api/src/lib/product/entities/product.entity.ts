@@ -4,11 +4,9 @@ import {
 	Model,
 	ForeignKey,
 	BelongsTo,
-	BelongsToMany
 } from "sequelize-typescript";
-import { Category } from "../../category/entities/category.entity";
-import { Order } from "../../order/entities/order.entity";
-import { Cart } from "../../cart/entities/cart.entity";
+import { Cart } from "../../cart/entities";
+import { Category } from "../../category/entities";
 
 @Table
 export class Product extends Model {
@@ -38,6 +36,5 @@ export class Product extends Model {
 	category: Category;
 
 	@ForeignKey(() => Cart)
-	// @BelongsTo(() => Cart)
 	carts: Cart[];
 }

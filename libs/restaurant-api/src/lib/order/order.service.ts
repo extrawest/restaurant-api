@@ -11,13 +11,13 @@ import {
 	Injectable,
 	NotFoundException
 } from "@nestjs/common";
+import { Order } from "./entities";
+import { Product } from "../product/entities";
 import { ORDERS_REPOSITORY } from "./constants";
-import { Order } from "./entities/order.entity";
 import { CartService } from "../cart/cart.service";
 import { StatisticsFields } from "../enums/order.enum";
 import { CreateOrderDto } from "./dto/create-order.dto";
 import { UpdateOrderDto } from "./dto/update-order.dto";
-import { Product } from "../product/entities/product.entity";
 
 @Injectable()
 export class OrderService {

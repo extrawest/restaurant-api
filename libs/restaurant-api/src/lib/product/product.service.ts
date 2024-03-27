@@ -1,10 +1,10 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { PRODUCT_NOT_FOUND } from "shared";
+import { Product } from "./entities";
+import { Category } from "../category/entities";
+import { PRODUCTS_REPOSITORY } from "./constants";
 import { CreateProductDto } from "./dto/create-product.dto";
 import { UpdateProductDto } from "./dto/update-product.dto";
-import { Product } from "./entities/product.entity";
-import { PRODUCTS_REPOSITORY } from "./constants";
-import { Category } from "../category/entities/category.entity";
 
 @Injectable()
 export class ProductService {

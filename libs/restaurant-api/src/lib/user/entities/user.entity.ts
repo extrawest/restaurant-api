@@ -6,7 +6,7 @@ import {
 	HasOne
 } from "sequelize-typescript";
 import { Role } from "../../enums/role.enum";
-import { UserAdditionalInfo } from "./additionalInfo.entity";
+import { UserAdditionalInfo } from "./";
 
 @Table
 export class User extends Model {

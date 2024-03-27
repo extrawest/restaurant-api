@@ -5,8 +5,8 @@ import {
 	Model,
 	Table
 } from "sequelize-typescript";
-import { User } from "../../user/entities/user.entity";
-import { Product } from "../../product/entities/product.entity";
+import { User } from "../../user/entities";
+import { Product } from "../../product/entities";
 
 @Table
 export class Cart extends Model {

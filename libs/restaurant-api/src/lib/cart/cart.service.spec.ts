@@ -1,11 +1,11 @@
-import { Test, TestingModule } from "@nestjs/testing";
-import { CartService } from "./cart.service";
-import { CART_REPOSITORY } from "./constants";
 import { faker } from "@faker-js/faker";
-import { Cart } from "./entities/cart.entity";
+import { Test, TestingModule } from "@nestjs/testing";
 import { BadRequestException } from "@nestjs/common";
 import { CART_ITEM_NOT_FOUND, CART_NOT_FOUND } from "shared";
-import { Product } from "../product/entities/product.entity";
+import { Cart } from "./entities";
+import { CartService } from "./cart.service";
+import { CART_REPOSITORY } from "./constants";
+import { Product } from "../product/entities";
 
 const cartRepositoryMock = {
 	create: jest.fn(),

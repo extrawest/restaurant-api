@@ -7,10 +7,10 @@ import {
 	BelongsTo,
 	HasOne
 } from "sequelize-typescript";
-import { Status as OrderStatus } from "../../enums/order.enum";
-import { User } from "../../user/entities/user.entity";
+import { User } from "../../user/entities";
+import { Product } from "../../product/entities";
 import { Address } from "./order-address.entity";
-import { Product } from "../../product/entities/product.entity";
+import { Status as OrderStatus } from "../../enums/order.enum";
 
 @Table
 export class Order extends Model {

@@ -1,18 +1,18 @@
+import { faker } from "@faker-js/faker";
 import { ConfigService } from "@nestjs/config";
 import { Test, TestingModule } from "@nestjs/testing";
 import { BadRequestException } from "@nestjs/common";
+import { ORDER_WITH_CURRENT_STATUS_CANNOT_BE_CANCELLED } from "shared";
+import { Order } from "../order/entities";
 import { Status } from "../enums/order.enum";
+import { Product } from "../product/entities";
 import { CartService } from "../cart/cart.service";
 import { PaymentService } from "./payment.service";
 import { CART_REPOSITORY } from "../cart/constants";
 import { OrderService } from "../order/order.service";
-import { Order } from "../order/entities/order.entity";
 import { ORDERS_REPOSITORY } from "../order/constants";
 import { StripeService } from "../stripe/stripe.service";
 import { PAYMENTS_REPOSITORY, PAYMENT_METHODS_REPOSITORY } from "./constants";
-import { faker } from "@faker-js/faker";
-import { ORDER_WITH_CURRENT_STATUS_CANNOT_BE_CANCELLED } from "shared";
-import { Product } from "../product/entities/product.entity";
 
 const paymentsRepositoryMock = {
 	create: jest.fn(),

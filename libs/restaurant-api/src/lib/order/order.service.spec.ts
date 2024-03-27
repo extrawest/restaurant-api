@@ -1,16 +1,16 @@
-import { Test, TestingModule } from "@nestjs/testing";
 import { Op } from "sequelize";
 import { faker } from "@faker-js/faker";
+import { Test, TestingModule } from "@nestjs/testing";
+import { BadRequestException, NotFoundException } from "@nestjs/common";
+import { CART_IS_EMPTY, CART_NOT_FOUND } from "shared";
+import { Address } from "./entities";
+import { Cart } from "../cart/entities";
+import { Product } from "../product/entities";
 import { OrderService } from "./order.service";
 import { ORDERS_REPOSITORY } from "./constants";
 import { CartService } from "../cart/cart.service";
 import { CART_REPOSITORY } from "../cart/constants";
-import { Cart } from "../cart/entities/cart.entity";
 import { StatisticsFields, Status } from "../enums/order.enum";
-import { CART_IS_EMPTY, CART_NOT_FOUND } from "shared";
-import { Address } from "./entities/order-address.entity";
-import { BadRequestException, NotFoundException } from "@nestjs/common";
-import { Product } from "../product/entities/product.entity";
 
 const ordersRepositoryMock = {
 	create: jest.fn(),

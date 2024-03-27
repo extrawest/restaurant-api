@@ -1,13 +1,13 @@
 import * as pg from "pg";
+import { Cart } from "../cart/entities";
+import { User } from "../user/entities";
+import { Order } from "../order/entities";
+import { Address } from "../order/entities";
+import { Payment } from "../payment/entities";
+import { Product } from "../product/entities";
+import { Category } from "../category/entities";
 import { Sequelize } from "sequelize-typescript";
-import { Category } from "../category/entities/category.entity";
-import { Product } from "../product/entities/product.entity";
-import { User } from "../user/entities/user.entity";
-import { Order } from "../order/entities/order.entity";
-import { Cart } from "../cart/entities/cart.entity";
-import { Payment } from "../payment/entities/payment.entity";
-import { PaymentMethod } from "../payment/entities/payment-method.entity";
-import { Address } from "../order/entities/order-address.entity";
+import { PaymentMethod } from "../payment/entities";
 import { UserAdditionalInfo } from "../user/entities/additionalInfo.entity";
 
 export const databaseProviders = [

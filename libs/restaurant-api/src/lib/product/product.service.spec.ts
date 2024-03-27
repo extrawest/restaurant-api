@@ -3,7 +3,7 @@ import { faker } from "@faker-js/faker";
 import { PRODUCT_NOT_FOUND } from "shared";
 import { PRODUCTS_REPOSITORY } from "./constants";
 import { ProductService } from "./product.service";
-import { Category } from "../category/entities/category.entity";
+import { Category } from "../category/entities";
 
 const productRepositoryMock = {
 	create: jest.fn(),

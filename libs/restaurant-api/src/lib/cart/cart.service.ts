@@ -3,11 +3,11 @@ import {
 	Inject,
 	Injectable
 } from "@nestjs/common";
-import { CART_REPOSITORY } from "./constants";
-import { Cart } from "./entities/cart.entity";
 import { CART_ITEM_NOT_FOUND, CART_NOT_FOUND } from "shared";
+import { Cart } from "./entities";
+import { CART_REPOSITORY } from "./constants";
+import { Product } from "../product/entities";
 import { ItemToUpdateDTO } from "./dto/update-cart-item.dto";
-import { Product } from "../product/entities/product.entity";
 
 @Injectable()
 export class CartService {

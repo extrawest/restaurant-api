@@ -6,10 +6,10 @@ import { ConfigService } from "@nestjs/config";
 import { getModelToken } from "@nestjs/mongoose";
 import { NotFoundException } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
+import { Room } from "./schemas";
+import { Message } from "./schemas";
 import { ChatService } from "./chat.service";
 import { RoomService } from "./room.service";
-import { Room } from "./schemas/room.schema";
-import { Message } from "./schemas/message.schema";
 
 const roomId = faker.string.uuid();
 

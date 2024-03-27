@@ -8,12 +8,12 @@ import {
 	CART_NOT_FOUND,
 	PAYMENT_SUCCESSFULLY_CREATED
 } from "shared";
+import { Address } from "../order/entities";
 import { CartService } from "../cart/cart.service";
 import { UsersService } from "../user/user.service";
 import { OrderService } from "../order/order.service";
 import { ProducerService } from "../queues/queues.producer";
 import { PaymentService } from "../payment/payment.service";
-import { Address } from "../order/entities/order-address.entity";
 
 @Injectable()
 export class CheckoutService {

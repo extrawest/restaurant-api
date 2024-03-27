@@ -3,7 +3,7 @@ import {
 	Model,
 	Table
 } from "sequelize-typescript";
-import { Address } from "../../order/entities/order-address.entity";
+import { Address } from "../../order/entities";
 
 @Table
 export class UserAdditionalInfo extends Model {
