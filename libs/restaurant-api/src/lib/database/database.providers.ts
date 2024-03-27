@@ -5,6 +5,7 @@ import { Order } from "../order/entities";
 import { Address } from "../order/entities";
 import { Payment } from "../payment/entities";
 import { Product } from "../product/entities";
+import { Setting } from "../settings/entities";
 import { Category } from "../category/entities";
 import { Sequelize } from "sequelize-typescript";
 import { PaymentMethod } from "../payment/entities";
@@ -32,7 +33,8 @@ export const databaseProviders = [
 				Order,
 				Payment,
 				PaymentMethod,
-				UserAdditionalInfo
+				UserAdditionalInfo,
+				Setting
 			]);
 			await sequelize.sync({ alter: true });
 			return sequelize;

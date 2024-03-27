@@ -18,10 +18,15 @@ import { CartService } from "../cart/cart.service";
 import { StatisticsFields } from "../enums/order.enum";
 import { CreateOrderDto } from "./dto/create-order.dto";
 import { UpdateOrderDto } from "./dto/update-order.dto";
+import { SettingsService } from "../settings/settings.service";
 
 @Injectable()
 export class OrderService {
-	constructor(@Inject(ORDERS_REPOSITORY) private ordersRepository: typeof Order, private cartService: CartService) {};
+	constructor(
+		@Inject(ORDERS_REPOSITORY) private ordersRepository: typeof Order,
+		private readonly cartService: CartService,
+		private readonly settingsService: SettingsService,
+	) {};
 
 	async create(order: CreateOrderDto): Promise<Order> {
 		const { userId, items } = order;
@@ -114,8 +119,8 @@ export class OrderService {
 		});
 	}
 
-	calculateShippingCost() {
-		// here should be Distance Matrix API, but we are too poor to pay for it
-		return 10;
+	async calculateShippingCost() {
+		const shippingPrice = await this.settingsService.findOneByName("shippingPrice");
+		return shippingPrice?.data?.value || 0;
 	}
 };
