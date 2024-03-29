@@ -5,7 +5,7 @@ export class CreateSettingDto {
 	name: string;
 
 	@ApiProperty({ required: true })
-	data: JSON;
+	data: {[key: string]: any};
 }
  
 export default CreateSettingDto;

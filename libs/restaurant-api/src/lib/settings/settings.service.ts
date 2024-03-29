@@ -28,11 +28,7 @@ export class SettingsService {
 	}
 
 	findOneById(id: number) {
-		return this.settingsRepository.findOne({
-			where: {
-				id
-			}
-		});
+		return this.settingsRepository.findByPk(id);
 	}
 
 	findOneByName(name: string) {
