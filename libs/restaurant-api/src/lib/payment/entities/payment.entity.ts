@@ -9,6 +9,7 @@ import {
 } from "sequelize-typescript";
 import { PaymentMethod } from "./payment-method.entity";
 
+// TODO: add order items snaphost
 @Table
 export class Payment extends Model {
 	@IsUUID(4)

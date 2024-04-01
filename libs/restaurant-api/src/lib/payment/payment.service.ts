@@ -88,4 +88,8 @@ export class PaymentService {
 		};
 		this.stripeService.cancelPayment(paymentId);
 	}
+
+	async createSubscription(customerId: string, priceId: string, defaultPaymentMethod?: string) {
+		return this.stripeService.createSubscription(customerId, priceId, defaultPaymentMethod);
+	}
 }

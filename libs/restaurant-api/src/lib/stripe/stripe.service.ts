@@ -6,6 +6,8 @@ import {
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { PAYMENT_METHOD_WAS_NOT_ATTACHED, PLEASE_PROVIDE_A_VALID_METHOD_TYPE } from "shared";
+import { Currency } from "../enums/currency.enum";
+import { PaymentInterval } from "../enums/payment-interval.enum";
 
 @Injectable()
 export class StripeService {
@@ -85,7 +87,7 @@ export class StripeService {
 			amount,
 			customer: customerId,
 			payment_method: paymentMethodId,
-			currency: "usd",
+			currency: Currency.Usd,
 			confirm: true
 		}).catch((err) => {
 			throw new Error(err);
@@ -118,5 +120,75 @@ export class StripeService {
 
 	cancelPayment(paymentId: string) {
 		this.stripe.paymentIntents.cancel(paymentId);
+	}
+
+	createProduct(name: string, description?: string) {
+		return this.stripe.products.create({
+			name: name,
+			description: description
+		});
+	}
+
+	getProducts() {
+		return this.stripe.products.list();
+	}
+
+	getProduct(productId: string) {
+		return this.stripe.products.retrieve(productId);
+	}
+
+	deleteProduct(productId: string) {
+		return this.stripe.products.del(productId);
+	}
+	
+	createPrice(
+		productId: string, 
+		priceInUSD: number, 
+		interval: PaymentInterval
+	) {
+		return this.stripe.prices.create({
+			product: productId,
+			unit_amount: priceInUSD * 100,
+			currency: Currency.Usd,
+			recurring: {
+				interval: interval
+			}
+		});
+	}
+
+	getPrices() {
+		return this.stripe.prices.list();
+	}
+
+	getPrice(priceId: string) {
+		return this.stripe.prices.retrieve(priceId);
+	}
+
+	createSubscription(
+		customerId: string,
+		priceId: string,
+		defaultPaymentMethod?: string
+	) {
+		return this.stripe.subscriptions.create({
+			customer: customerId,
+			default_payment_method: defaultPaymentMethod,
+			items: [
+				{
+					price: priceId
+				}
+			]
+		});
+	}
+
+	getSubscriptions() {
+		return this.stripe.subscriptions.list();
+	}
+
+	getSubscription(subscriptionId: string) {
+		return this.stripe.subscriptions.retrieve(subscriptionId);
+	}
+
+	cancelSubscription(subscriptionId: string) {
+		return this.stripe.subscriptions.cancel(subscriptionId);
 	}
 }

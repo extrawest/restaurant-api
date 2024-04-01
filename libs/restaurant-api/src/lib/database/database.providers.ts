@@ -1,12 +1,15 @@
 import * as pg from "pg";
 import { Sequelize } from "sequelize-typescript";
-import { Category } from "../category/entities/category.entity";
-import { Product } from "../product/entities/product.entity";
 import { User } from "../user/entities/user.entity";
-import { Order } from "../order/entities/order.entity";
 import { Cart } from "../cart/entities/cart.entity";
+import { Order } from "../order/entities/order.entity";
 import { CartItem } from "../cart/entities/item.entity";
+import { Price } from "../payment/entities/price.entity";
+import { Product } from "../product/entities/product.entity";
 import { Payment } from "../payment/entities/payment.entity";
+import { Category } from "../category/entities/category.entity";
+import { StripeProduct } from "../payment/entities/product.entity";
+import { Subscription } from "../payment/entities/subscription.entity";
 import { PaymentMethod } from "../payment/entities/payment-method.entity";
 
 export const databaseProviders = [
@@ -30,7 +33,10 @@ export const databaseProviders = [
 				Order,
 				CartItem,
 				Payment,
-				PaymentMethod
+				PaymentMethod,
+				StripeProduct,
+				Price,
+				Subscription
 			]);
 			await sequelize.sync({ alter: true });
 			return sequelize;
