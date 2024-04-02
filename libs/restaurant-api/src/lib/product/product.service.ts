@@ -1,10 +1,10 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { PRODUCT_NOT_FOUND } from "shared";
+import { Product } from "./entities";
+import { Category } from "../category/entities";
+import { PRODUCTS_REPOSITORY } from "./constants";
 import { CreateProductDto } from "./dto/create-product.dto";
 import { UpdateProductDto } from "./dto/update-product.dto";
-import { Product } from "./entities/product.entity";
-import { PRODUCTS_REPOSITORY } from "./constants";
-import { Category } from "../category/entities/category.entity";
 
 @Injectable()
 export class ProductService {
@@ -12,7 +12,10 @@ export class ProductService {
 		@Inject(PRODUCTS_REPOSITORY) private productsRepository: typeof Product,
 	) {}
 	async create(product: CreateProductDto): Promise<Product> {
-		return this.productsRepository.create<Product>({ ...product });
+		return this.productsRepository.create<Product>({
+			...product,
+			discountedPrice: product.discountedPrice || 0
+		});
 	}
 
 	findAll(): Promise<Product[]> {

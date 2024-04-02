@@ -3,11 +3,10 @@ import {
 	Inject,
 	Injectable
 } from "@nestjs/common";
-import { CART_REPOSITORY } from "./constants";
-import { Cart } from "./entities/cart.entity";
-import { ItemDto } from "./dto/item.dto";
-import { CartItem } from "./entities/item.entity";
 import { CART_ITEM_NOT_FOUND, CART_NOT_FOUND } from "shared";
+import { Cart } from "./entities";
+import { CART_REPOSITORY } from "./constants";
+import { Product } from "../product/entities";
 import { ItemToUpdateDTO } from "./dto/update-cart-item.dto";
 
 @Injectable()
@@ -15,7 +14,7 @@ export class CartService {
 	constructor(@Inject(CART_REPOSITORY) private cartRepository: typeof Cart) {}
 	createCart(
 		userId: number,
-		itemDto: ItemDto,
+		itemDto: Product,
 		totalPrice: number
 	): Promise<Cart> {
 		return this.cartRepository.create<Cart>({
@@ -36,16 +35,22 @@ export class CartService {
 	private recalculateCart(cart: Cart) {
 		cart.totalPrice = 0;
 		cart.items.forEach((item) => {
-			cart.totalPrice += item.quantity * item.price;
+			const relevantItemPrice = item.discountedPrice || item.price;
+			cart.totalPrice += item.quantity * relevantItemPrice;
 		});
 	}
 
-	async addItemToCart(userId: number, itemDto: ItemDto) {
-		const { productId, quantity, price } = itemDto;
+	async addItemToCart(userId: number, itemDto: Product) {
+		const {
+			id,
+			quantity,
+			price,
+			discountedPrice
+		} = itemDto;
 		const cart = await this.getCart(userId);
 
 		if (cart) {
-			const itemIndex = cart?.items.findIndex((item) => item.productId == productId);
+			const itemIndex = cart?.items.findIndex((item) => item.id == id);
 
 			if (itemIndex > -1) {
 				const item = cart.items[itemIndex];
@@ -55,7 +60,7 @@ export class CartService {
 				this.recalculateCart(cart);
 				return cart.save();
 			} else {
-				cart.items.push(itemDto as CartItem);
+				cart.items.push(itemDto);
 				this.recalculateCart(cart);
 				return cart.save();
 			}
@@ -63,7 +68,7 @@ export class CartService {
 			return this.createCart(
 				userId,
 				itemDto,
-				price
+				discountedPrice || price
 			);
 		};
 	}
@@ -74,11 +79,12 @@ export class CartService {
 			throw new BadRequestException(CART_NOT_FOUND);
 		};
 		const { quantity: newQuantity, productId } = itemToUpdate;
-		const itemIndex = cart?.items.findIndex((item) => item.productId == productId);
+		const itemIndex = cart?.items.findIndex((item) => item.id == productId);
 		if (itemIndex === -1) {
 			throw new BadRequestException(CART_ITEM_NOT_FOUND);
 		};
 		cart.items[itemIndex].quantity = newQuantity;
+		this.recalculateCart(cart);
 		return cart.save();
 	}
 
@@ -88,11 +94,12 @@ export class CartService {
 		if (!cart) {
 			throw new BadRequestException(CART_NOT_FOUND);
 		};
-		const itemIndex = cart?.items.findIndex((item) => item.productId == productId);
+		const itemIndex = cart?.items.findIndex((item) => item.id == productId);
 		if (itemIndex < 0) {
 			throw new BadRequestException(CART_ITEM_NOT_FOUND);
 		};
 		cart?.items.splice(itemIndex, 1);
+		this.recalculateCart(cart);
 		return cart?.save();
 	}
 }

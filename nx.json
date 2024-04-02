@@ -3,7 +3,7 @@
 	"npmScope": "nx-restaurant",
 	"tasksRunnerOptions": {
 		"default": {
-			"runner": "@nrwl/nx-cloud",
+			"runner": "nx/tasks-runners/default",
 			"options": {
 				"cacheableOperations": ["build", "lint", "test", "e2e"],
 				"accessToken": "NWM1NTlkMjQtNGYwZS00N2FiLWFjNmItYWM0YTgwYzFiMmQyfHJlYWQtd3JpdGU="

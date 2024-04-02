@@ -8,20 +8,20 @@ import {
 	Post,
 	UseGuards
 } from "@nestjs/common";
-import { CartService } from "./cart.service";
-import { Roles } from "../auth/roles.decorator";
-import { Role } from "../enums/role.enum";
-import { AuthGuard } from "../auth";
-import { RolesGuard } from "../auth/roles.guard";
-import { User } from "../decorators/user.decorator";
-import { User as UserEntity } from "../user/entities/user.entity";
-import { CartDTO } from "./dto/cart.dto";
-import { ItemDto } from "./dto/item.dto";
 import {
 	CART_DOESNT_EXIST,
 	CART_WAS_DELETED,
 	CART_WAS_NOT_DELETED
 } from "shared";
+import { AuthGuard } from "../auth";
+import { CartDTO } from "./dto/cart.dto";
+import { Role } from "../enums/role.enum";
+import { CartService } from "./cart.service";
+import { Product } from "../product/entities";
+import { Roles } from "../auth/roles.decorator";
+import { RolesGuard } from "../auth/roles.guard";
+import { User } from "../decorators/user.decorator";
+import { User as UserEntity } from "../user/entities";
 import { ItemToUpdateDTO } from "./dto/update-cart-item.dto";
 
 @Controller("cart")
@@ -31,7 +31,7 @@ export class CartController {
 	@Roles(Role.Buyer)
 	@UseGuards(AuthGuard, RolesGuard)
 	@Post("add-item")
-	addItemToCart(@User() user: UserEntity, @Body() itemDTO: ItemDto): Promise<CartDTO> {
+	addItemToCart(@User() user: UserEntity, @Body() itemDTO: Product): Promise<CartDTO> {
 		const userId = user.id;
 		return this.cartService.addItemToCart(userId, itemDTO);
 	}

@@ -11,6 +11,9 @@ export class CreateProductDto {
 	price: number;
 
 	@ApiProperty()
+	discountedPrice?: number;
+
+	@ApiProperty()
 	currency: string;
 
 	@ApiProperty()

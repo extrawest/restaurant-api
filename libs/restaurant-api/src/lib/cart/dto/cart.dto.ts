@@ -1,12 +1,12 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { ItemDto } from "./item.dto";
+import { Product } from "../../product/entities";
 
 export class CartDTO {
   @ApiProperty()
   userId: number;
 
   @ApiProperty()
-  items: ItemDto[];
+  items: Product[];
 
   @ApiProperty()
   totalPrice: number;

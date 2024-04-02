@@ -8,15 +8,15 @@ import {
 	UseGuards,
 	HttpCode,
 } from "@nestjs/common";
-import { PaymentService } from "./payment.service";
-import { CreatePaymentDto } from "./dto/create-payment.dto";
-import CreatePaymentMethodDTO from "./dto/create-payment-method.dto";
-import { AuthGuard } from "../auth/guards/auth.guard";
-import { Roles } from "../auth/roles.decorator";
 import { Role } from "../enums/role.enum";
-import { User as UserEntity } from "../user/entities/user.entity";
+import { Roles } from "../auth/roles.decorator";
+import { PaymentService } from "./payment.service";
 import { User } from "../decorators/user.decorator";
+import { User as UserEntity } from "../user/entities";
+import { AuthGuard } from "../auth/guards/auth.guard";
+import { CreatePaymentDto } from "./dto/create-payment.dto";
 import { CancelPaymentDTO } from "./dto/cancel-payment.dto";
+import CreatePaymentMethodDTO from "./dto/create-payment-method.dto";
 
 @Controller("payments")
 export class PaymentController {

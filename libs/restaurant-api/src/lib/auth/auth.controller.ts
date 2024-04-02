@@ -17,7 +17,7 @@ import { ForgotPasswordDto } from "./dto/forgot-password.dto";
 import { ResetPasswordDto } from "./dto/reset-password.dto";
 import { JwtRefreshAuthGuard } from "./jwt-refresh-auth.guard";
 import { User } from "../decorators/user.decorator";
-import { User as UserEntity } from "../user/entities/user.entity";
+import { User as UserEntity } from "../user/entities";
 
 @Controller("auth")
 export class AuthController {
