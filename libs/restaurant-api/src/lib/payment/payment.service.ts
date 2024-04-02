@@ -3,12 +3,12 @@ import {
 	Inject,
 	Injectable
 } from "@nestjs/common";
-import { StripeService } from "../stripe/stripe.service";
-import { PAYMENTS_REPOSITORY, PAYMENT_METHODS_REPOSITORY } from "./constants";
-import { Payment } from "./entities/payment.entity";
-import { PaymentMethod } from "./entities/payment-method.entity";
+import { Payment } from "./entities";
+import { PaymentMethod } from "./entities";
 import { OrderService } from "../order/order.service";
+import { StripeService } from "../stripe/stripe.service";
 import { Status as OrderStatus } from "../enums/order.enum";
+import { PAYMENTS_REPOSITORY, PAYMENT_METHODS_REPOSITORY } from "./constants";
 import { ORDER_NOT_FOUND, ORDER_WITH_CURRENT_STATUS_CANNOT_BE_CANCELLED } from "shared";
 
 @Injectable()

@@ -1,18 +1,20 @@
+import { faker } from "@faker-js/faker";
 import { ConfigService } from "@nestjs/config";
 import { Test, TestingModule } from "@nestjs/testing";
 import { BadRequestException } from "@nestjs/common";
+import { ORDER_WITH_CURRENT_STATUS_CANNOT_BE_CANCELLED } from "shared";
+import { Order } from "../order/entities";
 import { Status } from "../enums/order.enum";
+import { Product } from "../product/entities";
 import { CartService } from "../cart/cart.service";
 import { PaymentService } from "./payment.service";
 import { CART_REPOSITORY } from "../cart/constants";
 import { OrderService } from "../order/order.service";
-import { Order } from "../order/entities/order.entity";
 import { ORDERS_REPOSITORY } from "../order/constants";
 import { StripeService } from "../stripe/stripe.service";
-import { OrderItem } from "../order/entities/order-item.entity";
 import { PAYMENTS_REPOSITORY, PAYMENT_METHODS_REPOSITORY } from "./constants";
-import { faker } from "@faker-js/faker";
-import { ORDER_WITH_CURRENT_STATUS_CANNOT_BE_CANCELLED } from "shared";
+import { SettingsService } from "../settings/settings.service";
+import { SETTINGS_REPOSITORY } from "../settings/constants";
 
 const paymentsRepositoryMock = {
 	create: jest.fn(),
@@ -67,7 +69,7 @@ const orderItem = {
 
 const order = {
 	userId: 1,
-	items: [orderItem as unknown as OrderItem],
+	items: [orderItem as unknown as Product],
 	paymentId: paymentId,
 };
 
@@ -86,6 +88,7 @@ describe("PaymentService", () => {
 				CartService,
 				CartService,
 				ConfigService,
+				SettingsService,
 				{
 					provide: PAYMENTS_REPOSITORY,
 					useValue: paymentsRepositoryMock
@@ -100,6 +103,10 @@ describe("PaymentService", () => {
 				},
 				{
 					provide: CART_REPOSITORY,
+					useValue: jest.fn()
+				},
+				{
+					provide: SETTINGS_REPOSITORY,
 					useValue: jest.fn()
 				}
 			],

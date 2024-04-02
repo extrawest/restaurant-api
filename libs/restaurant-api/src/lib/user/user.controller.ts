@@ -8,17 +8,17 @@ import {
 	Delete,
 	UseGuards
 } from "@nestjs/common";
+import { Maybe } from "utils";
+import { UserDTO } from "./dto/user.dto";
+import { Role } from "../enums/role.enum";
 import { UsersService } from "./user.service";
+import { Roles } from "../auth/roles.decorator";
+import { User as UserEntity } from "./entities";
+import { RolesGuard } from "../auth/roles.guard";
+import { User } from "../decorators/user.decorator";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
-import { RolesGuard } from "../auth/roles.guard";
-import { Roles } from "../auth/roles.decorator";
-import { Role } from "../enums/role.enum";
 import { AuthGuard } from "../auth/guards/auth.guard";
-import { UserDTO } from "./dto/user.dto";
-import { Maybe } from "utils";
-import { User } from "../decorators/user.decorator";
-import { User as UserEntity } from "./entities/user.entity";
 import { Public } from "../auth/public-route.decorator";
 
 @Controller("users")

@@ -3,7 +3,7 @@ import { faker } from "@faker-js/faker";
 import { PRODUCT_NOT_FOUND } from "shared";
 import { PRODUCTS_REPOSITORY } from "./constants";
 import { ProductService } from "./product.service";
-import { Category } from "../category/entities/category.entity";
+import { Category } from "../category/entities";
 
 const productRepositoryMock = {
 	create: jest.fn(),
@@ -53,7 +53,10 @@ describe("ProductService", () => {
 			const result = await service.create(product);
 			expect(result).toEqual(product);
 			expect(productRepositoryMock.create).toHaveBeenCalledTimes(1);
-			expect(productRepositoryMock.create).toHaveBeenCalledWith(product);
+			expect(productRepositoryMock.create).toHaveBeenCalledWith({
+				...product,
+				discountedPrice: 0,	
+			});
 		});
 	});
 

@@ -1,5 +1,5 @@
+import { Order } from "./entities";
 import { ORDERS_REPOSITORY } from "./constants";
-import { Order } from "./entities/order.entity";
 
 export const ordersProviders = [
 	{

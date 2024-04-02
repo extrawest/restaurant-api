@@ -14,7 +14,7 @@ import {
 	USER_NOT_FOUND
 } from "shared";
 import { UsersService } from "../user/user.service";
-import { User } from "../user/entities/user.entity";
+import { User } from "../user/entities";
 
 @Injectable()
 export class AuthService {
