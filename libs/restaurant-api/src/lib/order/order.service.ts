@@ -121,6 +121,6 @@ export class OrderService {
 
 	async calculateShippingCost() {
 		const shippingPrice = await this.settingsService.findOneByName("shippingPrice");
-		return shippingPrice?.data?.value || 0;
+		return shippingPrice?.data["value"] || 0;
 	}
 };

@@ -11,6 +11,8 @@ import { ORDERS_REPOSITORY } from "./constants";
 import { CartService } from "../cart/cart.service";
 import { CART_REPOSITORY } from "../cart/constants";
 import { StatisticsFields, Status } from "../enums/order.enum";
+import { SettingsService } from "../settings/settings.service";
+import { SETTINGS_REPOSITORY } from "../settings/constants";
 
 const ordersRepositoryMock = {
 	create: jest.fn(),
@@ -64,6 +66,7 @@ describe("OrderService", () => {
 		const module: TestingModule = await Test.createTestingModule({
 			providers: [
 				OrderService,
+				SettingsService,
 				{
 					provide: ORDERS_REPOSITORY,
 					useValue: ordersRepositoryMock,
@@ -72,6 +75,10 @@ describe("OrderService", () => {
 				{
 					provide: CART_REPOSITORY,
 					useValue: cartRepositoryMock,
+				},
+				{
+					provide: SETTINGS_REPOSITORY,
+					useValue: jest.fn()
 				}
 			]
 		}).compile();

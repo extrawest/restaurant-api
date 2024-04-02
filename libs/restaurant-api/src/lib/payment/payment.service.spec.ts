@@ -13,6 +13,8 @@ import { OrderService } from "../order/order.service";
 import { ORDERS_REPOSITORY } from "../order/constants";
 import { StripeService } from "../stripe/stripe.service";
 import { PAYMENTS_REPOSITORY, PAYMENT_METHODS_REPOSITORY } from "./constants";
+import { SettingsService } from "../settings/settings.service";
+import { SETTINGS_REPOSITORY } from "../settings/constants";
 
 const paymentsRepositoryMock = {
 	create: jest.fn(),
@@ -86,6 +88,7 @@ describe("PaymentService", () => {
 				CartService,
 				CartService,
 				ConfigService,
+				SettingsService,
 				{
 					provide: PAYMENTS_REPOSITORY,
 					useValue: paymentsRepositoryMock
@@ -100,6 +103,10 @@ describe("PaymentService", () => {
 				},
 				{
 					provide: CART_REPOSITORY,
+					useValue: jest.fn()
+				},
+				{
+					provide: SETTINGS_REPOSITORY,
 					useValue: jest.fn()
 				}
 			],

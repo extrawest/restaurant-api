@@ -18,7 +18,9 @@ import { ORDERS_REPOSITORY } from "../order/constants";
 import { StripeService } from "../stripe/stripe.service";
 import { PaymentService } from "../payment/payment.service";
 import { ProducerService } from "../queues/queues.producer";
+import { SettingsService } from "../settings/settings.service";
 import { PAYMENTS_REPOSITORY, PAYMENT_METHODS_REPOSITORY } from "../payment/constants";
+import { SETTINGS_REPOSITORY } from "../settings/constants";
 
 const paymentId = faker.string.uuid();
 const stripeCustomerId = faker.string.uuid();
@@ -65,6 +67,7 @@ describe("CheckoutService", () => {
 	let paymentService: PaymentService;
 	let cartService: CartService;
 	let producerService: ProducerService;
+	let orderService: OrderService;
 
 	beforeEach(async () => {
 		jest.resetAllMocks();
@@ -80,6 +83,7 @@ describe("CheckoutService", () => {
 				PaymentService,
 				OrderService,
 				ConfigService,
+				SettingsService,
 				{
 					provide: CART_REPOSITORY,
 					useValue: jest.fn()
@@ -99,6 +103,10 @@ describe("CheckoutService", () => {
 				{
 					provide: ORDERS_REPOSITORY,
 					useValue: jest.fn(),
+				},
+				{
+					provide: SETTINGS_REPOSITORY,
+					useValue: jest.fn()
 				}
 			],
 		}).compile();
@@ -107,6 +115,7 @@ describe("CheckoutService", () => {
 		cartService = module.get<CartService>(CartService);
 		paymentService = module.get<PaymentService>(PaymentService);
 		producerService = module.get<ProducerService>(ProducerService);
+		orderService = module.get<OrderService>(OrderService);
 	});
 
 	it("should be defined", () => {
@@ -120,6 +129,7 @@ describe("CheckoutService", () => {
 			jest.spyOn(cartService, "deleteCart").mockResolvedValueOnce(1);
 			jest.spyOn(paymentService, "charge").mockResolvedValueOnce(mockPayment);
 			jest.spyOn(producerService, "addToOrdersQueue").mockResolvedValueOnce();
+			jest.spyOn(orderService, "calculateShippingCost").mockResolvedValueOnce(0);
 			expect(checkoutService.checkout(paymentMethodId, address, 1, stripeCustomerId))
 				.resolves
 				.not

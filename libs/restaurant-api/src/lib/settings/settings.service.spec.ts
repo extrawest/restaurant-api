@@ -47,9 +47,7 @@ describe("SettingsService", () => {
 			const result = await service.create({name: setting.name, data: setting.data});
 			expect(result).toEqual(setting);
 			expect(settingsRepositoryMock.create).toHaveBeenCalledTimes(1);
-			expect(settingsRepositoryMock.create).toHaveBeenCalledWith({
-				setting,
-			});
+			expect(settingsRepositoryMock.create).toHaveBeenCalledWith(setting);
 		});
 	});
 
@@ -108,9 +106,7 @@ describe("SettingsService", () => {
 			}).then(res => {
 				expect(res?.data["value"]).toBe(newShippingCost);
 				expect(settingsRepositoryMock.findByPk).toHaveBeenCalledTimes(1);
-				expect(settingsRepositoryMock.findByPk).toHaveBeenCalledWith({
-					where: { id: 1 }
-				});
+				expect(settingsRepositoryMock.findByPk).toHaveBeenCalledWith(1);
 				expect(settingsFindByPkMock.update).toHaveBeenCalledTimes(1);
 				expect(settingsFindByPkMock.update).toHaveBeenCalledWith({
 					data: {
