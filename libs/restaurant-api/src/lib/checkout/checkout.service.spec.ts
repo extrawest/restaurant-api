@@ -4,21 +4,23 @@ import { ConfigService } from "@nestjs/config";
 import { Test, TestingModule } from "@nestjs/testing";
 import { CART_IS_EMPTY, CART_NOT_FOUND } from "shared";
 import { BadRequestException } from "@nestjs/common";
+import { Cart } from "../cart/entities";
+import { Address } from "../order/entities";
+import { Payment } from "../payment/entities";
 import { AuthService } from "../auth/auth.service";
 import { CartService } from "../cart/cart.service";
-import { Cart } from "../cart/entities/cart.entity";
 import { UsersService } from "../user/user.service";
 import { CART_REPOSITORY } from "../cart/constants";
 import { CheckoutService } from "./checkout.service";
 import { USERS_REPOSITORY } from "../user/constants";
+import { OrderService } from "../order/order.service";
+import { ORDERS_REPOSITORY } from "../order/constants";
 import { StripeService } from "../stripe/stripe.service";
 import { PaymentService } from "../payment/payment.service";
 import { ProducerService } from "../queues/queues.producer";
-import { Payment } from "../payment/entities/payment.entity";
-import { Address } from "../order/entities/order-address.entity";
+import { SettingsService } from "../settings/settings.service";
 import { PAYMENTS_REPOSITORY, PAYMENT_METHODS_REPOSITORY } from "../payment/constants";
-import { OrderService } from "../order/order.service";
-import { ORDERS_REPOSITORY } from "../order/constants";
+import { SETTINGS_REPOSITORY } from "../settings/constants";
 
 const paymentId = faker.string.uuid();
 const stripeCustomerId = faker.string.uuid();
@@ -65,6 +67,7 @@ describe("CheckoutService", () => {
 	let paymentService: PaymentService;
 	let cartService: CartService;
 	let producerService: ProducerService;
+	let orderService: OrderService;
 
 	beforeEach(async () => {
 		jest.resetAllMocks();
@@ -80,6 +83,7 @@ describe("CheckoutService", () => {
 				PaymentService,
 				OrderService,
 				ConfigService,
+				SettingsService,
 				{
 					provide: CART_REPOSITORY,
 					useValue: jest.fn()
@@ -99,6 +103,10 @@ describe("CheckoutService", () => {
 				{
 					provide: ORDERS_REPOSITORY,
 					useValue: jest.fn(),
+				},
+				{
+					provide: SETTINGS_REPOSITORY,
+					useValue: jest.fn()
 				}
 			],
 		}).compile();
@@ -107,6 +115,7 @@ describe("CheckoutService", () => {
 		cartService = module.get<CartService>(CartService);
 		paymentService = module.get<PaymentService>(PaymentService);
 		producerService = module.get<ProducerService>(ProducerService);
+		orderService = module.get<OrderService>(OrderService);
 	});
 
 	it("should be defined", () => {
@@ -120,6 +129,7 @@ describe("CheckoutService", () => {
 			jest.spyOn(cartService, "deleteCart").mockResolvedValueOnce(1);
 			jest.spyOn(paymentService, "charge").mockResolvedValueOnce(mockPayment);
 			jest.spyOn(producerService, "addToOrdersQueue").mockResolvedValueOnce();
+			jest.spyOn(orderService, "calculateShippingCost").mockResolvedValueOnce(0);
 			expect(checkoutService.checkout(paymentMethodId, address, 1, stripeCustomerId))
 				.resolves
 				.not

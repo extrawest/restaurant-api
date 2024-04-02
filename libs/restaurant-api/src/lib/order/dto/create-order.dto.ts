@@ -1,13 +1,13 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { OrderItem } from "../entities/order-item.entity";
-import { Address } from "../entities/order-address.entity";
+import { Address } from "../entities";
+import { Product } from "../../product/entities";
 
 export class CreateOrderDto {
 	@ApiProperty()
 	userId: number;
 
 	@ApiProperty()
-	items: OrderItem[];
+	items: Product[];
 
 	@ApiProperty()
 	paymentId: string;

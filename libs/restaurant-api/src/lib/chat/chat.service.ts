@@ -2,8 +2,8 @@ import { Model } from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { ROOM_NOT_FOUND } from "shared";
+import { Message } from "./schemas";
 import { RoomService } from "./room.service";
-import { Message } from "./schemas/message.schema";
 
 @Injectable()
 export class ChatService {

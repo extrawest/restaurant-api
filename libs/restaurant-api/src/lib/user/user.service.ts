@@ -4,14 +4,14 @@ import {
 	Injectable,
 	UnauthorizedException
 } from "@nestjs/common";
+import { Maybe } from "utils";
+import { CURRENT_USER_DOES_NOT_HAVE_PERMISSIONS_TO_CREATE_ADMIN, USER_NOT_FOUND } from "shared";
+import { User } from "./entities";
+import { Role } from "../enums/role.enum";
 import { USERS_REPOSITORY } from "./constants";
-import { User } from "./entities/user.entity";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
-import { Role } from "../enums/role.enum";
-import { Maybe } from "utils";
 import { StripeService } from "../stripe/stripe.service";
-import { USER_NOT_FOUND } from "shared";
 
 @Injectable()
 export class UsersService {
@@ -22,7 +22,7 @@ export class UsersService {
 	async create(userData: CreateUserDto, user?: User) {
 		const stripeCustomer = await this.stripeService.createCustomer(userData.name, userData.email);
 		if (userData.role === Role.Admin && user?.role !== Role.Admin) {
-			throw new UnauthorizedException("CURRENT_USER_DOESN'T_HAVE_PERMISSIONS_TO_CREATE_ADMIN");
+			throw new UnauthorizedException(CURRENT_USER_DOES_NOT_HAVE_PERMISSIONS_TO_CREATE_ADMIN);
 		};
 		const hashedPassword = await hash(userData.password, 10);
 		const createdUser = await this.usersRepository.create<User>({

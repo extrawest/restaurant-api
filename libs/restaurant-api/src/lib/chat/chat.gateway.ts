@@ -10,7 +10,7 @@ import { UseGuards } from "@nestjs/common";
 import { ChatService } from "./chat.service";
 import { WsJwtAuthGuard } from "../auth";
 import { User } from "../decorators/user.decorator";
-import { User as UserEntity } from "../user/entities/user.entity";
+import { User as UserEntity } from "../user/entities";
 
 @WebSocketGateway()
 export class ChatGateway {

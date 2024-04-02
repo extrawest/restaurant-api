@@ -10,15 +10,15 @@ import {
 	Query,
 	HttpCode
 } from "@nestjs/common";
+import { Maybe } from "utils";
+import { Role } from "../enums/role.enum";
+import { ProductDTO } from "./dto/product.dto";
+import { Roles } from "../auth/roles.decorator";
+import { RolesGuard } from "../auth/roles.guard";
 import { ProductService } from "./product.service";
+import { AuthGuard } from "../auth/guards/auth.guard";
 import { CreateProductDto } from "./dto/create-product.dto";
 import { UpdateProductDto } from "./dto/update-product.dto";
-import { Roles } from "../auth/roles.decorator";
-import { Role } from "../enums/role.enum";
-import { RolesGuard } from "../auth/roles.guard";
-import { AuthGuard } from "../auth/guards/auth.guard";
-import { ProductDTO } from "./dto/product.dto";
-import { Maybe } from "utils";
 
 @Controller("product")
 export class ProductController {
@@ -48,8 +48,7 @@ export class ProductController {
 	@Roles(Role.Admin)
 	@UseGuards(AuthGuard, RolesGuard)
 	@Patch(":id")
-	update(@Param("id") id: string, @Body() updateProductDto: UpdateProductDto
-	): Promise<Maybe<ProductDTO> | Error> {
+	update(@Param("id") id: string, @Body() updateProductDto: UpdateProductDto): Promise<Maybe<ProductDTO> | Error> {
 		return this.productService.update(+id, updateProductDto);
 	}
 

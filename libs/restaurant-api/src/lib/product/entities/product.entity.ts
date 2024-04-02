@@ -3,10 +3,10 @@ import {
 	Column,
 	Model,
 	ForeignKey,
-	BelongsTo
+	BelongsTo,
 } from "sequelize-typescript";
-import { Category } from "../../category/entities/category.entity";
-import { Order } from "../../order/entities/order.entity";
+import { Cart } from "../../cart/entities";
+import { Category } from "../../category/entities";
 
 @Table
 export class Product extends Model {
@@ -18,6 +18,9 @@ export class Product extends Model {
 
 	@Column
 	price: number;
+
+	@Column
+	discountedPrice: number;
 
 	@Column
 	currency: string;
@@ -32,6 +35,6 @@ export class Product extends Model {
 	@BelongsTo(() => Category)
 	category: Category;
 
-	@ForeignKey(() => Order)
-	orderId!: number;
+	@ForeignKey(() => Cart)
+	carts: Cart[];
 }

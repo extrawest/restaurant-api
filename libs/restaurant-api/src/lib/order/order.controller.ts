@@ -73,4 +73,11 @@ export class OrderController {
 			toDate
 		);
 	}
+
+	@Roles(Role.Buyer)
+	@UseGuards(AuthGuard, RolesGuard)
+	@Post("calculate-shipping-cost")
+	calculateShippingCost() {
+		return this.orderService.calculateShippingCost();
+	}
 }
