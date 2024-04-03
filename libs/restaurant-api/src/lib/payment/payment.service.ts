@@ -3,7 +3,7 @@ import {
 	Inject,
 	Injectable
 } from "@nestjs/common";
-import { Payment } from "./entities";
+import { Payment} from "./entities";
 import { PaymentMethod } from "./entities";
 import { OrderService } from "../order/order.service";
 import { StripeService } from "../stripe/stripe.service";
@@ -46,7 +46,12 @@ export class PaymentService {
 	}
 
 	getCustomerPaymentMethod(customerId: string, paymentMethodId: string) {
-		return this.stripeService.getCustomerPaymentMethod(customerId, paymentMethodId);
+		return this.paymentMethodsRepository.findOne<PaymentMethod>({
+			where: {
+				id: paymentMethodId,
+				stripeCustomerId: customerId
+			}
+		});
 	}
 
 	// PAYMENTS
@@ -87,9 +92,5 @@ export class PaymentService {
 			throw new BadRequestException(ORDER_WITH_CURRENT_STATUS_CANNOT_BE_CANCELLED);
 		};
 		this.stripeService.cancelPayment(paymentId);
-	}
-
-	async createSubscription(customerId: string, priceId: string, defaultPaymentMethod?: string) {
-		return this.stripeService.createSubscription(customerId, priceId, defaultPaymentMethod);
 	}
 }

@@ -1,12 +1,14 @@
 import {
 	Column,
+	HasMany,
+	HasOne,
 	IsUUID,
 	Model,
 	PrimaryKey,
 	Table,
 } from "sequelize-typescript";
 import { Price } from "./price.entity";
-import { PaymentMethod } from "./payment-method.entity";
+import { PaymentMethod } from "../../payment/entities/payment-method.entity";
 
 @Table
 export class Subscription extends Model {
@@ -18,9 +20,12 @@ export class Subscription extends Model {
 	@Column
 	customer!: string;
 
-	@Column
-	default_payment_method: PaymentMethod;
+	@HasOne(() => PaymentMethod, "id")
+	defaultPaymentMethod: PaymentMethod;
+
+	@HasMany(() => Price, "id")
+	items!: Price[];
 
 	@Column
-	items!: Price[];
+	status: string;
 }

@@ -5,7 +5,11 @@ import {
 	Injectable
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { PAYMENT_METHOD_WAS_NOT_ATTACHED, PLEASE_PROVIDE_A_VALID_METHOD_TYPE } from "shared";
+import {
+	PAYMENT_METHOD_WAS_NOT_ATTACHED,
+	STRIPE_SECRET_KEY_IS_NOT_DEFINED,
+	PLEASE_PROVIDE_A_VALID_METHOD_TYPE,
+} from "shared";
 import { Currency } from "../enums/currency.enum";
 import { PaymentInterval } from "../enums/payment-interval.enum";
 
@@ -14,7 +18,11 @@ export class StripeService {
 	private stripe: Stripe;
 
 	constructor(private configService: ConfigService) {
-		this.stripe = new Stripe(this.configService.get<string>("STRIPE_SECRET_KEY") as string);
+		const stripeSecret = this.configService.get<string>("STRIPE_SECRET_KEY");
+		if (!stripeSecret) {
+			throw new Error(STRIPE_SECRET_KEY_IS_NOT_DEFINED);
+		};
+		this.stripe = new Stripe(stripeSecret);
 	}
 
 	createCustomer(name: string, email: string): Promise<Stripe.Response<Stripe.Customer>> {
@@ -142,8 +150,8 @@ export class StripeService {
 	}
 	
 	createPrice(
-		productId: string, 
-		priceInUSD: number, 
+		productId: string,
+		priceInUSD: number,
 		interval: PaymentInterval
 	) {
 		return this.stripe.prices.create({
@@ -190,5 +198,17 @@ export class StripeService {
 
 	cancelSubscription(subscriptionId: string) {
 		return this.stripe.subscriptions.cancel(subscriptionId);
+	}
+
+	public async constructEventFromPayload(signature: string, payload: Buffer) {
+		const webhookSecret = this.configService.get<string>("STRIPE_WEBHOOK_SECRET");
+		if (!webhookSecret) {
+			throw new Error(STRIPE_SECRET_KEY_IS_NOT_DEFINED);
+		};
+		return this.stripe.webhooks.constructEvent(
+			payload,
+			signature,
+			webhookSecret
+		);
 	}
 }

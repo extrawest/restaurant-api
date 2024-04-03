@@ -14,13 +14,18 @@ import { PaymentService } from "./payment.service";
 import { User } from "../decorators/user.decorator";
 import { User as UserEntity } from "../user/entities";
 import { AuthGuard } from "../auth/guards/auth.guard";
+import { StripeService } from "../stripe/stripe.service";
 import { CreatePaymentDto } from "./dto/create-payment.dto";
 import { CancelPaymentDTO } from "./dto/cancel-payment.dto";
 import CreatePaymentMethodDTO from "./dto/create-payment-method.dto";
+import { CancelSubscriptionDTO } from "./dto/cancel-subscription.dto";
 
 @Controller("payments")
 export class PaymentController {
-	constructor(private readonly paymentService: PaymentService) {}
+	constructor(
+		private readonly paymentService: PaymentService,
+		private readonly stripeService: StripeService,
+	) {}
 
 	@UseGuards(AuthGuard)
 	@Roles(Role.Buyer)
@@ -92,5 +97,12 @@ export class PaymentController {
 	cancelPayment(@Body() cancelPaymentDTO: CancelPaymentDTO) {
 		const { paymentId } = cancelPaymentDTO;
 		this.paymentService.cancelPayment(paymentId);
+	}
+
+	@UseGuards(AuthGuard)
+	@Roles(Role.Buyer)
+	@Post("cancel-subscription")
+	cancelSubscription(@Body() cancelSubscriptionDTO: CancelSubscriptionDTO) {
+		return this.paymentService.cancelSubscription(cancelSubscriptionDTO.subscriptionId);
 	}
 }
