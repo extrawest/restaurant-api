@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-export class CreateSubscriptionDTO {
+export class CreatePaymentProductDTO {
 	// @ApiProperty()
 	// customerId: string;
 

@@ -28,4 +28,7 @@ export class Subscription extends Model {
 
 	@Column
 	status: string;
+
+	@Column
+	stripeSubscriptionId?: string;
 }

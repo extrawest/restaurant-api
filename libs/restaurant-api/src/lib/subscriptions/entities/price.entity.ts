@@ -7,9 +7,9 @@ import {
 	PrimaryKey,
 	Table,
 } from "sequelize-typescript";
-import { PaymentInterval } from "../../enums/payment-interval.enum";
+import { PaymnentProduct } from "./product.entity";
 import { Currency } from "../../enums/currency.enum";
-import { StripeProduct } from "./product.entity";
+import { PaymentInterval } from "../../enums/payment-interval.enum";
 
 @Table
 export class Price extends Model {
@@ -18,7 +18,7 @@ export class Price extends Model {
   @Column
 	override id: string;
 
-	@ForeignKey(() => StripeProduct)
+	@ForeignKey(() => PaymnentProduct)
 	product!: string;
 	
 	@Column
@@ -37,4 +37,7 @@ export class Price extends Model {
 		})
 	})
 	currency: string;
+
+	@Column
+	stripePriceId?: string;
 }

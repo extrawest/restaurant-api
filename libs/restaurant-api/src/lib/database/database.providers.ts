@@ -12,7 +12,7 @@ import { Price } from "../subscriptions/entities";
 import { PaymentMethod } from "../payment/entities";
 import { UserAdditionalInfo } from "../user/entities";
 import { Subscription } from "../subscriptions/entities";
-import { StripeProduct } from "../subscriptions/entities";
+import { PaymnentProduct } from "../subscriptions/entities";
 
 export const databaseProviders = [
 	{
@@ -36,7 +36,7 @@ export const databaseProviders = [
 				Order,
 				Payment,
 				PaymentMethod,
-				StripeProduct,
+				PaymnentProduct,
 				Price,
 				Subscription,
 				UserAdditionalInfo,

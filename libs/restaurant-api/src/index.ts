@@ -12,3 +12,4 @@ export * from "./lib/checkout/checkout.module";
 export * from "./lib/payment/payment.module";
 export * from "./lib/chat/chat.module";
 export * from "./lib/settings/settings.module";
+export * from "./lib/subscriptions/subscriptions.module";

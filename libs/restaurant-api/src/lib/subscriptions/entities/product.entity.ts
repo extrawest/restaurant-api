@@ -7,7 +7,7 @@ import {
 } from "sequelize-typescript";
 
 @Table
-export class StripeProduct extends Model {
+export class PaymnentProduct extends Model {
 	@IsUUID(4)
   @PrimaryKey
   @Column
@@ -18,4 +18,7 @@ export class StripeProduct extends Model {
 
 	@Column
 	description: string;
+
+	@Column
+	paymentProductId?: string;
 }

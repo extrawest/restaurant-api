@@ -1,14 +1,14 @@
 import { Inject, Injectable } from "@nestjs/common";
 import {
 	Price,
-	StripeProduct,
+	PaymnentProduct,
 	Subscription
 } from "./entities";
-import { CreateSubscriptionDto } from "./dto/create-subscription.dto";
-import { UpdateSubscriptionDto } from "./dto/update-subscription.dto";
+import { CreateSubscriptionDTO } from "./dto/create-subscription.dto";
+import { UpdateSubscriptionDTO } from "./dto/update-subscription.dto";
 import {
 	PRICE_REPOSITORY,
-	STRIPE_PRODUCT_REPOSITORY,
+	PAYMENT_PRODUCT_REPOSITORY,
 	SUBSCRIPTION_REPOSITORY
 } from "./constants";
 
@@ -17,34 +17,26 @@ export class SubscriptionsService {
 	constructor(
 		@Inject(PRICE_REPOSITORY) private priceRepository: typeof Price,
 		@Inject(SUBSCRIPTION_REPOSITORY) private subscriptionRepository: typeof Subscription,
-		@Inject(STRIPE_PRODUCT_REPOSITORY) private stripeProductRepository: typeof StripeProduct,
+		@Inject(PAYMENT_PRODUCT_REPOSITORY) private paymentProductRepository: typeof PaymnentProduct,
 	) {}
 
-	async createSubscription(customerId: string, priceId: string, defaultPaymentMethod?: string) {
+	async createSubscription(createSubscriptionDTO: CreateSubscriptionDTO) {
 		// return this.stripeService.createSubscription(customerId, priceId, defaultPaymentMethod);
 	}
 
-	cancelSubscription(subscriptionId: string) {
-		// return this.stripeService.cancelSubscription(subscriptionId);
-	}
-
-	create(createSubscriptionDto: CreateSubscriptionDto) {
-		return "This action adds a new subscription";
-	}
-
-	findAll() {
+	findAllSubscriptions() {
 		return `This action returns all subscriptions`;
 	}
 
-	findOne(id: number) {
+	findOneSubscription(id: string) {
 		return `This action returns a #${id} subscription`;
 	}
 
-	update(id: number, updateSubscriptionDto: UpdateSubscriptionDto) {
-		return `This action updates a #${id} subscription`;
+	updateSubscription(id: string, updateSubscriptionDTO: UpdateSubscriptionDTO) {
+
 	}
 
-	remove(id: number) {
+	cancelSubscription(id: string) {
 		return `This action removes a #${id} subscription`;
 	}
 }

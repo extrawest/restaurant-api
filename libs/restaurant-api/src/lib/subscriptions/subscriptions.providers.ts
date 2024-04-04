@@ -1,11 +1,11 @@
 import {
 	Price,
-	StripeProduct,
+	PaymnentProduct,
 	Subscription
 } from "./entities";
 import {
 	PRICE_REPOSITORY,
-	STRIPE_PRODUCT_REPOSITORY,
+	PAYMENT_PRODUCT_REPOSITORY,
 	SUBSCRIPTION_REPOSITORY
 } from "./constants";
 
@@ -15,8 +15,8 @@ export const subscriptionProviders = [
 		useValue: Price,
 	},
 	{
-		provide: STRIPE_PRODUCT_REPOSITORY,
-		useValue: StripeProduct,
+		provide: PAYMENT_PRODUCT_REPOSITORY,
+		useValue: PaymnentProduct,
 	},
 	{
 		provide: SUBSCRIPTION_REPOSITORY,
