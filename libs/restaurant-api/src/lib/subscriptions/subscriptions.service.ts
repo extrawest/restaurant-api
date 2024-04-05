@@ -75,11 +75,11 @@ export class SubscriptionsService {
 		return subscription.update(updateSubscriptionDTO);
 	}
 
-	cancelSubscription(id: string) {
-		return this.subscriptionRepository.destroy({
-			where: {
-				id
-			}
-		});
+	async cancelSubscription(id: string) {
+		const subscription = await this.findOneSubscription(id);
+		if (!subscription) {
+			throw new NotFoundException(SUBSCRIPTION_NOT_FOUND);
+		};
+		return this.stripeService.cancelSubscription(subscription.stripeSubscriptionId);
 	}
 }

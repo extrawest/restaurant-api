@@ -30,5 +30,5 @@ export class Subscription extends Model {
 	defaultPaymentMethod?: PaymentMethod;
 
 	@Column
-	stripeSubscriptionId?: string;
+	stripeSubscriptionId: string;
 }
