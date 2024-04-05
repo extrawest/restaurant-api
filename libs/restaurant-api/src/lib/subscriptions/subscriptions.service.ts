@@ -80,6 +80,9 @@ export class SubscriptionsService {
 		if (!subscription) {
 			throw new NotFoundException(SUBSCRIPTION_NOT_FOUND);
 		};
-		return this.stripeService.cancelSubscription(subscription.stripeSubscriptionId);
+		const stripeSubscription = await this.stripeService.cancelSubscription(subscription.stripeSubscriptionId);
+		return this.updateSubscription(id, {
+			status: stripeSubscription.status,
+		});
 	}
 }
