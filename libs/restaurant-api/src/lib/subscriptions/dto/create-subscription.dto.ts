@@ -1,12 +1,12 @@
 import { ApiProperty } from "@nestjs/swagger";
 
 export class CreateSubscriptionDTO {
-	// @ApiProperty()
-	// customerId: string;
+	@ApiProperty()
+	userId: number;
 
-	// @ApiProperty()
-	// priceId: string;
+	@ApiProperty()
+	priceIds: string[];
 
-	// @ApiProperty()
-	// defaultPaymentMethod?: string;
+	@ApiProperty()
+	defaultPaymentMethodId?: string;
 }

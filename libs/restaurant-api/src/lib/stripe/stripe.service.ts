@@ -174,17 +174,15 @@ export class StripeService {
 
 	createSubscription(
 		customerId: string,
-		priceId: string,
+		priceIds: string[],
 		defaultPaymentMethod?: string
 	) {
 		return this.stripe.subscriptions.create({
 			customer: customerId,
 			default_payment_method: defaultPaymentMethod,
-			items: [
-				{
-					price: priceId
-				}
-			]
+			items: priceIds.map((item) => ({
+				price: item
+			})),
 		});
 	}
 

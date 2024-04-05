@@ -1,4 +1,5 @@
+import { OmitType } from "@nestjs/swagger";
 import { PartialType } from "@nestjs/mapped-types";
 import { CreateSubscriptionDTO } from "./create-subscription.dto";
 
-export class UpdateSubscriptionDTO extends PartialType(CreateSubscriptionDTO) {}
+export class UpdateSubscriptionDTO extends PartialType(OmitType(CreateSubscriptionDTO, ["userId"])) {}

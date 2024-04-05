@@ -1,12 +1,13 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { PaymentInterval } from "../../enums/payment-interval.enum";
 
 export class CreatePriceDTO {
-	// @ApiProperty()
-	// customerId: string;
+	@ApiProperty()
+	productId: string;
 
-	// @ApiProperty()
-	// priceId: string;
+	@ApiProperty()
+	priceInUSD: number;
 
-	// @ApiProperty()
-	// defaultPaymentMethod?: string;
+	@ApiProperty()
+	interval: PaymentInterval;
 }

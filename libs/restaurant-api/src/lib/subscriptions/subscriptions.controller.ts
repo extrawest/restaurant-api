@@ -15,6 +15,7 @@ import { PaymentProductsService } from "./payment-products.service";
 import { CreateSubscriptionDTO } from "./dto/create-subscription.dto";
 import { UpdateSubscriptionDTO } from "./dto/update-subscription.dto";
 import { CreatePaymentProductDTO } from "./dto/create-payment-product.dto";
+import { UpdatePaymentProductDTO } from "./dto/update-payment-product.dto";
 
 @Controller("subscriptions")
 export class SubscriptionsController {
@@ -90,7 +91,7 @@ export class SubscriptionsController {
 	}
 
 	@Patch("payment-products/:id")
-	updatePaymentProduct(@Param("id") id: string, @Body() updatePriceDTO: UpdatePriceDTO) {
+	updatePaymentProduct(@Param("id") id: string, @Body() updatePriceDTO: UpdatePaymentProductDTO) {
 		return this.paymentProductsService.updatePaymentProduct(id, updatePriceDTO);
 	}
 

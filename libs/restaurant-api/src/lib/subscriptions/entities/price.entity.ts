@@ -39,5 +39,5 @@ export class Price extends Model {
 	currency: string;
 
 	@Column
-	stripePriceId?: string;
+	stripePriceId: string;
 }

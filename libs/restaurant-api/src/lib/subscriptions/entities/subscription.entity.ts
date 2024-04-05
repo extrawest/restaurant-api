@@ -18,16 +18,16 @@ export class Subscription extends Model {
 	override id: string;
 
 	@Column
-	customer!: string;
-
-	@HasOne(() => PaymentMethod, "id")
-	defaultPaymentMethod: PaymentMethod;
+	userId!: number;
 
 	@HasMany(() => Price, "id")
 	items!: Price[];
 
 	@Column
 	status: string;
+
+	@HasOne(() => PaymentMethod, "id")
+	defaultPaymentMethod?: PaymentMethod;
 
 	@Column
 	stripeSubscriptionId?: string;

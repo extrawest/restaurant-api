@@ -20,5 +20,5 @@ export class PaymnentProduct extends Model {
 	description: string;
 
 	@Column
-	paymentProductId?: string;
+	paymentProductId: string;
 }
