@@ -72,6 +72,8 @@ describe("PricesService", () => {
 
 	it("should be defined", () => {
 		expect(pricesService).toBeDefined();
+		expect(stripeService).toBeDefined();
+		expect(paymentProductsService).toBeDefined();
 	});
 
 	describe("create method", () => {
