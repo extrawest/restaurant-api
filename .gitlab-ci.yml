@@ -10,7 +10,9 @@ test:
   before_script:
     - yarn install
   script:
-    - set STRIPE_SECRET_KEY=DUMB_VAR && yarn test:restaurant-api
+    - yarn test:restaurant-api
+  variables:
+    STRIPE_SECRET_KEY: DUMB_VAR
 
 build:
   stage: build
