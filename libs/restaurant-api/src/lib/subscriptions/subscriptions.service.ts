@@ -4,14 +4,14 @@ import {
 	NotFoundException
 } from "@nestjs/common";
 import { 
+	USER_NOT_FOUND,
 	PRICE_NOT_FOUND, 
 	SUBSCRIPTION_NOT_FOUND, 
-	USER_NOT_FOUND
 } from "shared";
 import { Subscription } from "./entities";
-import { SUBSCRIPTION_REPOSITORY } from "./constants";
 import { PricesService } from "./prices.service";
 import { UsersService } from "../user/user.service";
+import { SUBSCRIPTION_REPOSITORY } from "./constants";
 import { StripeService } from "../stripe/stripe.service";
 import { PaymentService } from "../payment/payment.service";
 import { CreateSubscriptionDTO } from "./dto/create-subscription.dto";
@@ -34,7 +34,7 @@ export class SubscriptionsService {
 			throw new NotFoundException(USER_NOT_FOUND);
 		};
 		const prices = await this.priceService.findAllByIds(priceIds);
-		if (!prices) {
+		if (!prices || !prices?.length) {
 			throw new NotFoundException(PRICE_NOT_FOUND);
 		};
 		const arrayOfPricesIds = prices.map((item) => item.stripePriceId).filter(item => item);
@@ -80,9 +80,9 @@ export class SubscriptionsService {
 		if (!subscription) {
 			throw new NotFoundException(SUBSCRIPTION_NOT_FOUND);
 		};
-		const stripeSubscription = await this.stripeService.cancelSubscription(subscription.stripeSubscriptionId);
-		return this.updateSubscription(id, {
-			status: stripeSubscription.status,
-		});
+		return this.stripeService.cancelSubscription(subscription.stripeSubscriptionId);
+		// return this.updateSubscription(id, {
+		// 	status: stripeSubscription.status,
+		// });
 	}
 }
