@@ -10,6 +10,7 @@ import { CreatePriceDTO } from "./dto/create-price.dto";
 import { UpdatePriceDTO } from "./dto/update-price.dto";
 import { StripeService } from "../stripe/stripe.service";
 import { PaymentProductsService } from "./payment-products.service";
+import { StorePriceDTO } from "./dto/store-price.dto";
 
 @Injectable()
 export class PricesService {
@@ -25,13 +26,24 @@ export class PricesService {
 		if (!paymentProduct) {
 			throw new NotFoundException(PAYMENT_PRODUCT_NOT_FOUND);
 		};
-		const price = await this.stripeService.createPrice(paymentProduct.paymentProductId, priceInUSD, interval);
+		return this.stripeService.createPrice(paymentProduct.paymentProductId, priceInUSD, interval);
+	}
+
+	storePrice(storePriceDTO: StorePriceDTO) {
+		const {
+			stripeProductId,
+			unit_amount,
+			interval,
+			currency,
+			stripePriceId,
+		} = storePriceDTO;
+		const product = this.paymentProductService.findOnePaymentProductByStripeId(stripeProductId);
 		return this.priceRepository.create({
-			product: paymentProduct.id,
-			unit_amount: price.unit_amount,
-			interval: price.recurring?.interval,
-			currency: price.currency,
-			stripePriceId: price.id,
+			product,
+			unit_amount: unit_amount,
+			interval,
+			currency: currency,
+			stripePriceId,
 		});
 	}
 
@@ -49,6 +61,14 @@ export class PricesService {
 
 	findOnePrice(id: string) {
 		return this.priceRepository.findByPk(id);
+	}
+
+	findOnePriceByStripeId(stripePriceId: string) {
+		return this.priceRepository.findOne({
+			where: {
+				stripePriceId
+			}
+		});
 	}
 
 	findPricesByProductId(productId: string) {

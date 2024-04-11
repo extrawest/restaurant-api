@@ -35,6 +35,14 @@ export class PaymentProductsService {
 		return this.paymentProductRepository.findByPk(id);
 	}
 
+	findOnePaymentProductByStripeId(stripeProductId: string) {
+		return this.paymentProductRepository.findOne({
+			where: {
+				paymentProductId: stripeProductId,
+			}
+		});
+	}
+
 	async updatePaymentProduct(id: string, updatePaymentProductDTO: UpdatePaymentProductDTO) {
 		const paymentProduct = await this.findOnePaymentProduct(id);
 		if (!paymentProduct) {
