@@ -3,10 +3,10 @@ import {
 	Injectable,
 	NotFoundException
 } from "@nestjs/common";
-import { 
+import {
 	USER_NOT_FOUND,
-	PRICE_NOT_FOUND, 
-	SUBSCRIPTION_NOT_FOUND, 
+	PRICE_NOT_FOUND,
+	SUBSCRIPTION_NOT_FOUND,
 } from "shared";
 import { Subscription } from "./entities";
 import { PricesService } from "./prices.service";
@@ -14,8 +14,9 @@ import { UsersService } from "../user/user.service";
 import { SUBSCRIPTION_REPOSITORY } from "./constants";
 import { StripeService } from "../stripe/stripe.service";
 import { PaymentService } from "../payment/payment.service";
-import { CreateSubscriptionDTO } from "./dto/create-subscription.dto";
 import { UpdateSubscriptionDTO } from "./dto/update-subscription.dto";
+import { StoreSubscriptionDTO } from "./dto/store-subscription.dto";
+import { CreateSubscriptionDTO } from "./dto/create-subscription.dto";
 
 @Injectable()
 export class SubscriptionsService {
@@ -27,7 +28,7 @@ export class SubscriptionsService {
 		@Inject(SUBSCRIPTION_REPOSITORY) private subscriptionRepository: typeof Subscription,
 	) {}
 
-	async createSubscription(createSubscriptionDTO: CreateSubscriptionDTO) {
+	async createStripeSubscription(createSubscriptionDTO: CreateSubscriptionDTO) {
 		const { userId, priceIds, defaultPaymentMethodId } = createSubscriptionDTO;
 		const user = await this.usersService.findOne(userId);
 		if (!user) {
@@ -45,17 +46,30 @@ export class SubscriptionsService {
 				defaultPaymentMethodId
 			);
 		};
-		const stripeSubscription = await this.stripeService.createSubscription(
+		return this.stripeService.createSubscription(
 			user.stripeCustomerId,
 			arrayOfPricesIds,
 			defaultPaymentMethod?.stripePaymentMethodId,
 		);
+	}
+
+	async storeSubscription(storeSubscriptionDTO: StoreSubscriptionDTO) {
+		const { userId, defaultPaymentMethodId, status, priceIds, stripeSubscriptionId } = storeSubscriptionDTO;
+		const user = await this.usersService.findOne(userId);
+		let defaultPaymentMethod;
+		if (!user) {
+			throw new NotFoundException(USER_NOT_FOUND);
+		};
+		const items = await this.priceService.findAllByIds(priceIds);
+		if (defaultPaymentMethodId) {
+			defaultPaymentMethod = await this.paymentService.getCustomerPaymentMethod(user?.stripeCustomerId, defaultPaymentMethodId);
+		};
 		return this.subscriptionRepository.create({
 			userId,
 			defaultPaymentMethod,
-			status: stripeSubscription.status,
-			items: prices,
-			stripeSubscriptionId: stripeSubscription.id,
+			status,
+			items,
+			stripeSubscriptionId,
 		});
 	}
 
@@ -67,6 +81,14 @@ export class SubscriptionsService {
 		return this.subscriptionRepository.findByPk(id);
 	}
 
+	findOneByStripeSubscriptionId(stripeSubscriptionId: string) {
+		return this.subscriptionRepository.findOne({
+			where: {
+				stripeSubscriptionId
+			}
+		});
+	};
+
 	async updateSubscription(id: string, updateSubscriptionDTO: UpdateSubscriptionDTO) {
 		const subscription = await this.findOneSubscription(id);
 		if (!subscription) {
@@ -75,14 +97,11 @@ export class SubscriptionsService {
 		return subscription.update(updateSubscriptionDTO);
 	}
 
-	async cancelSubscription(id: string) {
+	async cancelStripeSubscription(id: string) {
 		const subscription = await this.findOneSubscription(id);
 		if (!subscription) {
 			throw new NotFoundException(SUBSCRIPTION_NOT_FOUND);
 		};
 		return this.stripeService.cancelSubscription(subscription.stripeSubscriptionId);
-		// return this.updateSubscription(id, {
-		// 	status: stripeSubscription.status,
-		// });
 	}
 }

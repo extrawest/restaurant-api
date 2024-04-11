@@ -98,11 +98,4 @@ export class PaymentController {
 		const { paymentId } = cancelPaymentDTO;
 		this.paymentService.cancelPayment(paymentId);
 	}
-
-	@UseGuards(AuthGuard)
-	@Roles(Role.Buyer)
-	@Post("cancel-subscription")
-	cancelSubscription(@Body() cancelSubscriptionDTO: CancelSubscriptionDTO) {
-		return this.paymentService.cancelSubscription(cancelSubscriptionDTO.subscriptionId);
-	}
 }

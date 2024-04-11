@@ -72,7 +72,7 @@ export class StripeService {
 		};
 	}
 
-	getCustomerPaymentMethod(customerId: string,paymentMethodId: string): Promise<Stripe.PaymentMethod> {
+	getCustomerPaymentMethod(customerId: string, paymentMethodId: string): Promise<Stripe.PaymentMethod> {
 		return this.stripe.customers.retrievePaymentMethod(customerId, paymentMethodId);
 	}
 

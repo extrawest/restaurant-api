@@ -8,13 +8,18 @@ import {
 	RawBodyRequest
 } from "@nestjs/common";
 import { StripeService } from "./stripe.service";
+import { UsersService } from "../user/user.service";
 import { PaymentService } from "../payment/payment.service";
+import { paymentEventHandler, subscriptionsEventHandler } from "./webhook-event-handlers";
+import { SubscriptionsService } from "../subscriptions/subscriptions.service";
  
 @Controller("stripe-webhook")
 export default class StripeWebhookController {
 	constructor(
 		private readonly stripeService: StripeService,
 		private readonly paymentService: PaymentService,
+		private readonly subscriptionService: SubscriptionsService,
+		private readonly usersService: UsersService,
 	) {}
  
 	@Post()
@@ -30,21 +35,22 @@ export default class StripeWebhookController {
 			throw new BadRequestException("Invalid payload");
 		}
 		const event = await this.stripeService.constructEventFromPayload(signature, req.rawBody);
-		console.log(event);
 
-		if (event.type === "customer.subscription.deleted") {
-			const data = event.data.object;
-			// data.status
-		}
-		if (event.type === "product.created") {
-			const data = event.data.object;
-			// return this.paymentService.
-		};
+		// STRIPE SUBSCRIPTIONS WEBHOOK
+		subscriptionsEventHandler(
+			event,
+			this.subscriptionService,
+			this.usersService
+		);
 
-		if (event.type === "price.created") {
-			const data = event.data.object;
-		};
-		// console.log(event)
-		// ...
+		// STRIPE PRODUCTS WEBHOOK
+		paymentEventHandler(
+			event,
+			this.paymentService
+		);
+
+		// STRIPE PRICES WEBHOOK
+
+		// STRIPE PAYMENT/PAYMENT-METHOD WEBHOOK
 	}
 }

@@ -159,7 +159,7 @@ describe("SubscriptionsService", () => {
 			jest.spyOn(pricesService, "findAllByIds").mockResolvedValueOnce([priceMock] as any);
 			jest.spyOn(stripeService, "createSubscription").mockResolvedValueOnce(stripeSubscriptionMock as any);
 			subscriptionsRepositoryMock.create.mockResolvedValueOnce(subscriptionMock);
-			expect(await subscriptionService.createSubscription({ userId, priceIds })).toEqual(subscriptionMock);
+			expect(await subscriptionService.createStripeSubscription({ userId, priceIds })).toEqual(subscriptionMock);
 			expect(jest.spyOn(usersService, "findOne")).toHaveBeenCalledTimes(1);
 			expect(jest.spyOn(pricesService, "findAllByIds")).toHaveBeenCalledTimes(1);
 			expect(jest.spyOn(stripeService, "createSubscription")).toHaveBeenCalledTimes(1);
@@ -177,7 +177,7 @@ describe("SubscriptionsService", () => {
 				...subscriptionMock,
 				defaultPaymentMethod,
 			});
-			expect(await subscriptionService.createSubscription({
+			expect(await subscriptionService.createStripeSubscription({
 				userId,
 				priceIds,
 				defaultPaymentMethodId: defaultPaymentMethod.id
@@ -196,7 +196,7 @@ describe("SubscriptionsService", () => {
 			const userId = faker.number.int({ max: 100 });
 			const priceIds = [faker.string.uuid()];
 			jest.spyOn(usersService, "findOne").mockResolvedValueOnce(null);
-			expect(subscriptionService.createSubscription({ userId, priceIds }))
+			expect(subscriptionService.createStripeSubscription({ userId, priceIds }))
 				.rejects
 				.toThrow(new NotFoundException(USER_NOT_FOUND));
 			expect(jest.spyOn(usersService, "findOne")).toHaveBeenCalledTimes(1);
@@ -209,7 +209,7 @@ describe("SubscriptionsService", () => {
 			const priceIds = [faker.string.uuid()];
 			jest.spyOn(usersService, "findOne").mockResolvedValueOnce(userMock as any);
 			jest.spyOn(pricesService, "findAllByIds").mockResolvedValueOnce([]);
-			expect(subscriptionService.createSubscription({ userId, priceIds }))
+			expect(subscriptionService.createStripeSubscription({ userId, priceIds }))
 				.rejects
 				.toThrow(new NotFoundException(PRICE_NOT_FOUND));
 			expect(jest.spyOn(usersService, "findOne")).toHaveBeenCalledTimes(1);
@@ -268,7 +268,7 @@ describe("SubscriptionsService", () => {
 			const id = faker.string.uuid();
 			subscriptionsRepositoryMock.findByPk.mockResolvedValueOnce(subscriptionMock);
 			jest.spyOn(stripeService, "cancelSubscription").mockResolvedValueOnce(subscriptionMock as any);
-			expect(await subscriptionService.cancelSubscription(id)).toEqual(subscriptionMock);
+			expect(await subscriptionService.cancelStripeSubscription(id)).toEqual(subscriptionMock);
 			expect(subscriptionsRepositoryMock.findByPk).toHaveBeenCalledTimes(1);
 			expect(subscriptionsRepositoryMock.findByPk).toHaveBeenCalledWith(id);
 			expect(jest.spyOn(stripeService, "cancelSubscription")).toHaveBeenCalledTimes(1);
@@ -277,7 +277,7 @@ describe("SubscriptionsService", () => {
 		it("should throw SUBSCRIPTION_NOT_FOUND", async () => {
 			const id = faker.string.uuid();
 			subscriptionsRepositoryMock.findByPk.mockResolvedValueOnce(null);
-			expect(subscriptionService.cancelSubscription(id)).rejects.toThrow(new NotFoundException(SUBSCRIPTION_NOT_FOUND));
+			expect(subscriptionService.cancelStripeSubscription(id)).rejects.toThrow(new NotFoundException(SUBSCRIPTION_NOT_FOUND));
 			expect(subscriptionsRepositoryMock.findByPk).toHaveBeenCalledTimes(1);
 			expect(subscriptionsRepositoryMock.findByPk).toHaveBeenCalledWith(id);
 			expect(jest.spyOn(stripeService, "cancelSubscription")).toHaveBeenCalledTimes(0);

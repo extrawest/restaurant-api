@@ -24,11 +24,14 @@ export class Payment extends Model {
 	status: string;
 
 	@Column
-	stripeCustomerId!: string;
+	stripePaymentId?: string;
+
+	@Column
+	stripeCustomerId?: string;
 
 	@ForeignKey(() => PaymentMethod)
 	@Column
-	paymentMethodId!: string;
+	paymentMethodId?: string;
 
 	@BelongsTo(() => PaymentMethod)
 	paymentMethod: PaymentMethod;

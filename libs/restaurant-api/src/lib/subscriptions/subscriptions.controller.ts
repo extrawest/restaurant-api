@@ -27,7 +27,7 @@ export class SubscriptionsController {
 
 	@Post()
 	createSubscription(@Body() createSubscriptionDTO: CreateSubscriptionDTO) {
-		return this.subscriptionsService.createSubscription(createSubscriptionDTO);
+		return this.subscriptionsService.createStripeSubscription(createSubscriptionDTO);
 	}
 
 	@Get()
@@ -47,7 +47,7 @@ export class SubscriptionsController {
 
 	@Post("cancel/:id")
 	cancelSubscription(@Param("id") id: string) {
-		return this.subscriptionsService.cancelSubscription(id);
+		return this.subscriptionsService.cancelStripeSubscription(id);
 	}
 
 	@Post("prices")
