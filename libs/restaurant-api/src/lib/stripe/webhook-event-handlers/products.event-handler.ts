@@ -10,14 +10,14 @@ export const productsEventHandler = async (
 		return paymentProductService.storePaymentProduct({
 			name,
 			description,
-			paymentProductId: id,
+			stripeProductId: id,
 		});
 	};
 
 	if (event.type === "product.updated") {
 		const { previous_attributes } = event.data;
 		const { id, name, description } = event.data.object;
-		const dataToUpdate: {[key: string]: any} = {};
+		const dataToUpdate: {[key: string]: unknown} = {};
 		const product = await paymentProductService.findOnePaymentProductByStripeId(id);
 
 		if (previous_attributes?.name) {
@@ -28,8 +28,8 @@ export const productsEventHandler = async (
 			dataToUpdate.description = description;
 		};
 
-		if(product && Object.keys(dataToUpdate).length !== 0) {
-			return paymentProductService.updatePaymentProduct(product?.id, dataToUpdate);
+		if(product && dataToUpdate && Object.keys(dataToUpdate).length !== 0) {
+			return await paymentProductService.updatePaymentProduct(product?.id, dataToUpdate);
 		}
 	};
 
@@ -38,7 +38,7 @@ export const productsEventHandler = async (
 		const product = await paymentProductService.findOnePaymentProductByStripeId(id);
 
 		if (product) {
-			return paymentProductService.deletePaymentProduct(product.id);
+			return await paymentProductService.deletePaymentProduct(product.id);
 		};
 	};
 };

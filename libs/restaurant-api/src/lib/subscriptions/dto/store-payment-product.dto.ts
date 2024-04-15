@@ -9,5 +9,5 @@ export class StorePaymentProductDTO {
 	description: Maybe<string>;
 
 	@ApiProperty()
-	paymentProductId: string;
+	stripeProductId: string;
 };

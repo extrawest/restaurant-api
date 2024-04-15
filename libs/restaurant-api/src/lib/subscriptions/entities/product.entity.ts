@@ -19,7 +19,6 @@ export class PaymnentProduct extends Model {
 	@Column
 	description: string;
 
-	//TODO: rename to stripeProductId
 	@Column
-	paymentProductId: string;
+	stripeProductId: string;
 }

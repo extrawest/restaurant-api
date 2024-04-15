@@ -14,7 +14,7 @@ const paymentProductMock = {
 	id: faker.string.uuid(),
 	name: faker.commerce.product(),
 	description: faker.commerce.productDescription(),
-	paymentProductId: faker.string.uuid(),
+	stripeProductId: faker.string.uuid(),
 } as PaymnentProduct;
 
 const priceMock = {

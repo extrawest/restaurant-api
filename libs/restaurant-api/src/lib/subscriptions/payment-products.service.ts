@@ -27,7 +27,7 @@ export class PaymentProductsService {
 		return this.paymentProductRepository.create({
 			name: storePaymentProductDTO.name,
 			description: storePaymentProductDTO.description,
-			paymentProductId: storePaymentProductDTO.paymentProductId,
+			stripeProductId: storePaymentProductDTO.stripeProductId,
 		});
 	}
 
@@ -42,7 +42,7 @@ export class PaymentProductsService {
 	findOnePaymentProductByStripeId(stripeProductId: string) {
 		return this.paymentProductRepository.findOne({
 			where: {
-				paymentProductId: stripeProductId,
+				stripeProductId,
 			}
 		});
 	}

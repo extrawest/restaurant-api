@@ -42,7 +42,12 @@ export class PaymentService {
 	}
 
 	storePaymentMethod(storePaymentMethodDTO: StorePaymentMethodDTO) {
-		const { stripeCustomerId, type, additional_info, stripePaymentMethodId } = storePaymentMethodDTO;
+		const {
+			type,
+			additional_info,
+			stripeCustomerId,
+			stripePaymentMethodId,
+		} = storePaymentMethodDTO;
 		return this.paymentMethodsRepository.create({
 			stripeCustomerId,
 			type,

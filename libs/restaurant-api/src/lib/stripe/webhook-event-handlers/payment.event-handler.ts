@@ -11,7 +11,7 @@ export const paymentEventHandler = async (
 		const { id, amount, payment_method, status, customer } = event.data.object;
 		const paymentMethodId = typeof payment_method === "string" ? payment_method : payment_method?.id;
 		const stripeCustomerId = typeof customer === "string" ? customer : customer?.id;
-		return paymentService.storePayment({
+		return await paymentService.storePayment({
 			paymentMethodId,
 			status,
 			stripeCustomerId,
@@ -33,7 +33,7 @@ export const paymentEventHandler = async (
 			throw new NotFoundException(PAYMENT_NOT_FOUND);
 		};
 
-		return paymentService.updatePayment(payment.id, {
+		return await paymentService.updatePayment(payment.id, {
 			status
 		});
 	};

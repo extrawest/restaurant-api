@@ -26,7 +26,7 @@ export class PricesService {
 		if (!paymentProduct) {
 			throw new NotFoundException(PAYMENT_PRODUCT_NOT_FOUND);
 		};
-		return this.stripeService.createPrice(paymentProduct.paymentProductId, priceInUSD, interval);
+		return this.stripeService.createPrice(paymentProduct.stripeProductId, priceInUSD, interval);
 	}
 
 	storePrice(storePriceDTO: StorePriceDTO) {

@@ -33,7 +33,8 @@ export const subscriptionsEventHandler = async (
 			userId: user.id,
 			priceIds,
 			status,
-			defaultPaymentMethodId: typeof default_payment_method === "string" ? default_payment_method : undefined,
+			defaultPaymentMethodId: typeof default_payment_method === "string" ?
+				default_payment_method : undefined,
 		});
 	};
 
@@ -45,7 +46,7 @@ export const subscriptionsEventHandler = async (
 			throw new NotFoundException(SUBSCRIPTION_NOT_FOUND);
 		};
 
-		return subscriptionService.updateSubscription(subscription.id, { status });
+		return await subscriptionService.updateSubscription(subscription.id, { status });
 	}
 
 	if (
@@ -60,7 +61,7 @@ export const subscriptionsEventHandler = async (
 			throw new NotFoundException(SUBSCRIPTION_NOT_FOUND);
 		};
 
-		return subscriptionService.updateSubscription(subscription.id, { status });
+		return await subscriptionService.updateSubscription(subscription.id, { status });
 	}
 	return;
 };

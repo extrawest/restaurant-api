@@ -14,7 +14,7 @@ export const pricesEventHandler = async (
 			currency
 		} = event.data.object;
 		const stripeProductId = typeof product === "string" ? product : product.id;
-		return pricesService.storePrice({
+		return await pricesService.storePrice({
 			stripeProductId,
 			stripePriceId: id,
 			unit_amount: unit_amount || undefined,
@@ -28,7 +28,7 @@ export const pricesEventHandler = async (
 		const price = await pricesService.findOnePriceByStripeId(id);
 
 		if (price) {
-			pricesService.deletePrice(price?.id);
+			return await pricesService.deletePrice(price?.id);
 		}
 	};
 
@@ -36,10 +36,11 @@ export const pricesEventHandler = async (
 		const { previous_attributes } = event.data;
 		const { id } = event.data.object;
 		const price = await pricesService.findOnePriceByStripeId(id);
-		const dataToUpdate: {[key: string]: any} = {};
+		const dataToUpdate: {[key: string]: unknown} = {};
 
 		if (previous_attributes?.product) {
-			const productId = typeof previous_attributes?.product === "string" ? previous_attributes?.product : previous_attributes?.product.id;
+			const productId = typeof previous_attributes?.product === "string" ?
+				previous_attributes?.product : previous_attributes?.product.id;
 			dataToUpdate.productId = productId;
 		};
 
@@ -51,8 +52,8 @@ export const pricesEventHandler = async (
 			dataToUpdate.interval = previous_attributes?.recurring?.interval;
 		};
 
-		if (price && Object.keys(dataToUpdate).length !== 0) {
-			return pricesService.updatePrice(price.id, dataToUpdate);
+		if (price && dataToUpdate && Object.keys(dataToUpdate).length !== 0) {
+			return await pricesService.updatePrice(price.id, dataToUpdate);
 		};
 	};
 };
