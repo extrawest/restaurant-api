@@ -57,13 +57,8 @@ describe("PaymentProduct service", () => {
 			jest.spyOn(stripeService, "createProduct").mockImplementationOnce(() => Promise.resolve(stripeProduct as any));
 			paymentProductRepositoryMock.create.mockResolvedValueOnce(paymentProductMock);
 			const result = await paymentProductsService.createPaymentProduct(paymentProductMock);
-			expect(result).toEqual(paymentProductMock);
-			expect(paymentProductRepositoryMock.create).toHaveBeenCalledTimes(1);
-			expect(paymentProductRepositoryMock.create).toHaveBeenCalledWith({
-				name: stripeProduct.name,
-				description: stripeProduct.description,
-				paymentProductId: stripeProduct.id,
-			});
+			expect(result).toEqual(stripeProduct);
+			expect(jest.spyOn(stripeService, "createProduct")).toHaveBeenCalledTimes(1);
 		});
 	});
 

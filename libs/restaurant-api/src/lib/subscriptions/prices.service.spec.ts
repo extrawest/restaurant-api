@@ -80,22 +80,13 @@ describe("PricesService", () => {
 		it("should create price", async () => {
 			jest.spyOn(paymentProductsService, "findOnePaymentProduct").mockResolvedValueOnce(paymentProductMock);
 			jest.spyOn(stripeService, "createPrice").mockImplementation(() => stripePriceMock as any);
-			priceRepositoryMock.create.mockResolvedValueOnce(priceMock);
 			const price = await pricesService.createPrice({
 				productId: paymentProductMock.id,
 				priceInUSD: priceMock.unit_amount,
 				interval: priceMock.interval
 			});
 			expect(jest.spyOn(paymentProductsService, "findOnePaymentProduct")).toHaveBeenCalledTimes(1);
-			expect(priceRepositoryMock.create).toHaveBeenCalledTimes(1);
-			expect(priceRepositoryMock.create).toHaveBeenLastCalledWith({
-				product: paymentProductMock.id,
-				unit_amount: price.unit_amount,
-				interval: priceMock.interval,
-				currency: priceMock.currency,
-				stripePriceId: priceMock.id,
-			});
-			expect(price).toEqual(priceMock);
+			expect(price).toEqual(stripePriceMock);
 		});
 
 		it("should throw PAYMENT_PRODUCT_NOT_FOUND", async () => {

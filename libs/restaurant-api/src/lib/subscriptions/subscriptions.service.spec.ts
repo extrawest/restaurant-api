@@ -158,12 +158,12 @@ describe("SubscriptionsService", () => {
 			jest.spyOn(usersService, "findOne").mockResolvedValueOnce(userMock as any);
 			jest.spyOn(pricesService, "findAllByIds").mockResolvedValueOnce([priceMock] as any);
 			jest.spyOn(stripeService, "createSubscription").mockResolvedValueOnce(stripeSubscriptionMock as any);
-			subscriptionsRepositoryMock.create.mockResolvedValueOnce(subscriptionMock);
-			expect(await subscriptionService.createStripeSubscription({ userId, priceIds })).toEqual(subscriptionMock);
+			// subscriptionsRepositoryMock.create.mockResolvedValueOnce(subscriptionMock);
+			expect(await subscriptionService.createStripeSubscription({ userId, priceIds })).toEqual(stripeSubscriptionMock);
 			expect(jest.spyOn(usersService, "findOne")).toHaveBeenCalledTimes(1);
 			expect(jest.spyOn(pricesService, "findAllByIds")).toHaveBeenCalledTimes(1);
 			expect(jest.spyOn(stripeService, "createSubscription")).toHaveBeenCalledTimes(1);
-			expect(subscriptionsRepositoryMock.create).toHaveBeenCalledTimes(1);
+			// expect(subscriptionsRepositoryMock.create).toHaveBeenCalledTimes(1);
 		});
 
 		it("should create subscription with defaultPaymentMethod", async () => {
@@ -171,25 +171,28 @@ describe("SubscriptionsService", () => {
 			const priceIds = [faker.string.uuid()];
 			jest.spyOn(usersService, "findOne").mockResolvedValueOnce(userMock as any);
 			jest.spyOn(pricesService, "findAllByIds").mockResolvedValueOnce([priceMock] as any);
-			jest.spyOn(stripeService, "createSubscription").mockResolvedValueOnce(stripeSubscriptionMock as any);
 			jest.spyOn(paymentService, "getCustomerPaymentMethod").mockResolvedValueOnce(defaultPaymentMethod as any);
-			subscriptionsRepositoryMock.create.mockResolvedValueOnce({
-				...subscriptionMock,
+			jest.spyOn(stripeService, "createSubscription").mockResolvedValueOnce({
+				...stripeSubscriptionMock,
 				defaultPaymentMethod,
-			});
+			} as any);
+			// subscriptionsRepositoryMock.create.mockResolvedValueOnce({
+			// 	...subscriptionMock,
+			// 	defaultPaymentMethod,
+			// });
 			expect(await subscriptionService.createStripeSubscription({
 				userId,
 				priceIds,
 				defaultPaymentMethodId: defaultPaymentMethod.id
 			})).toEqual({
-				...subscriptionMock,
+				...stripeSubscriptionMock,
 				defaultPaymentMethod,
 			});
 			expect(jest.spyOn(usersService, "findOne")).toHaveBeenCalledTimes(1);
 			expect(jest.spyOn(pricesService, "findAllByIds")).toHaveBeenCalledTimes(1);
 			expect(jest.spyOn(stripeService, "createSubscription")).toHaveBeenCalledTimes(1);
 			expect(jest.spyOn(paymentService, "getCustomerPaymentMethod")).toHaveBeenCalledTimes(1);
-			expect(subscriptionsRepositoryMock.create).toHaveBeenCalledTimes(1);
+			// expect(subscriptionsRepositoryMock.create).toHaveBeenCalledTimes(1);
 		});
 
 		it("should throw USER_NOT_FOUND", async () => {

@@ -127,7 +127,7 @@ describe("CheckoutService", () => {
 		it("should checkout", () => {
 			jest.spyOn(cartService, "getCart").mockResolvedValueOnce(mockCart);
 			jest.spyOn(cartService, "deleteCart").mockResolvedValueOnce(1);
-			jest.spyOn(paymentService, "charge").mockResolvedValueOnce(mockPayment);
+			jest.spyOn(paymentService, "charge").mockResolvedValueOnce(mockPayment as any);
 			jest.spyOn(producerService, "addToOrdersQueue").mockResolvedValueOnce();
 			jest.spyOn(orderService, "calculateShippingCost").mockResolvedValueOnce(0);
 			expect(checkoutService.checkout(paymentMethodId, address, 1, stripeCustomerId))
