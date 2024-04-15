@@ -7,6 +7,7 @@ import { PAYMENT_PRODUCT_NOT_FOUND } from "shared";
 import { PaymnentProduct } from "./entities";
 import { PAYMENT_PRODUCT_REPOSITORY } from "./constants";
 import { StripeService } from "../stripe/stripe.service";
+import { StorePaymentProductDTO } from "./dto/store-payment-product.dto";
 import { CreatePaymentProductDTO } from "./dto/create-payment-product.dto";
 import { UpdatePaymentProductDTO } from "./dto/update-payment-product.dto";
 
@@ -17,13 +18,16 @@ export class PaymentProductsService {
 		private readonly stripeService: StripeService,
 	) {}
 
-	async createPaymentProduct(createPaymentProductDTO: CreatePaymentProductDTO) {
+	createPaymentProduct(createPaymentProductDTO: CreatePaymentProductDTO) {
 		const { name, description } = createPaymentProductDTO;
-		const stripeProduct = await this.stripeService.createProduct(name, description);
+		return this.stripeService.createProduct(name, description);
+	}
+
+	storePaymentProduct(storePaymentProductDTO: StorePaymentProductDTO) {
 		return this.paymentProductRepository.create({
-			name: stripeProduct.name,
-			description: stripeProduct.description,
-			paymentProductId: stripeProduct.id,
+			name: storePaymentProductDTO.name,
+			description: storePaymentProductDTO.description,
+			paymentProductId: storePaymentProductDTO.paymentProductId,
 		});
 	}
 

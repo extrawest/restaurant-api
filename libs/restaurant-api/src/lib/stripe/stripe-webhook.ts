@@ -7,16 +7,18 @@ import {
 	BadRequestException,
 	RawBodyRequest
 } from "@nestjs/common";
+import {
+	paymentEventHandler,
+	pricesEventHandler,
+	productsEventHandler,
+	subscriptionsEventHandler
+} from "./webhook-event-handlers";
 import { StripeService } from "./stripe.service";
 import { UsersService } from "../user/user.service";
 import { PaymentService } from "../payment/payment.service";
 import { PricesService } from "../subscriptions/prices.service";
 import { SubscriptionsService } from "../subscriptions/subscriptions.service";
-import {
-	paymentEventHandler,
-	pricesEventHandler,
-	subscriptionsEventHandler
-} from "./webhook-event-handlers";
+import { PaymentProductsService } from "../subscriptions/payment-products.service";
  
 @Controller("stripe-webhook")
 export default class StripeWebhookController {
@@ -26,6 +28,7 @@ export default class StripeWebhookController {
 		private readonly subscriptionService: SubscriptionsService,
 		private readonly usersService: UsersService,
 		private readonly pricesService: PricesService,
+		private readonly paymentProductService: PaymentProductsService,
 	) {}
  
 	@Post()
@@ -50,11 +53,12 @@ export default class StripeWebhookController {
 		);
 
 		// STRIPE PRODUCTS WEBHOOK
-		paymentEventHandler(event, this.paymentService);
+		productsEventHandler(event, this.paymentProductService);
 
 		// STRIPE PRICES WEBHOOK
 		pricesEventHandler(event, this.pricesService);
 
 		// STRIPE PAYMENT/PAYMENT-METHOD WEBHOOK
+		paymentEventHandler(event, this.paymentService);
 	}
 }

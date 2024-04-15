@@ -51,7 +51,7 @@ export const pricesEventHandler = async (
 			dataToUpdate.interval = previous_attributes?.recurring?.interval;
 		};
 
-		if (price && Object.keys(dataToUpdate).length === 0) {
+		if (price && Object.keys(dataToUpdate).length !== 0) {
 			return pricesService.updatePrice(price.id, dataToUpdate);
 		};
 	};
