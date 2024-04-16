@@ -89,6 +89,14 @@ export class SubscriptionsService {
 		});
 	};
 
+	findUserSubscriptions(userId: number) {
+		return this.subscriptionRepository.findAll({
+			where: {
+				userId
+			}
+		});
+	};
+
 	async updateSubscription(id: string, updateSubscriptionDTO: UpdateSubscriptionDTO) {
 		const subscription = await this.findOneSubscription(id);
 		if (!subscription) {

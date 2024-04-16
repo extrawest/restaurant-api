@@ -40,6 +40,11 @@ export class SubscriptionsController {
 		return this.subscriptionsService.findOneSubscription(id);
 	}
 
+	@Get("user/:id")
+	findUserSubscriptions(@Param("id") id: string) {
+		return this.subscriptionsService.findUserSubscriptions(+id);
+	}
+
 	@Patch(":id")
 	updateSubscription(@Param("id") id: string, @Body() updateSubscriptionDTO: UpdateSubscriptionDTO) {
 		return this.subscriptionsService.updateSubscription(id, updateSubscriptionDTO);

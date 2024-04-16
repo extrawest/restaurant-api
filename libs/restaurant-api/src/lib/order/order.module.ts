@@ -5,12 +5,14 @@ import { CartModule } from "../cart/cart.module";
 import { OrderController } from "./order.controller";
 import { AuthModule } from "../auth/auth.module";
 import { SettingsModule } from "../settings/settings.module";
+import { SubscriptionsModule } from "../subscriptions/subscriptions.module";
 
 @Module({
 	imports: [
 		forwardRef(() => AuthModule),
 		CartModule,
-		SettingsModule
+		SettingsModule,
+		SubscriptionsModule,
 	],
 	providers: [OrderService, ...ordersProviders],
 	controllers: [OrderController],

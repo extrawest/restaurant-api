@@ -19,6 +19,7 @@ import { StatisticsFields } from "../enums/order.enum";
 import { CreateOrderDto } from "./dto/create-order.dto";
 import { UpdateOrderDto } from "./dto/update-order.dto";
 import { SettingsService } from "../settings/settings.service";
+import { SubscriptionsService } from "../subscriptions/subscriptions.service";
 
 @Injectable()
 export class OrderService {
@@ -26,6 +27,7 @@ export class OrderService {
 		@Inject(ORDERS_REPOSITORY) private ordersRepository: typeof Order,
 		private readonly cartService: CartService,
 		private readonly settingsService: SettingsService,
+		private readonly subscriptionsService: SubscriptionsService,
 	) {};
 
 	async create(order: CreateOrderDto): Promise<Order> {
@@ -119,7 +121,14 @@ export class OrderService {
 		});
 	}
 
-	async calculateShippingCost() {
+	async calculateShippingCost(userId: number) {
+		const subscriptions = await this.subscriptionsService.findUserSubscriptions(userId);
+		const activeSubscription = subscriptions.some((it) => it.status === "active");
+		
+		if (activeSubscription) {
+			return 0;
+		};
+		
 		const shippingPrice = await this.settingsService.findOneByName("shippingPrice");
 		return shippingPrice?.data["value"] || 0;
 	}
