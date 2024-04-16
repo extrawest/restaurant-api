@@ -1,5 +1,6 @@
 import { Op } from "sequelize";
 import { faker } from "@faker-js/faker";
+import { ConfigService } from "@nestjs/config";
 import { Test, TestingModule } from "@nestjs/testing";
 import { BadRequestException, NotFoundException } from "@nestjs/common";
 import { CART_IS_EMPTY, CART_NOT_FOUND } from "shared";
@@ -9,10 +10,16 @@ import { Product } from "../product/entities";
 import { OrderService } from "./order.service";
 import { ORDERS_REPOSITORY } from "./constants";
 import { CartService } from "../cart/cart.service";
+import { UsersService } from "../user/user.service";
+import { USERS_REPOSITORY } from "../user/constants";
 import { CART_REPOSITORY } from "../cart/constants";
+import { StripeService } from "../stripe/stripe.service";
+import { SETTINGS_REPOSITORY } from "../settings/constants";
+import { PaymentService } from "../payment/payment.service";
 import { StatisticsFields, Status } from "../enums/order.enum";
 import { SettingsService } from "../settings/settings.service";
-import { SETTINGS_REPOSITORY } from "../settings/constants";
+import { PricesService } from "../subscriptions/prices.service";
+import { SubscriptionsService } from "../subscriptions/subscriptions.service";
 
 const ordersRepositoryMock = {
 	create: jest.fn(),
@@ -65,19 +72,38 @@ describe("OrderService", () => {
 		jest.resetAllMocks();
 		const module: TestingModule = await Test.createTestingModule({
 			providers: [
+				CartService,
 				OrderService,
+				UsersService,
+				ConfigService,
+				StripeService,
 				SettingsService,
+				{
+					provide: PricesService,
+					useValue: jest.fn(),
+				},
+				{
+					provide: SubscriptionsService,
+					useValue: jest.fn(),
+				},
+				{
+					provide: PaymentService,
+					useValue: jest.fn()
+				},
 				{
 					provide: ORDERS_REPOSITORY,
 					useValue: ordersRepositoryMock,
 				},
-				CartService,
 				{
 					provide: CART_REPOSITORY,
 					useValue: cartRepositoryMock,
 				},
 				{
 					provide: SETTINGS_REPOSITORY,
+					useValue: jest.fn()
+				},
+				{
+					provide: USERS_REPOSITORY,
 					useValue: jest.fn()
 				}
 			]

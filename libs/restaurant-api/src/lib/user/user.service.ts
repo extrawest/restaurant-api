@@ -2,7 +2,8 @@ import { hash } from "bcrypt";
 import {
 	Inject,
 	Injectable,
-	UnauthorizedException
+	NotFoundException,
+	UnauthorizedException,
 } from "@nestjs/common";
 import { Maybe } from "utils";
 import { CURRENT_USER_DOES_NOT_HAVE_PERMISSIONS_TO_CREATE_ADMIN, USER_NOT_FOUND } from "shared";
@@ -55,6 +56,14 @@ export class UsersService {
 		});
 	}
 
+	findOneByStripeCustomerId(stripeCustomerId: string) {
+		return this.usersRepository.findOne({
+			where: {
+				stripeCustomerId,
+			}
+		});
+	}
+
 	update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
 		return this.usersRepository
 			.findOne<User>({
@@ -65,7 +74,7 @@ export class UsersService {
 				if (item) {
 					return item?.update(updateUserDto);
 				}
-				throw new Error(USER_NOT_FOUND);
+				throw new NotFoundException(USER_NOT_FOUND);
 			});
 	}
 

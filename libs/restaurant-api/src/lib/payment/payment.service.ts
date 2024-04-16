@@ -1,15 +1,23 @@
 import {
 	BadRequestException,
 	Inject,
-	Injectable
+	Injectable,
+	NotFoundException
 } from "@nestjs/common";
-import { Payment } from "./entities";
+import {
+	ORDER_NOT_FOUND,
+	PAYMENT_NOT_FOUND,
+	ORDER_WITH_CURRENT_STATUS_CANNOT_BE_CANCELLED,
+} from "shared";
+import { Payment} from "./entities";
 import { PaymentMethod } from "./entities";
 import { OrderService } from "../order/order.service";
+import { StoreChargeDTO } from "./dto/store-charge.dto";
 import { StripeService } from "../stripe/stripe.service";
+import { UpdatePaymentDTO } from "./dto/update-payment.dto";
 import { Status as OrderStatus } from "../enums/order.enum";
+import { StorePaymentMethodDTO } from "./dto/store-payment-method.dto";
 import { PAYMENTS_REPOSITORY, PAYMENT_METHODS_REPOSITORY } from "./constants";
-import { ORDER_NOT_FOUND, ORDER_WITH_CURRENT_STATUS_CANNOT_BE_CANCELLED } from "shared";
 
 @Injectable()
 export class PaymentService {
@@ -26,16 +34,25 @@ export class PaymentService {
 		type: string,
 		additional_info: {[key: string]: any}
 	) {
-		const stripePaymentMethod = await this.stripeService.createAndSaveCustomerPaymentMethod(
+		return this.stripeService.createAndSaveCustomerPaymentMethod(
 			stripeCustomerId,
 			type,
 			additional_info
 		);
-		return this.paymentMethodsRepository.create({
-			stripeCustomerId: stripeCustomerId,
-			type: stripePaymentMethod.type,
+	}
+
+	storePaymentMethod(storePaymentMethodDTO: StorePaymentMethodDTO) {
+		const {
+			type,
 			additional_info,
-			stripePaymentMethodId: stripePaymentMethod.id
+			stripeCustomerId,
+			stripePaymentMethodId,
+		} = storePaymentMethodDTO;
+		return this.paymentMethodsRepository.create({
+			stripeCustomerId,
+			type,
+			additional_info,
+			stripePaymentMethodId
 		});
 	}
 
@@ -46,17 +63,53 @@ export class PaymentService {
 	}
 
 	getCustomerPaymentMethod(customerId: string, paymentMethodId: string) {
-		return this.stripeService.getCustomerPaymentMethod(customerId, paymentMethodId);
+		return this.paymentMethodsRepository.findOne<PaymentMethod>({
+			where: {
+				id: paymentMethodId,
+				stripeCustomerId: customerId
+			}
+		});
+	}
+
+	getCustomerPaymentMethodByStripePaymentMethodId(stripePaymentMethodId: string) {
+		return this.paymentMethodsRepository.findOne({
+			where: {
+				stripePaymentMethodId
+			}
+		});
 	}
 
 	// PAYMENTS
-	async charge(amount: number, paymentMethodId: string, customerId: string) {
-		const stripeCharge = await this.stripeService.charge(amount, paymentMethodId, customerId);
+	charge(amount: number, paymentMethodId: string, customerId: string) {
+		return this.stripeService.charge(amount, paymentMethodId, customerId);
+	}
+
+	storePayment(storeChargeDTO: StoreChargeDTO) {
+		const {
+			amount,
+			paymentMethodId,
+			stripeCustomerId,
+			status,
+			stripePaymentId
+		} = storeChargeDTO;
 		return this.paymentRepository.create({
-			amount: stripeCharge.amount,
-			paymentMethodId: stripeCharge.payment_method,
-			customerId: stripeCharge.customer,
-			status: stripeCharge.status,
+			amount: amount,
+			paymentMethodId: paymentMethodId,
+			customerId: stripeCustomerId,
+			status: status,
+			stripePaymentId
+		});
+	}
+
+	getPayment(id: string) {
+		return this.paymentRepository.findByPk(id);
+	}
+
+	getPaymentByStripeId(id: string) {
+		return this.paymentRepository.findOne({
+			where: {
+				stripePaymentId: id
+			}
 		});
 	}
 
@@ -76,9 +129,11 @@ export class PaymentService {
 
 	async cancelPayment(paymentId: string) {
 		const order = await this.orderService.getOrderByPaymentId(paymentId);
+
 		if (!order) {
 			throw new BadRequestException(ORDER_NOT_FOUND);
 		};
+
 		if (
 			order.status === OrderStatus.Cooking ||
 			order.status === OrderStatus.Delivering ||
@@ -86,6 +141,17 @@ export class PaymentService {
 		) {
 			throw new BadRequestException(ORDER_WITH_CURRENT_STATUS_CANNOT_BE_CANCELLED);
 		};
+
 		this.stripeService.cancelPayment(paymentId);
+	}
+
+	async updatePayment(id: string, updatePaymentDTO: UpdatePaymentDTO) {
+		const payment = await this.getPayment(id);
+
+		if (!payment) {
+			throw new NotFoundException(PAYMENT_NOT_FOUND);
+		};
+
+		return payment.update(updatePaymentDTO);
 	}
 }

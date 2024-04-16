@@ -26,7 +26,7 @@ export class PaymentMethod extends Model {
 			return this.setDataValue("additional_info", JSON.stringify(value));
 		}
 	})
-	additional_info: JSON;
+	additional_info: {[key: string]: any};
 
 	@Column
 	stripePaymentMethodId: string;

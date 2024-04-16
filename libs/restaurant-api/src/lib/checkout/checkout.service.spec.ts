@@ -18,9 +18,11 @@ import { ORDERS_REPOSITORY } from "../order/constants";
 import { StripeService } from "../stripe/stripe.service";
 import { PaymentService } from "../payment/payment.service";
 import { ProducerService } from "../queues/queues.producer";
-import { SettingsService } from "../settings/settings.service";
-import { PAYMENTS_REPOSITORY, PAYMENT_METHODS_REPOSITORY } from "../payment/constants";
 import { SETTINGS_REPOSITORY } from "../settings/constants";
+import { SettingsService } from "../settings/settings.service";
+import { SubscriptionsService } from "../subscriptions/subscriptions.service";
+import { PAYMENTS_REPOSITORY, PAYMENT_METHODS_REPOSITORY } from "../payment/constants";
+import { PricesService } from "../subscriptions/prices.service";
 
 const paymentId = faker.string.uuid();
 const stripeCustomerId = faker.string.uuid();
@@ -80,10 +82,23 @@ describe("CheckoutService", () => {
 				ProducerService,
 				StripeService,
 				JwtService,
-				PaymentService,
-				OrderService,
 				ConfigService,
 				SettingsService,
+				OrderService,
+				{
+					provide: PaymentService,
+					useValue: {
+						charge: jest.fn()
+					}
+				},
+				{
+					provide:PricesService,
+					useValue: jest.fn(),
+				},
+				{
+					provide: SubscriptionsService,
+					useValue: jest.fn()
+				},
 				{
 					provide: CART_REPOSITORY,
 					useValue: jest.fn()
@@ -127,7 +142,7 @@ describe("CheckoutService", () => {
 		it("should checkout", () => {
 			jest.spyOn(cartService, "getCart").mockResolvedValueOnce(mockCart);
 			jest.spyOn(cartService, "deleteCart").mockResolvedValueOnce(1);
-			jest.spyOn(paymentService, "charge").mockResolvedValueOnce(mockPayment);
+			jest.spyOn(paymentService, "charge").mockResolvedValueOnce(mockPayment as any);
 			jest.spyOn(producerService, "addToOrdersQueue").mockResolvedValueOnce();
 			jest.spyOn(orderService, "calculateShippingCost").mockResolvedValueOnce(0);
 			expect(checkoutService.checkout(paymentMethodId, address, 1, stripeCustomerId))
