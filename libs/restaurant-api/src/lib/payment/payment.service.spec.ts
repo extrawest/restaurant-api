@@ -84,7 +84,12 @@ describe("PaymentService", () => {
 			providers: [
 				PaymentService,
 				StripeService,
-				OrderService,
+				{
+					provide: OrderService,
+					useValue: {
+						getOrderByPaymentId: jest.fn()
+					}
+				},
 				CartService,
 				CartService,
 				ConfigService,

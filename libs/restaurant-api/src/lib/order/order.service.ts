@@ -24,10 +24,10 @@ import { SubscriptionsService } from "../subscriptions/subscriptions.service";
 @Injectable()
 export class OrderService {
 	constructor(
-		@Inject(ORDERS_REPOSITORY) private ordersRepository: typeof Order,
 		private readonly cartService: CartService,
 		private readonly settingsService: SettingsService,
 		private readonly subscriptionsService: SubscriptionsService,
+		@Inject(ORDERS_REPOSITORY) private ordersRepository: typeof Order,
 	) {};
 
 	async create(order: CreateOrderDto): Promise<Order> {
