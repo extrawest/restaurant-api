@@ -1,9 +1,11 @@
 import { 
 	Column, 
 	DataType, 
-	Model 
+	Model, 
+	Table
 } from "sequelize-typescript";
 
+@Table
 export class Setting extends Model {
 	@Column
 	name: string;

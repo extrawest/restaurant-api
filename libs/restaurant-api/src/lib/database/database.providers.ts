@@ -1,4 +1,5 @@
 import * as pg from "pg";
+import { Sequelize } from "sequelize-typescript";
 import { Cart } from "../cart/entities";
 import { User } from "../user/entities";
 import { Order } from "../order/entities";
@@ -7,9 +8,11 @@ import { Payment } from "../payment/entities";
 import { Product } from "../product/entities";
 import { Setting } from "../settings/entities";
 import { Category } from "../category/entities";
-import { Sequelize } from "sequelize-typescript";
+import { Price } from "../subscriptions/entities";
 import { PaymentMethod } from "../payment/entities";
-import { UserAdditionalInfo } from "../user/entities/additionalInfo.entity";
+import { UserAdditionalInfo } from "../user/entities";
+import { Subscription } from "../subscriptions/entities";
+import { PaymnentProduct } from "../subscriptions/entities";
 
 export const databaseProviders = [
 	{
@@ -33,6 +36,9 @@ export const databaseProviders = [
 				Order,
 				Payment,
 				PaymentMethod,
+				PaymnentProduct,
+				Price,
+				Subscription,
 				UserAdditionalInfo,
 				Setting
 			]);

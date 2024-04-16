@@ -5,7 +5,7 @@ export class CreatePaymentMethodDto {
 	type: string;
 
 	@ApiProperty({ required: true })
-	additional_info: JSON;
+	additional_info: {[key: string]: any};
 }
  
 export default CreatePaymentMethodDto;

@@ -36,10 +36,10 @@ export class CheckoutService {
 			const { items, totalPrice: itemsTotalPrice } = userCart;
 			if (items?.length && itemsTotalPrice) {
 				try {
-					const shippingCost = await this.ordersService.calculateShippingCost();
+					const shippingCost = await this.ordersService.calculateShippingCost(userId);
 					const totalPrice = shippingCost + itemsTotalPrice;
 					const payment = await this.paymentService.charge(totalPrice, paymentMethodId, stripeCustomerId);
-					if (payment) {
+					if (payment.status) {
 						await this.queueProducerService.addToOrdersQueue({
 							userId,
 							items: userCart.items,

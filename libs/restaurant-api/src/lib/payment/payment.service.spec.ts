@@ -84,7 +84,12 @@ describe("PaymentService", () => {
 			providers: [
 				PaymentService,
 				StripeService,
-				OrderService,
+				{
+					provide: OrderService,
+					useValue: {
+						getOrderByPaymentId: jest.fn()
+					}
+				},
 				CartService,
 				CartService,
 				ConfigService,
@@ -136,15 +141,13 @@ describe("PaymentService", () => {
 				status: "status"
 			});
 			paymentsRepositoryMock.create.mockResolvedValueOnce(paymentMock);
-			expect(await paymentService.charge(100, paymentMethodId, stripeCustomerId)).toEqual(paymentMock);
-			expect(jest.spyOn(stripeService, "charge")).toHaveBeenCalledTimes(1);
-			expect(paymentsRepositoryMock.create).toHaveBeenCalledTimes(1);
-			expect(paymentsRepositoryMock.create).toHaveBeenCalledWith({
-				amount: 100,
-				paymentMethodId,
-				customerId: stripeCustomerId,
-				status: "status",
+			expect(await paymentService.charge(100, paymentMethodId, stripeCustomerId)).toEqual({
+				...paymentMock,
+				payment_method: paymentMethodId,
+				customer: stripeCustomerId,
+				status: "status"
 			});
+			expect(jest.spyOn(stripeService, "charge")).toHaveBeenCalledTimes(1);
 		});
 	});
 
@@ -179,18 +182,15 @@ describe("PaymentService", () => {
 					id: paymentMethodMock.customer,
 					type: paymentMethodMock.type
 				} as any);
-				paymentMethodsRepositoryMock.create.mockResolvedValueOnce(paymentsMock); 
 				expect(await paymentService.createAndSaveCustomerPaymentMethod(
 					paymentMethodMock.stripeCustomerId,
 					paymentMethodMock.type,
 					paymentMethodMock.card
-				)).toEqual(paymentsMock);
-				expect(paymentMethodsRepositoryMock.create).toHaveBeenCalledTimes(1);
-				expect(paymentMethodsRepositoryMock.create).toHaveBeenCalledWith({
-					type: paymentMethodMock.type,
-					additional_info: paymentMethodMock.card,
-					stripePaymentMethodId: paymentMethodMock.customer
+				)).toEqual({
+					id: paymentMethodMock.customer,
+					type: paymentMethodMock.type
 				});
+				expect(jest.spyOn(stripeService, "createAndSaveCustomerPaymentMethod")).toHaveBeenCalledTimes(1);
 			});
 		});
 

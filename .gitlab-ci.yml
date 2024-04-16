@@ -11,6 +11,8 @@ test:
     - yarn install
   script:
     - yarn test:restaurant-api
+  variables:
+    STRIPE_SECRET_KEY: DUMB_VAR
 
 build:
   stage: build

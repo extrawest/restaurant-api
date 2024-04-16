@@ -3,7 +3,9 @@ import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 import { AppModule } from "./app/app.module";
 
 async function bootstrap() {
-		const app = await NestFactory.create(AppModule);
+		const app = await NestFactory.create(AppModule, {
+			rawBody: true
+		});
 		const config = new DocumentBuilder()
 			.setTitle("Restaurant API")
 			.setDescription("The Restaurant API description")
