@@ -18,6 +18,7 @@
 		"paths": {
 			"restaurant-api": ["libs/restaurant-api/src/index.ts"],
 			"shared": ["libs/shared/src/index.ts"],
+			"ui-core": ["libs/ui-core/src/index.ts"],
 			"utils": ["libs/utils/src/index.ts"]
 		},
 		"types": ["node", "express", "multer"]
