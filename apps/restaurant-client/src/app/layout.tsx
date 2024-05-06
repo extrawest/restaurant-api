@@ -1,4 +1,5 @@
 import { Template } from "../frontend/templates";
+import { StoreProvider } from "../providers";
 import "./global.css";
 
 export const metadata = {
@@ -10,7 +11,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 	return (
 		<html lang="en">
 			<body>
-				<Template.MainLayout>{children}</Template.MainLayout>
+				<StoreProvider>
+					<Template.MainLayout>
+						{children}
+					</Template.MainLayout>
+				</StoreProvider>
 			</body>
 		</html>
 	);

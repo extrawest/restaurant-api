@@ -15,8 +15,8 @@ import {
 	Avatar
 } from "@mui/material";
 import { Adb } from "@mui/icons-material";
+import Link from "next/link";
 
-const pages = ['Products', 'Pricing', 'Blog'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 export const Header = () => {
@@ -89,11 +89,11 @@ export const Header = () => {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
-              ))}
+              <MenuItem onClick={handleCloseNavMenu}>
+                <Link href="/products">
+                  <Typography textAlign="center">Products</Typography>
+                </Link>
+              </MenuItem>
             </Menu>
           </Box>
           <Adb sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
@@ -116,15 +116,11 @@ export const Header = () => {
             LOGO
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {page}
-              </Button>
-            ))}
+            <MenuItem onClick={handleCloseNavMenu}>
+              <Link href="/products">
+                <Typography textAlign="center">Products</Typography>
+              </Link>
+            </MenuItem>
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>

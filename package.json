@@ -4,7 +4,7 @@
 	"license": "MIT",
 	"scripts": {
 		"start-server": "nx serve restaurant-server",
-		"start-client": "nx dev restaurant-client",
+		"start-client": "nx dev restaurant-client -p 3002",
 		"start-prod": "node main",
 		"lint": "nx workspace-lint && nx lint",
 		"format": "nx format:write --uncommitted --parallel --maxParallel=5 --skip-nx-cache",

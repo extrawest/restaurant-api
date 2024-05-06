@@ -1,7 +1,8 @@
 import {
 	Inject,
 	Injectable,
-	NotFoundException
+	NotFoundException,
+	forwardRef
 } from "@nestjs/common";
 import {
 	USER_NOT_FOUND,
@@ -23,7 +24,7 @@ export class SubscriptionsService {
 	constructor(
 		private readonly stripeService: StripeService,
 		private readonly usersService: UsersService,
-		private readonly paymentService: PaymentService,
+		@Inject(forwardRef(() => PaymentService)) private readonly paymentService: PaymentService,
 		private readonly priceService: PricesService,
 		@Inject(SUBSCRIPTION_REPOSITORY) private subscriptionRepository: typeof Subscription,
 	) {}
