@@ -29,7 +29,7 @@ export class CheckoutService {
 		address: Address, 
 		userId: number, 
 		stripeCustomerId: string,
-		saveAddress: boolean,
+		saveAddress?: boolean,
 	) {
 		const userCart = await this.cartService.getCart(userId);
 		if (userCart) {
