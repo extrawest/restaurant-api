@@ -4,17 +4,15 @@ import { StripeService } from "./stripe.service";
 import { AuthModule } from "../auth/auth.module";
 import StripeWebhookController from "./stripe-webhook";
 import { PaymentModule } from "../payment/payment.module";
-import { PricesService } from "../subscriptions/prices.service";
-import { SubscriptionsService } from "../subscriptions/subscriptions.service";
-import { PaymentProductsService } from "../subscriptions/payment-products.service";
+import { SubscriptionsModule } from "../subscriptions/subscriptions.module";
+import { UsersModule } from "../user/user.module";
 
 @Module({
 	imports: [
 		forwardRef(() => AuthModule),
 		forwardRef(() => PaymentModule),
-		forwardRef(() => SubscriptionsService),
-		forwardRef(() => PaymentProductsService),
-		forwardRef(() => PricesService),
+		forwardRef(() => SubscriptionsModule),
+		forwardRef(() => UsersModule),
 		ConfigModule, 
 	],
 	controllers: [StripeWebhookController],

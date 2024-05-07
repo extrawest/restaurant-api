@@ -8,16 +8,18 @@ import {
 	Query,
 	UseGuards
 } from "@nestjs/common";
+import { Maybe } from "utils";
+import { Role } from "../enums/role.enum";
+import { OrderDTO } from "./dto/order.dto";
 import { OrderService } from "./order.service";
 import { Roles } from "../auth/roles.decorator";
-import { Role } from "../enums/role.enum";
-import { AuthGuard } from "../auth/guards/auth.guard";
 import { RolesGuard } from "../auth/roles.guard";
+import { User } from "../decorators/user.decorator";
+import { User as UserEntity } from "../user/entities";
+import { AuthGuard } from "../auth/guards/auth.guard";
+import { StatisticsFields } from "../enums/order.enum";
 import { CreateOrderDto } from "./dto/create-order.dto";
 import { UpdateOrderDto } from "./dto/update-order.dto";
-import { StatisticsFields } from "../enums/order.enum";
-import { OrderDTO } from "./dto/order.dto";
-import { Maybe } from "utils";
 
 @Controller("order")
 export class OrderController {
@@ -77,7 +79,7 @@ export class OrderController {
 	@Roles(Role.Buyer)
 	@UseGuards(AuthGuard, RolesGuard)
 	@Post("calculate-shipping-cost")
-	calculateShippingCost() {
-		return this.orderService.calculateShippingCost();
+	calculateShippingCost(@User() user: UserEntity) {
+		return this.orderService.calculateShippingCost(user.id);
 	}
 }

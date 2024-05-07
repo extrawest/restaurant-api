@@ -1,0 +1,16 @@
+{
+	"name": "restaurant-client",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "apps/restaurant-client",
+	"projectType": "application",
+	"tags": [],
+	"targets": {
+		"test": {
+			"executor": "@nx/jest:jest",
+			"outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+			"options": {
+				"jestConfig": "apps/restaurant-client/jest.config.ts"
+			}
+		}
+	}
+}

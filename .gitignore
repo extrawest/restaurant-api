@@ -36,3 +36,7 @@ lerna-debug.log*
 
 .nx/cache
 .env
+
+# Next.js
+.next
+out
