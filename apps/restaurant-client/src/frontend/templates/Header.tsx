@@ -16,10 +16,14 @@ import {
 } from "@mui/material";
 import { Adb } from "@mui/icons-material";
 import Link from "next/link";
+import { useSelector } from "react-redux";
+import { RootState } from "@redux";
 
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 export const Header = () => {
+  const auth = useSelector((state: RootState) => state.authApi);
+  console.log(auth)
 	const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
@@ -90,6 +94,11 @@ export const Header = () => {
               }}
             >
               <MenuItem onClick={handleCloseNavMenu}>
+                <Link href="/login">
+                  <Typography textAlign="center">Login</Typography>
+                </Link>
+              </MenuItem>
+              <MenuItem onClick={handleCloseNavMenu}>
                 <Link href="/products">
                   <Typography textAlign="center">Products</Typography>
                 </Link>
@@ -119,6 +128,11 @@ export const Header = () => {
             <MenuItem onClick={handleCloseNavMenu}>
               <Link href="/products">
                 <Typography textAlign="center">Products</Typography>
+              </Link>
+            </MenuItem>
+            <MenuItem onClick={handleCloseNavMenu}>
+              <Link href="/login">
+                <Typography textAlign="center">Login</Typography>
               </Link>
             </MenuItem>
           </Box>

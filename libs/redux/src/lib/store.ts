@@ -1,15 +1,21 @@
 "use client";
-import { configureStore } from "@reduxjs/toolkit";
-import { productsApi } from "./apis";
 import { setupListeners } from "@reduxjs/toolkit/query";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { authApi, productsApi } from "./apis";
+import { authSlice, productsSlice } from "./slices";
+
+const rootReducer = combineReducers({
+  [productsApi.reducerPath]: productsApi.reducer,
+  [authApi.reducerPath]: authApi.reducer,
+  [productsSlice.name]: productsSlice,
+  [authSlice.name]: authSlice,
+});
 
 export const makeStore = () => {
   return configureStore({
-    reducer: {
-      [productsApi.reducerPath]: productsApi.reducer
-    },
+    reducer: rootReducer,
     middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware().concat(productsApi.middleware),
+      getDefaultMiddleware().concat(productsApi.middleware, authApi.middleware),
   })
 };
 
