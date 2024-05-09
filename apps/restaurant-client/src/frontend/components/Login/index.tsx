@@ -5,10 +5,7 @@ import {
 	TextField
 } from "@mui/material";
 import { useState } from "react";
-
-type LoginProps = {
-	onSubmit: (username: string, password: string) => void;
-};
+import { LoginProps } from "shared";
 
 export const LoginComponent = ({ onSubmit }: LoginProps) => {
 	const [username, setUsername] = useState("");
