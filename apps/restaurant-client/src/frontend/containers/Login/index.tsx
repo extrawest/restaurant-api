@@ -1,17 +1,24 @@
 "use client";
+import { useCallback } from "react";
 import { useLoginMutation } from "@redux";
-import { LoginComponent } from "../../components";
+import { SubmitHandler } from "react-hook-form";
+import { LoginForm } from "../../forms";
+import { LoginFormType } from "../../forms/LoginForm/LoginForm.schema";
 
 export const LoginContainer = () => {
-	const [login, loginResult] = useLoginMutation();
-	const onSubmit = (email: string, password: string) => {
-		login({
-			email,
-			password
-		});
-	};
-	console.log("loginResult", loginResult)
+	const [login] = useLoginMutation();
+	
+	const onSubmit: SubmitHandler<LoginFormType> = useCallback(
+		(data) => {
+			login({
+				email: data.email,
+				password: data.password
+			});
+	}, []);
+
 	return (
-		<LoginComponent onSubmit={onSubmit} />
+		<LoginForm
+			onSubmit={onSubmit}
+		/>
 	)
 };

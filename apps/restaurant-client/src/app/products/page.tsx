@@ -7,7 +7,6 @@ export interface ProductsProps {}
 export default function Products(props: ProductsProps) {
 	const { data, error, isLoading } = useGetProductsQuery();
 	
-	console.log(data);
 	return (
 		<div>
 			
