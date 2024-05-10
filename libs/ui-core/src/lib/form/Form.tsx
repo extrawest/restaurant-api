@@ -1,26 +1,25 @@
-import { FC } from "react";
 import { FormProvider, SubmitErrorHandler, useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
-import { FormProps } from "./Form.types";
+import { FormFieldProps, FormProps } from "./Form.types";
 import FormField from "./FormField";
 import { Button } from "@mui/material";
 import { FormComponent } from "./Form.styles";
 
-export const Form: FC<FormProps> = ({
+export const Form = <T extends object>({
 	fields,
 	schema,
 	onSubmit,
 	onError
-}) => {
-	const methods = useForm({
+}: FormProps<T>) => {
+	const methods = useForm<T>({
     resolver: yupResolver(schema)
   });
-	// onSubmit doesn't work w/o onError callback, so we need to make sure that onErrorDefaultHandler is passed to the form
-  const onErrorDefaultHandler: SubmitErrorHandler<any> = (errors, e) => console.log(errors, e);
+	// onSubmit doesn't work w/o onError callback, so we need to make sure that at least onErrorDefaultHandler is passed to the form if onError is undefined
+  const onErrorDefaultHandler: SubmitErrorHandler<T> = (errors, e) => console.log(errors, e);
 	return (
 		<FormProvider {...methods}>
 			<FormComponent onSubmit={methods.handleSubmit(onSubmit, onError || onErrorDefaultHandler)}>
-				{Object.entries(fields).map(([fieldName, field]) => (
+				{Object.entries<FormFieldProps>(fields).map(([fieldName, field]) => (
 					<FormField
 						name={fieldName}
 						key={fieldName}
