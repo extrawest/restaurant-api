@@ -1,23 +1,17 @@
-"use client";
-import { useCallback } from "react";
-import { useLoginMutation } from "@redux";
-import { SubmitHandler } from "react-hook-form";
-import { LoginForm } from "..";
+import { FC } from "react";
+import { Form } from "ui-core";
+import { registrationFormSchema } from "./RegistrationForm.schema";
+import { RegistrationFormProps } from "./RegistrationForm.types";
+import { registrationFormFields } from "./RegistrationForm.fields";
 
-export const RegistrationContainer = () => {
-	const [login] = useLoginMutation();
-	
-	const onSubmit: SubmitHandler<LoginFormType> = useCallback(
-		(data) => {
-			login({
-				email: data.email,
-				password: data.password
-			});
-	}, []);
-
+export const RegistrationForm: FC<RegistrationFormProps> = ({ onSubmit }) => {
 	return (
-		<LoginForm
+		<Form
+			schema={registrationFormSchema}
+			fields={registrationFormFields}
 			onSubmit={onSubmit}
 		/>
 	)
 };
+
+export default RegistrationForm;

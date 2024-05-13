@@ -5,12 +5,12 @@ import { authBaseQuery } from "../utils";
 
 export const productsApi = createApi({
 	reducerPath: "productsApi",
-	baseQuery: authBaseQuery("http://localhost:3000/"),
+	baseQuery: authBaseQuery("products"),
 	endpoints: (builder) => ({
 		getProducts: builder.query<any, void>({
 			query: () => `product`
 		})
-	})
+	}),
 });
 
 export const { useGetProductsQuery } = productsApi;

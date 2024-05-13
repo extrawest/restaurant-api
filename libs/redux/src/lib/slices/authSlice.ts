@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 import { AuthResponse } from "shared";
-import { login } from '../apis';
+import { logOut, login } from '../apis';
 
 const initialState: AuthResponse & { isLoggedIn: boolean } = {
 	access_token: "",
@@ -25,6 +25,13 @@ export const authSlice = createSlice({
 			(state, { payload }) => {
 				state.isLoggedIn = true;
 				state.access_token = payload;
+			}
+		),
+		builder.addMatcher(
+			logOut.matchFulfilled,
+			(state) => {
+				state.access_token = "";
+				state.isLoggedIn = false;
 			}
 		)
 	},

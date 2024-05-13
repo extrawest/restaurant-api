@@ -2,3 +2,4 @@
 
 export * from "./lib/button";
 export * from "./lib/form/Form";
+export * from "./lib/form/Form.types";

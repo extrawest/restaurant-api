@@ -3,7 +3,7 @@ import { customBaseQuery } from "../utils";
 
 export const authApi = createApi({
 	reducerPath: "authApi",
-	baseQuery: customBaseQuery("http://localhost:3000/auth"),
+	baseQuery: customBaseQuery("auth"),
 	endpoints: (builder) => ({
 		login: builder.mutation({
 			query: (body) => ({

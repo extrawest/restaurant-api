@@ -2,21 +2,21 @@
 import { useCallback } from "react";
 import { useLoginMutation } from "@redux";
 import { SubmitHandler } from "react-hook-form";
-import { LoginForm, LoginFormType } from "../../forms";
+import { RegistrationForm, RegistrationFormType } from "../../forms";
 
-export const LoginContainer = () => {
-	const [login] = useLoginMutation();
+export const RegistrationContainer = () => {
+	const [register] = useRegistrationMutation();
 	
-	const onSubmit: SubmitHandler<LoginFormType> = useCallback(
+	const onSubmit: SubmitHandler<RegistrationFormType> = useCallback(
 		(data) => {
-			login({
+			register({
 				email: data.email,
 				password: data.password
 			});
 	}, []);
 
 	return (
-		<LoginForm
+		<RegistrationForm
 			onSubmit={onSubmit}
 		/>
 	)

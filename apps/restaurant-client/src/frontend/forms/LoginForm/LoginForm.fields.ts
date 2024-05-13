@@ -1,4 +1,4 @@
-import { FormFields } from "libs/ui-core/src/lib/form/Form.types";
+import type { FormFields } from "ui-core";
 import { LoginFormType } from "./LoginForm.schema";
 
 export const loginFormFields: FormFields<LoginFormType> = {

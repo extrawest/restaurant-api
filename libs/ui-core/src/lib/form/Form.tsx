@@ -1,9 +1,9 @@
-import { FormProvider, SubmitErrorHandler, useForm } from "react-hook-form";
-import { yupResolver } from '@hookform/resolvers/yup';
-import { FormFieldProps, FormProps } from "./Form.types";
-import FormField from "./FormField";
 import { Button } from "@mui/material";
+import { yupResolver } from '@hookform/resolvers/yup';
+import { FormProvider, SubmitErrorHandler, useForm } from "react-hook-form";
+import FormField from "./FormField";
 import { FormComponent } from "./Form.styles";
+import { FormFieldProps, FormProps } from "./Form.types";
 
 export const Form = <T extends object>({
 	fields,

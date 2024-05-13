@@ -1,7 +1,11 @@
 import { fetchBaseQuery } from "@reduxjs/toolkit/query";
 import { RootState } from "../store";
 
-export const authBaseQuery = (baseUrl: string = "") => {
+const serverURL = `http://${process.env.NX_SERVER_HOST}:${process.env.NX_SERVER_PORT}`;
+
+export const authBaseQuery = (apiServiceName: string = "") => {
+	const apiServicePath = apiServiceName.startsWith("/") ? apiServiceName.substring(1) : apiServiceName;
+	const baseUrl = `${serverURL}/${apiServicePath}`;
 	return fetchBaseQuery({
 		baseUrl,
 		prepareHeaders: (headers, { getState }) => {
@@ -16,7 +20,9 @@ export const authBaseQuery = (baseUrl: string = "") => {
 	});
 };
 
-export const customBaseQuery = (baseUrl: string = "") => {
+export const customBaseQuery = (apiServiceName: string = "") => {
+	const apiServicePath = apiServiceName.startsWith("/") ? apiServiceName.substring(1) : apiServiceName;
+	const baseUrl = `${serverURL}/${apiServicePath}`;
 	return fetchBaseQuery({
 		baseUrl
 	});
