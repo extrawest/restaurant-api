@@ -2,6 +2,11 @@ import type { FormFields } from "ui-core";
 import { RegistrationFormType } from "./RegistrationForm.schema";
 
 export const registrationFormFields: FormFields<RegistrationFormType> = {
+	name: {
+		type: "text",
+		label: "Full Name",
+		required: true,
+	},
 	email: {
 		type: "email",
 		label: "Email",

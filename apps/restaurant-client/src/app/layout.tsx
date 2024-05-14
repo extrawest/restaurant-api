@@ -1,6 +1,17 @@
+// import { IntlProvider, FormattedMessage } from "react-intl";
+// import { SnackbarProvider } from "notistack";
 import { Template } from "../frontend/templates";
 import { StoreProvider } from "../providers";
+
 import "./global.css";
+
+import messages_en from "../locales/en.json";
+
+const messages = {
+  en: messages_en,
+};
+
+const locale = "en";
 
 export const metadata = {
 	title: "Welcome to restaurant-client",
@@ -12,9 +23,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 		<html lang="en">
 			<body>
 				<StoreProvider>
-					<Template.MainLayout>
-						{children}
-					</Template.MainLayout>
+					{/* <IntlProvider locale={locale} messages={messages[locale]}> */}
+						{/* <SnackbarProvider> */}
+							<Template.MainLayout>
+								{children}
+							</Template.MainLayout>
+						{/* </SnackbarProvider> */}
+					{/* </IntlProvider> */}
 				</StoreProvider>
 			</body>
 		</html>

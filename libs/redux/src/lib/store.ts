@@ -1,15 +1,31 @@
-"use client";
+// "use client";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import defaultStorage from "reduxjs-toolkit-persist/lib/storage";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import createIdbStorage from "@piotr-cz/redux-persist-idb-storage/src";
-import { persistStore, persistReducer } from "reduxjs-toolkit-persist";
-import { authApi, productsApi, usersApi } from "./apis";
-import { authSlice, productsSlice, usersSlice} from "./slices";
+import {
+  persistStore,
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER
+} from "reduxjs-toolkit-persist";
+import {
+  authApi,
+  productsApi,
+  usersApi
+} from "./apis";
+import {
+  authSlice,
+  productsSlice,
+  usersSlice
+} from "./slices";
 
 const persistConfig = {
   key: "root",
-  storage: globalThis.indexedDB ? createIdbStorage({ name: 'restaurant-client-db', storeName: 'storage' }) : defaultStorage,
+  storage: defaultStorage,
   whitelist: [authSlice.name],
 };
 
@@ -27,8 +43,20 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 export const makeStore = () => {
   const store = configureStore({
     reducer: persistedReducer,
+
     middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware().concat(productsApi.middleware, authApi.middleware),
+      getDefaultMiddleware({
+        serializableCheck: {
+          ignoredActions: [
+            FLUSH,
+            REHYDRATE,
+            PAUSE,
+            PERSIST,
+            PURGE,
+            REGISTER
+          ],
+        }
+      }).concat(productsApi.middleware, authApi.middleware),
     devTools: process.env.NODE_ENV !== 'production'
   });
 

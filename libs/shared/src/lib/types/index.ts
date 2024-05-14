@@ -17,3 +17,8 @@ export type User = {
 	currentHashedRefreshToken: string;
 	additional_info?: object;
 };
+
+export type HandleErrorHookType = {
+	trigger: boolean;
+	text: string;
+};

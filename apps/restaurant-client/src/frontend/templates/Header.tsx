@@ -14,7 +14,8 @@ import {
 	Icon,
 	Avatar
 } from "@mui/material";
-import { Adb } from "@mui/icons-material";
+import { Adb, Pages } from "@mui/icons-material";
+import { Pages as PagesEnum } from "shared";
 import Link from "next/link";
 import { useSelector } from "react-redux";
 import { RootState } from "@redux";
@@ -93,12 +94,12 @@ export const Header = () => {
               }}
             >
               <MenuItem onClick={handleCloseNavMenu}>
-                <Link href="/login">
+                <Link href={PagesEnum.LOGIN}>
                   <Typography textAlign="center">Login</Typography>
                 </Link>
               </MenuItem>
               <MenuItem onClick={handleCloseNavMenu}>
-                <Link href="/products">
+                <Link href={PagesEnum.PRODUCTS}>
                   <Typography textAlign="center">Products</Typography>
                 </Link>
               </MenuItem>
@@ -125,12 +126,12 @@ export const Header = () => {
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             <MenuItem onClick={handleCloseNavMenu}>
-              <Link href="/products">
+              <Link href={PagesEnum.PRODUCTS}>
                 <Typography textAlign="center">Products</Typography>
               </Link>
             </MenuItem>
             <MenuItem onClick={handleCloseNavMenu}>
-              <Link href="/login">
+              <Link href={PagesEnum.LOGIN}>
                 <Typography textAlign="center">Login</Typography>
               </Link>
             </MenuItem>
