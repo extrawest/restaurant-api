@@ -12,9 +12,15 @@ export type FormFields<T> = {
 	[K in keyof T]: FormFieldProps;
 };
 
+export type TranslationLabel = {
+	translationId: string;
+};
+
+export type LabelType = TranslationLabel | string;
+
 export type FormFieldProps = {
 	type: string;
-	label?: string;
+	label?: LabelType;
 	styles?: any;
 	required?: boolean;
 };

@@ -1,3 +1,9 @@
 {
-	"registration.fail": "Registration was failed"
+	"registration.fail": "Registration was failed",
+	"text.login": "Login",
+	"text.registration": "Registration",
+	"text.products": "Products",
+	"text.full_name": "Full name",
+	"text.email": "Email",
+	"text.password": "Password"
 }

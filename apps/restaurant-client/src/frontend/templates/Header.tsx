@@ -10,19 +10,20 @@ import {
 	Tooltip,
 	IconButton,
 	Toolbar,
-	Button,
 	Icon,
 	Avatar
 } from "@mui/material";
-import { Adb, Pages } from "@mui/icons-material";
-import { Pages as PagesEnum } from "shared";
 import Link from "next/link";
+import { useIntl } from "react-intl";
 import { useSelector } from "react-redux";
+import { Adb } from "@mui/icons-material";
+import { Pages } from "shared";
 import { RootState } from "@redux";
 
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 export const Header = () => {
+  const { $t } = useIntl();
   const auth = useSelector((state: RootState) => state.authApi);
 	const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
@@ -94,13 +95,18 @@ export const Header = () => {
               }}
             >
               <MenuItem onClick={handleCloseNavMenu}>
-                <Link href={PagesEnum.LOGIN}>
-                  <Typography textAlign="center">Login</Typography>
+                <Link href={Pages.LOGIN}>
+                  <Typography textAlign="center">{$t({ id: "text.login"})}</Typography>
                 </Link>
               </MenuItem>
               <MenuItem onClick={handleCloseNavMenu}>
-                <Link href={PagesEnum.PRODUCTS}>
-                  <Typography textAlign="center">Products</Typography>
+                <Link href={Pages.REGISTRATION}>
+                  <Typography textAlign="center">{$t({ id: "text.registration"})}</Typography>
+                </Link>
+              </MenuItem>
+              <MenuItem onClick={handleCloseNavMenu}>
+                <Link href={Pages.PRODUCTS}>
+                  <Typography textAlign="center">{$t({ id: "text.products"})}</Typography>
                 </Link>
               </MenuItem>
             </Menu>
@@ -126,13 +132,18 @@ export const Header = () => {
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             <MenuItem onClick={handleCloseNavMenu}>
-              <Link href={PagesEnum.PRODUCTS}>
-                <Typography textAlign="center">Products</Typography>
+              <Link href={Pages.LOGIN}>
+                <Typography textAlign="center">{$t({ id: "text.login"})}</Typography>
               </Link>
             </MenuItem>
             <MenuItem onClick={handleCloseNavMenu}>
-              <Link href={PagesEnum.LOGIN}>
-                <Typography textAlign="center">Login</Typography>
+              <Link href={Pages.REGISTRATION}>
+                <Typography textAlign="center">{$t({ id: "text.registration"})}</Typography>
+              </Link>
+            </MenuItem>
+            <MenuItem onClick={handleCloseNavMenu}>
+              <Link href={Pages.PRODUCTS}>
+                <Typography textAlign="center">{$t({ id: "text.products"})}</Typography>
               </Link>
             </MenuItem>
           </Box>

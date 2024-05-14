@@ -1,10 +1,13 @@
+import { Box } from "@mui/material";
+import { RegistrationContainer } from "../../frontend/containers/Registration";
+
 /* eslint-disable-next-line */
 export interface RegistrationProps {}
 
 export default function Registration(props: RegistrationProps) {
 	return (
-		<div>
-			<h1>Welcome to Registration!</h1>
-		</div>
+		<Box py={6}>
+			<RegistrationContainer />
+		</Box>
 	);
 }

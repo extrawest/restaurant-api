@@ -4,13 +4,17 @@ import { LoginFormType } from "./LoginForm.schema";
 export const loginFormFields: FormFields<LoginFormType> = {
 	email: {
 		type: "email",
-		label: "Email",
+		label: {
+			translationId: "text.email"
+		},
 		styles: undefined,
 		required: true,
 	},
 	password: {
 		type: "password",
-		label: "Password",
+		label: {
+			translationId: "text.password"
+		},
 		styles: undefined,
 		required: true,
 	}
