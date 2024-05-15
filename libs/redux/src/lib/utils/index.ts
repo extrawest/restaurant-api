@@ -1,7 +1,7 @@
 import { fetchBaseQuery } from "@reduxjs/toolkit/query";
 import { RootState } from "../store";
 
-const serverURL = `http://${process.env.NX_SERVER_HOST}:${process.env.NX_SERVER_PORT}`;
+const serverURL = `http://${process.env.NEXT_PUBLIC_NX_SERVER_HOST}:${process.env.NEXT_PUBLIC_NX_SERVER_PORT}`;
 
 export const authBaseQuery = (apiServiceName: string = "") => {
 	const apiServicePath = apiServiceName.startsWith("/") ? apiServiceName.substring(1) : apiServiceName;

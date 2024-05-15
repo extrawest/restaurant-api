@@ -4,6 +4,7 @@ export enum Role {
 }
 
 export enum Pages {
+	HOME = "/",
 	LOGIN = "/login",
 	REGISTRATION = "/registration",
 	PRODUCTS = "/products",

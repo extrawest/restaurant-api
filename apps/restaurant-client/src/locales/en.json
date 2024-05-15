@@ -2,8 +2,12 @@
 	"registration.fail": "Registration was failed",
 	"text.login": "Login",
 	"text.registration": "Registration",
+	"login.fail": "Login or/and password are wrong",
 	"text.products": "Products",
 	"text.full_name": "Full name",
 	"text.email": "Email",
-	"text.password": "Password"
+	"text.password": "Password",
+	"text.submit": "Submit",
+	"text.submit.register": "Register",
+	"text.submit.login": "Login"
 }

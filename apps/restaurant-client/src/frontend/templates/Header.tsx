@@ -25,6 +25,7 @@ const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 export const Header = () => {
   const { $t } = useIntl();
   const auth = useSelector((state: RootState) => state.authApi);
+  console.log("state auth", auth)
 	const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 

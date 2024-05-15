@@ -30,12 +30,12 @@ const persistConfig = {
 };
 
 const rootReducer = combineReducers({
-  [productsApi.reducerPath]: productsApi.reducer,
-  [authApi.reducerPath]: authApi.reducer,
-  [usersApi.reducerPath]: usersApi.reducer,
   [productsSlice.name]: productsSlice,
   [authSlice.name]: authSlice,
   [usersSlice.name]: usersSlice,
+  [productsApi.reducerPath]: productsApi.reducer,
+  [authApi.reducerPath]: authApi.reducer,
+  [usersApi.reducerPath]: usersApi.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -56,7 +56,7 @@ export const makeStore = () => {
             REGISTER
           ],
         }
-      }).concat(productsApi.middleware, authApi.middleware),
+      }).concat(productsApi.middleware, authApi.middleware, usersApi.middleware),
     devTools: process.env.NODE_ENV !== 'production'
   });
 

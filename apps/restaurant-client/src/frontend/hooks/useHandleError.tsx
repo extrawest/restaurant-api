@@ -11,8 +11,9 @@ export const useHandleError = ({
 
 	useEffect(() => {
 		if (trigger) {
-			enqueueSnackbar<"error">({
-				message: text
+			enqueueSnackbar({
+				message: text,
+				variant: "error"
 			});
 		};
 	}, [trigger]);

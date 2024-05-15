@@ -6,6 +6,7 @@ export type FormProps<T> = {
 	fields: FormFields<T>;
 	onSubmit: (data: T) => void;
 	onError?: SubmitErrorHandler<any>;
+	submitText?: string;
 };
 
 export type FormFields<T> = {

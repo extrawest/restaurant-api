@@ -10,7 +10,8 @@ export const Form = <T extends object>({
 	fields,
 	schema,
 	onSubmit,
-	onError
+	onError,
+	submitText,
 }: FormProps<T>) => {
 	const { $t } = useIntl();
 
@@ -37,7 +38,7 @@ export const Form = <T extends object>({
 					)
 				})}
 				<Button type="submit">
-					{$t({ id: "text.login" })}
+					{submitText || $t({ id: "text.submit" })}
 				</Button>
 			</FormComponent>
 		</FormProvider>
