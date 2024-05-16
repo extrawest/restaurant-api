@@ -1,8 +1,13 @@
 import { Role } from "../enums";
 
 export interface AuthResponse {
-	access_token: string,
+	token?: Token,
 };
+
+export type Token = {
+	access_token: string;
+	refresh_token: string
+}
 
 export type LoginProps = {
 	onSubmit: (username: string, password: string) => void;

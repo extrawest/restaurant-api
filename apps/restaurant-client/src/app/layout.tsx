@@ -1,4 +1,3 @@
-import { SnackbarProvider } from "notistack";
 import { Template } from "../frontend/templates";
 import { StoreProvider } from "../providers";
 

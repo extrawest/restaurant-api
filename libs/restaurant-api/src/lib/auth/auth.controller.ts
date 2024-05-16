@@ -7,17 +7,16 @@ import {
 	Req,
 	UseGuards,
 	Get,
-	Header,
 	Headers
 } from "@nestjs/common";
 import { Request } from "express";
 import { AuthService } from "./auth.service";
 import { SignInDto } from "./dto/sign-in.dto";
-import { ForgotPasswordDto } from "./dto/forgot-password.dto";
-import { ResetPasswordDto } from "./dto/reset-password.dto";
-import { JwtRefreshAuthGuard } from "./jwt-refresh-auth.guard";
 import { User } from "../decorators/user.decorator";
 import { User as UserEntity } from "../user/entities";
+import { ResetPasswordDto } from "./dto/reset-password.dto";
+import { ForgotPasswordDto } from "./dto/forgot-password.dto";
+import { JwtRefreshAuthGuard } from "./jwt-refresh-auth.guard";
 
 @Controller("auth")
 export class AuthController {

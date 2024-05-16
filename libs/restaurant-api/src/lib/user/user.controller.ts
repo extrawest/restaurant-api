@@ -6,7 +6,8 @@ import {
 	Patch,
 	Param,
 	Delete,
-	UseGuards
+	UseGuards,
+	HttpCode
 } from "@nestjs/common";
 import { Maybe } from "utils";
 import { UserDTO } from "./dto/user.dto";
@@ -51,9 +52,19 @@ export class UsersController {
 	}
 
 	@Roles(Role.Admin)
-	@UseGuards(RolesGuard, AuthGuard)
+	@UseGuards(AuthGuard, RolesGuard)
 	@Delete(":id")
 	remove(@Param("id") id: string) {
 		return this.usersService.remove(+id);
+	}
+
+	@Roles(Role.Buyer, Role.Admin)
+	@UseGuards(AuthGuard, RolesGuard)
+	@HttpCode(204)
+	@Post("logout")
+	logout(@User() user?: UserEntity) {
+		this.update(user?.id, {
+			currentHashedRefreshToken: undefined
+		});
 	}
 }

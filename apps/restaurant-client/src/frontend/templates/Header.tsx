@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useCallback } from "react";
 import {
 	Box,
 	AppBar,
@@ -11,21 +11,23 @@ import {
 	IconButton,
 	Toolbar,
 	Icon,
-	Avatar
+	Avatar,
+  Button
 } from "@mui/material";
 import Link from "next/link";
 import { useIntl } from "react-intl";
 import { useSelector } from "react-redux";
 import { Adb } from "@mui/icons-material";
 import { Pages } from "shared";
-import { RootState } from "@redux";
+import { RootState, useLogOutMutation } from "@redux";
 
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 export const Header = () => {
   const { $t } = useIntl();
-  const auth = useSelector((state: RootState) => state.authApi);
-  console.log("state auth", auth)
+  const [logOut] = useLogOutMutation();
+
+  const { token } = useSelector((state: RootState) => state.auth);
 	const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
@@ -43,6 +45,11 @@ export const Header = () => {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
+  const logOutHanlder = useCallback(() => {
+    logOut();
+  }, []);
+
 	return (
 		<AppBar position="static">
       <Container maxWidth="xl">
@@ -133,22 +140,39 @@ export const Header = () => {
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             <MenuItem onClick={handleCloseNavMenu}>
-              <Link href={Pages.LOGIN}>
-                <Typography textAlign="center">{$t({ id: "text.login"})}</Typography>
-              </Link>
+              {
+                token?.refresh_token ? (
+                  <Button
+                    sx={{
+                      color: "white",
+                      textTransform: "none"
+                    }}
+                    onClick={logOutHanlder}
+                  >
+                    <Typography textAlign="center">{$t({ id: "text.submit.logout"})}</Typography>
+                  </Button>
+                ) : (
+                  <Link href={Pages.LOGIN}>
+                    <Typography textAlign="center">{$t({ id: "text.submit.login"})}</Typography>
+                  </Link>
+                )
+              }
             </MenuItem>
-            <MenuItem onClick={handleCloseNavMenu}>
-              <Link href={Pages.REGISTRATION}>
-                <Typography textAlign="center">{$t({ id: "text.registration"})}</Typography>
-              </Link>
-            </MenuItem>
+            {
+              !token?.refresh_token ? (
+                <MenuItem onClick={handleCloseNavMenu}>
+                  <Link href={Pages.REGISTRATION}>
+                    <Typography textAlign="center">{$t({ id: "text.registration"})}</Typography>
+                  </Link>
+                </MenuItem>
+              ) : null
+            }
             <MenuItem onClick={handleCloseNavMenu}>
               <Link href={Pages.PRODUCTS}>
                 <Typography textAlign="center">{$t({ id: "text.products"})}</Typography>
               </Link>
             </MenuItem>
           </Box>
-
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>

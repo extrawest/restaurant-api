@@ -1,6 +1,7 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice } from "@reduxjs/toolkit";
+import { jwtDecode } from "jwt-decode";
 import { Role, User } from "shared";
-import { getCurrentUser, logOut, registration } from '../apis';
+import { getCurrentUser, logOut, login, registration } from '../apis';
 
 const initialState: User = {
 	id: 0,
@@ -17,16 +18,28 @@ export const usersSlice = createSlice({
   reducers: {},
 	extraReducers: (builder) => {
 		builder.addMatcher(
-			registration.matchFulfilled,
+			login.matchFulfilled,
 			(state, { payload }) => {
-				state.id = payload.id,
-				state.name = payload.name,
-				state.email = payload.email,
-				state.role = payload.role,
-				state.stripeCustomerId = payload.stripeCustomerId,
-				state.currentHashedRefreshToken = payload.currentHashedRefreshToken
+				const encodedPayload = jwtDecode<User>(payload.access_token);
+				state.id = encodedPayload?.id,
+				state.name = encodedPayload?.name,
+				state.email = encodedPayload?.email,
+				state.role = encodedPayload?.role,
+				state.stripeCustomerId = encodedPayload?.stripeCustomerId,
+				state.currentHashedRefreshToken = encodedPayload?.currentHashedRefreshToken
 			}
-		),
+		)
+		// builder.addMatcher(
+		// 	registration.matchFulfilled,
+		// 	(state, { payload }) => {
+		// 		state.id = payload.id,
+		// 		state.name = payload.name,
+		// 		state.email = payload.email,
+		// 		state.role = payload.role,
+		// 		state.stripeCustomerId = payload.stripeCustomerId,
+		// 		state.currentHashedRefreshToken = payload.currentHashedRefreshToken
+		// 	}
+		// ),
 		builder.addMatcher(
 			logOut.matchFulfilled,
 			(state) => {
@@ -55,4 +68,4 @@ export const usersSlice = createSlice({
 	},
 })
 
-export default usersSlice.reducer;
+export const usersSliceReducer = usersSlice.reducer;

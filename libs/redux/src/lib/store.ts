@@ -1,6 +1,7 @@
 // "use client";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import defaultStorage from "reduxjs-toolkit-persist/lib/storage";
+import { encryptTransform } from 'redux-persist-transform-encrypt';
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import {
   persistStore,
@@ -19,20 +20,29 @@ import {
 } from "./apis";
 import {
   authSlice,
+  authSliceReducer,
   productsSlice,
-  usersSlice
+  productsSliceReducer,
+  usersSlice,
+  usersSliceReducer,
 } from "./slices";
+
 
 const persistConfig = {
   key: "root",
   storage: defaultStorage,
   whitelist: [authSlice.name],
+  transforms: [
+    encryptTransform({
+      secretKey: process.env.NEXT_PUBLIC_PERSIST_ENCRYPTION_SECRET_KEY || ""
+    })
+  ]
 };
 
 const rootReducer = combineReducers({
-  [productsSlice.name]: productsSlice,
-  [authSlice.name]: authSlice,
-  [usersSlice.name]: usersSlice,
+  [productsSlice.name]: productsSliceReducer,
+  [authSlice.name]: authSliceReducer,
+  [usersSlice.name]: usersSliceReducer,
   [productsApi.reducerPath]: productsApi.reducer,
   [authApi.reducerPath]: authApi.reducer,
   [usersApi.reducerPath]: usersApi.reducer,
@@ -56,7 +66,11 @@ export const makeStore = () => {
             REGISTER
           ],
         }
-      }).concat(productsApi.middleware, authApi.middleware, usersApi.middleware),
+      }).concat(
+        productsApi.middleware,
+        authApi.middleware,
+        usersApi.middleware
+      ),
     devTools: process.env.NODE_ENV !== 'production'
   });
 
@@ -71,5 +85,5 @@ export const makeStore = () => {
 setupListeners(makeStore().store.dispatch);
 
 export type AppStore = ReturnType<typeof makeStore>["store"];
-export type RootState = ReturnType<AppStore["getState"]>;
+export type RootState = ReturnType<typeof rootReducer>;
 export type AppDispatch = AppStore["dispatch"];

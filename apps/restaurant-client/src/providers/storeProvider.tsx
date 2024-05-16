@@ -1,8 +1,8 @@
 "use client";
 import { useRef } from "react";
 import { Provider } from "react-redux";
-import { AppStore, makeStore } from "@redux";
 import { PersistGate } from "reduxjs-toolkit-persist/integration/react";
+import { AppStore, makeStore } from "@redux";
 
 export const StoreProvider = ({ children }: { children: React.ReactNode }) => {
   const storeRef = useRef<AppStore>()

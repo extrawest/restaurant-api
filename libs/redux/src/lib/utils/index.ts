@@ -9,7 +9,7 @@ export const authBaseQuery = (apiServiceName: string = "") => {
 	return fetchBaseQuery({
 		baseUrl,
 		prepareHeaders: (headers, { getState }) => {
-			const token = (getState() as RootState).auth.access_token;
+			const token = (getState() as RootState).auth.token?.access_token;
 
 			if (token) {
 				headers.set("authorization", `Bearer ${token}`);

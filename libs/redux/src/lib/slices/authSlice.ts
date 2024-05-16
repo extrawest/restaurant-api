@@ -1,10 +1,9 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit'
-import { AuthResponse } from "shared";
-import { RootState } from '../store';
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { AuthResponse, Token } from "shared";
 import { logOut, login } from '../apis';
 
 const initialState: AuthResponse & { isLoggedIn: boolean } = {
-	access_token: "",
+	token: undefined,
 	isLoggedIn: false,
 };
 
@@ -12,8 +11,8 @@ export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-		updateAccessToken(state, action: PayloadAction<string>) {
-			state.access_token = action.payload;
+		updateAccessToken(state, action: PayloadAction<Token>) {
+			state.token = action.payload;
 			state.isLoggedIn = true;
 		},
 		updateIsLoggedIn(state, action: PayloadAction<boolean>) {
@@ -25,19 +24,17 @@ export const authSlice = createSlice({
 			login.matchFulfilled,
 			(state, { payload }) => {
 				state.isLoggedIn = true;
-				state.access_token = payload;
+				state.token = payload;
 			},
 		),
 		builder.addMatcher(
 			logOut.matchFulfilled,
 			(state) => {
-				state.access_token = "";
+				state.token = undefined;
 				state.isLoggedIn = false;
 			}
 		)
 	},
 });
 
-export const selectAuth = (state: RootState) => state.auth.value;
-
-export default authSlice.reducer;
+export const authSliceReducer = authSlice.reducer;

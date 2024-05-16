@@ -103,7 +103,14 @@ export class AuthService {
 	};
 
 	async getJwtAccessToken(user: Maybe<User>) {
-		const payload = { id: user?.id, email: user?.email, role: user?.role };
+		const payload = {
+			id: user?.id,
+			email: user?.email,
+			role: user?.role,
+			stripeCustomerId: user?.stripeCustomerId,
+			currentHashedRefreshToken: user?.currentHashedRefreshToken,
+			additional_info: user?.additional_info,
+		};
 		return this.jwtService.sign(payload, {
 			secret: process.env["JWT_SECRET"],
 			expiresIn: "1d"
@@ -111,7 +118,14 @@ export class AuthService {
 	}
  
 	async getJwtRefreshToken(user: Maybe<User>) {
-		const payload = { id: user?.id, email: user?.email, role: user?.role };
+		const payload = {
+			id: user?.id,
+			email: user?.email,
+			role: user?.role,
+			stripeCustomerId: user?.stripeCustomerId,
+			currentHashedRefreshToken: user?.currentHashedRefreshToken,
+			additional_info: user?.additional_info,
+		};
 		return this.jwtService.sign(payload, {
 			secret: process.env["JWT_SECRET"],
 			expiresIn: "7d"

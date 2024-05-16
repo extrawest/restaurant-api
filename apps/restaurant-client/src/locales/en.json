@@ -9,5 +9,6 @@
 	"text.password": "Password",
 	"text.submit": "Submit",
 	"text.submit.register": "Register",
-	"text.submit.login": "Login"
+	"text.submit.login": "Login",
+	"text.submit.logout": "Log out"
 }
