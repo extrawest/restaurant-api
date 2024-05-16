@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import { RegistrationContainer } from "../../frontend/containers/Registration";
+import { RegistrationContainer } from "../../frontend/containers";
 
 /* eslint-disable-next-line */
 export interface RegistrationProps {}

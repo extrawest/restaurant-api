@@ -1,4 +1,3 @@
-// "use client";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import defaultStorage from "reduxjs-toolkit-persist/lib/storage";
 import { encryptTransform } from 'redux-persist-transform-encrypt';
@@ -38,7 +37,7 @@ const persistConfig = {
     })
   ]
 };
-
+console.log(productsApi)
 const rootReducer = combineReducers({
   [productsSlice.name]: productsSliceReducer,
   [authSlice.name]: authSliceReducer,

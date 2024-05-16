@@ -27,3 +27,32 @@ export type HandleErrorHookType = {
 	trigger: boolean;
 	text: string;
 };
+
+export type Category = {
+	id: number;
+	name: string;
+};
+
+export type Product = {
+	id: number;
+	name: string;
+	image: string;
+	price: number;
+	discountedPrice: number;
+	currency: string;
+	quantity: number;
+	categoryId: number;
+	category: Category;
+};
+
+export type ProductsState = {
+	entities: Product[];
+}
+
+export type ProductPageParams = {
+	id: string;
+};
+
+export type DynamicPageProps<T> = {
+	params: T;
+};

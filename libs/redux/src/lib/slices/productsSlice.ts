@@ -1,14 +1,22 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { getProducts } from "../apis";
+import { ProductsState } from "shared";
 
-const initialState = {
-
+const initialState: ProductsState = {
+	entities: []
 };
 
 export const productsSlice = createSlice({
 	name: "productsSlice",
 	initialState,
-	reducers: {
-
+	reducers: {},
+	extraReducers(builder) {
+		builder.addMatcher(
+			getProducts.matchFulfilled,
+			(state, { payload }) => {
+				state.entities = payload;
+			}
+		)
 	}
 });
 

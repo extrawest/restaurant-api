@@ -16,10 +16,9 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import { useIntl } from "react-intl";
-import { useSelector } from "react-redux";
 import { Adb } from "@mui/icons-material";
 import { Pages } from "shared";
-import { RootState, useLogOutMutation } from "@redux";
+import { useAppSelector, useLogOutMutation } from "@redux";
 
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
@@ -27,7 +26,7 @@ export const Header = () => {
   const { $t } = useIntl();
   const [logOut] = useLogOutMutation();
 
-  const { token } = useSelector((state: RootState) => state.auth);
+  const { token } = useAppSelector((state) => state.auth);
 	const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
