@@ -11,3 +11,5 @@ export const productsSlice = createSlice({
 
 	}
 });
+
+export const productsSliceReducer = productsSlice.reducer;

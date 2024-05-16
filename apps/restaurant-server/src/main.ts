@@ -6,6 +6,7 @@ async function bootstrap() {
 		const app = await NestFactory.create(AppModule, {
 			rawBody: true
 		});
+		app.enableCors();
 		const config = new DocumentBuilder()
 			.setTitle("Restaurant API")
 			.setDescription("The Restaurant API description")

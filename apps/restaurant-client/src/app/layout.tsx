@@ -1,6 +1,8 @@
 import { Template } from "../frontend/templates";
 import { StoreProvider } from "../providers";
+
 import "./global.css";
+import { TranslationProvider, NotificationsProvider } from "../providers";
 
 export const metadata = {
 	title: "Welcome to restaurant-client",
@@ -12,9 +14,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 		<html lang="en">
 			<body>
 				<StoreProvider>
-					<Template.MainLayout>
-						{children}
-					</Template.MainLayout>
+					<NotificationsProvider>
+						<TranslationProvider>
+							<Template.MainLayout>
+								{children}
+							</Template.MainLayout>
+						</TranslationProvider>
+					</NotificationsProvider>
 				</StoreProvider>
 			</body>
 		</html>
