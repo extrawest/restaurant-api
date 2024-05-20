@@ -56,3 +56,15 @@ export type ProductPageParams = {
 export type DynamicPageProps<T> = {
 	params: T;
 };
+
+export type ProductsListProps = {
+	products: Product[]
+}
+
+export type ProductsByCategoriesCarouselProps = {
+	products: Product[]; 
+};
+
+export type ProductsByCategoriesContainesProps = {
+	categoryId: number;
+};

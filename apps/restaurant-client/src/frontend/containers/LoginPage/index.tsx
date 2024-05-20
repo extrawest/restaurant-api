@@ -8,7 +8,7 @@ import { useHandleError } from "../../hooks";
 import { LoginForm, LoginFormType } from "../../forms";
 import { Pages } from "shared";
 
-export const LoginContainer = () => {
+export const LoginPageContainer = () => {
 	const [login, { isError, isSuccess }] = useLoginMutation();
 	const { $t } = useIntl();
 

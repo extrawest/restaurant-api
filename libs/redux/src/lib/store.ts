@@ -37,7 +37,7 @@ const persistConfig = {
     })
   ]
 };
-console.log(productsApi)
+
 const rootReducer = combineReducers({
   [productsSlice.name]: productsSliceReducer,
   [authSlice.name]: authSliceReducer,

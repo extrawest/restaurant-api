@@ -8,7 +8,7 @@ import { useHandleError } from "../../hooks";
 import { useRegistrationMutation } from "@redux";
 import { RegistrationForm, RegistrationFormType } from "../../forms";
 
-export const RegistrationContainer = () => {
+export const RegistrationPageContainer = () => {
 	const [register, { isSuccess, isError }] = useRegistrationMutation();
 	const { $t } = useIntl();
 

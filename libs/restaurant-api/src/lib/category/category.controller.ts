@@ -18,12 +18,12 @@ import { AuthGuard } from "../auth";
 import { CategoryDTO } from "./dto/category.dto";
 import { Maybe } from "utils";
 
-@Roles(Role.Admin)
-@UseGuards(AuthGuard, RolesGuard)
 @Controller("category")
 export class CategoryController {
 	constructor(private readonly categoryService: CategoryService) {}
 
+	@Roles(Role.Admin)
+	@UseGuards(AuthGuard, RolesGuard)
 	@Post()
 	create(@Body() createCategoryDto: CreateCategoryDto): Promise<CategoryDTO> {
 		return this.categoryService.create(createCategoryDto);
@@ -39,13 +39,15 @@ export class CategoryController {
 		return this.categoryService.findOne(+id);
 	}
 
-	@UseGuards(AuthGuard)
+	@Roles(Role.Admin)
+	@UseGuards(AuthGuard, RolesGuard)
 	@Patch(":id")
 	update(@Param("id") id: string, @Body() updateCategoryDto: UpdateCategoryDto): Promise<Maybe<CategoryDTO>> {
 		return this.categoryService.update(+id, updateCategoryDto);
 	}
 
-	@UseGuards(AuthGuard)
+	@Roles(Role.Admin)
+	@UseGuards(AuthGuard, RolesGuard)
 	@Delete(":id")
 	remove(@Param("id") id: string) {
 		return this.categoryService.remove(+id);

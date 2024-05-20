@@ -3,7 +3,7 @@ import { getProducts } from "../apis";
 import { ProductsState } from "shared";
 
 const initialState: ProductsState = {
-	entities: []
+	entities: [],
 };
 
 export const productsSlice = createSlice({
