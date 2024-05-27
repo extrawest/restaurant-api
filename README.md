@@ -21,7 +21,7 @@ Welcome to the Restaurant Full-Stack Application! This project is designed to pr
 - Restaurant Browsing: Users can explore various restaurants and their menus.
 - Food Ordering: Easy and quick food ordering process with a user-friendly interface.
 - Order Tracking: Order status updates and tracking.
-- Payment Integration: Secure payment gateway integration for hassle-free transactions.
+- Payment Integration: Secure payment gateway integration using Stripe for hassle-free transactions, including the ability to subscribe for free delivery.
 - Food Delivery: Efficient food delivery management system ensuring timely deliveries.
 
 ## Development server
