@@ -12,9 +12,7 @@
 ![Nx](https://img.shields.io/badge/workspace-143157?style=for-the-badge&logo=NX&logoColor=white)
 ![Firebase](https://img.shields.io/badge/Firebase-FFCB2B?style=for-the-badge&logo=firebase&logoColor=333333)
 
-# %APP_NAME%
-
-Restaurant
+# Restaurant application
 
 ## Demo
 
