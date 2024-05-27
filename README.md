@@ -24,8 +24,6 @@ Welcome to the Restaurant Full-Stack Application! This project is designed to pr
 - Payment Integration: Secure payment gateway integration for hassle-free transactions.
 - Food Delivery: Efficient food delivery management system ensuring timely deliveries.
 
-## Demo
-
 ## Development server
 
 For Next.js, Node.js version >= v18.17.0 is required.
