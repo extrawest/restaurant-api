@@ -20,7 +20,17 @@ Restaurant
 
 ## Development server
 
-Run `nx serve restaurant` for a dev server. Navigate to http://localhost:4200/. The app will automatically reload if you change any of the source files.
+For Next.js, Node.js version >= v18.17.0 is required.
+
+`yarn install`
+
+`docker-compose up -d` to run mongo, postgres, rabbit-mq
+
+`yarn start-server` to run server
+
+`yarn start-client` to run client
+
+Navigate to http://localhost:3002/. The app will automatically reload if you change any of the source files.
 
 ## Env variables
 
@@ -68,3 +78,14 @@ node umzug.mjs down
 node umzug.mjs create --name new-migration-1.cjs
 node umzug.mjs create --name new-migration-2.mjs
 ```
+
+## Authors
+
+- [Powered by Extrawest](https://www.extrawest.com/)
+
+![Logo](https://www.extrawest.com/wp-content/uploads/2017/08/logo-2.png)
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)
+
