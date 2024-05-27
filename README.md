@@ -14,6 +14,16 @@
 
 # Restaurant application
 
+Welcome to the Restaurant Full-Stack Application! This project is designed to provide a seamless and efficient way for users to browse, order, and receive food from their favorite restaurants. It combines a robust backend with an intuitive frontend, ensuring a smooth experience for both customers and restaurant staff.
+
+### Features
+- User Registration and Authentication: Secure user registration and login functionality.
+- Restaurant Browsing: Users can explore various restaurants and their menus.
+- Food Ordering: Easy and quick food ordering process with a user-friendly interface.
+- Order Tracking: Order status updates and tracking.
+- Payment Integration: Secure payment gateway integration for hassle-free transactions.
+- Food Delivery: Efficient food delivery management system ensuring timely deliveries.
+
 ## Demo
 
 ## Development server
